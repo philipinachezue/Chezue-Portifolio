@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Project Tracker — SwiftDrop App</title>
+<link href="https://fonts.googleapis.com/css2?family=Cabinet+Grotesk:wght@300;400;500;700;800&family=Spline+Sans+Mono:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#f8f7ff;
+  --white:#ffffff;
+  --ink:#18142a;
+  --purple:#4a28c8;
+  --purple-lt:#6a48e8;
+  --purple-pale:#f0eeff;
+  --violet:#7c3aed;
+  --teal:#0891b2;
+  --green:#059669;
+  --amber:#d97706;
+  --red:#dc2626;
+  --fog:#e8e4f8;
+  --fog2:#f0edf8;
+  --muted:#7a7090;
+  --text:#18142a;
+  --sans:'Cabinet Grotesk',sans-serif;
+  --mono:'Spline Sans Mono',monospace;
+}
+body{background:var(--bg);font-family:var(--sans);color:var(--text);min-height:100vh;font-size:13px;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+@keyframes barSlide{from{width:0;}to{}}
+.f1{animation:fadeUp .4s ease both .05s;}
+.f2{animation:fadeUp .4s ease both .1s;}
+.f3{animation:fadeUp .4s ease both .15s;}
+.f4{animation:fadeUp .4s ease both .2s;}
+.f5{animation:fadeUp .4s ease both .25s;}
+
+/* TOPBAR */
+.topbar{height:52px;background:var(--purple);display:flex;align-items:center;padding:0 24px;gap:14px;}
+.brand{font-family:var(--sans);font-weight:800;font-size:1rem;color:#fff;letter-spacing:-.01em;}
+.brand em{font-style:italic;color:#b8a0ff;}
+.tb-sep{flex:1;}
+.tb-chip{font-family:var(--mono);font-size:.58rem;padding:3px 10px;border-radius:40px;border:1px solid rgba(255,255,255,.15);color:rgba(255,255,255,.65);letter-spacing:.04em;}
+.tb-chip.hi{background:rgba(255,255,255,.12);color:#fff;border-color:rgba(255,255,255,.25);}
+.tb-avatar{width:28px;height:28px;border-radius:6px;background:rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;font-size:.62rem;font-weight:700;color:#fff;font-family:var(--sans);}
+
+/* LAYOUT */
+.shell{display:flex;height:calc(100vh - 52px);}
+
+/* LEFT */
+.left{width:220px;background:var(--white);border-right:1px solid var(--fog);display:flex;flex-direction:column;padding:16px 0;overflow-y:auto;flex-shrink:0;}
+.ls-label{font-family:var(--mono);font-size:.55rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);padding:0 14px 6px;margin-top:8px;}
+.ls-item{display:flex;align-items:center;gap:8px;padding:7px 14px;font-size:.78rem;font-weight:500;color:var(--muted);cursor:pointer;border-left:2px solid transparent;transition:all .12s;}
+.ls-item:hover{background:var(--fog2);color:var(--ink);}
+.ls-item.active{border-left-color:var(--purple);background:var(--purple-pale);color:var(--purple);font-weight:700;}
+.ls-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+.ls-count{margin-left:auto;font-size:.62rem;font-family:var(--mono);color:var(--muted);}
+.ls-alert{margin-left:auto;font-size:.6rem;font-weight:700;color:var(--red);}
+
+.health-wrap{margin:10px 10px 4px;}
+.health-title{font-family:var(--mono);font-size:.55rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:8px;padding:0 4px;}
+.health-item{display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:4px;margin-bottom:4px;background:var(--bg);}
+.hi-label{font-size:.72rem;font-weight:500;flex:1;}
+.hi-val{font-family:var(--mono);font-size:.68rem;font-weight:700;}
+
+/* MAIN */
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
+.main-header{padding:14px 20px;background:var(--white);border-bottom:1px solid var(--fog);display:flex;align-items:center;gap:10px;flex-shrink:0;}
+.mh-title{font-weight:800;font-size:1rem;color:var(--ink);}
+.mh-sub{font-family:var(--mono);font-size:.62rem;color:var(--muted);margin-left:4px;}
+.mh-sep{flex:1;}
+.mh-btn{padding:6px 14px;border:1.5px solid var(--fog);border-radius:5px;font-family:var(--sans);font-size:.72rem;font-weight:600;cursor:pointer;background:none;color:var(--muted);transition:all .12s;}
+.mh-btn:hover{border-color:var(--purple);color:var(--purple);}
+.mh-btn.primary{background:var(--purple);border-color:var(--purple);color:#fff;}
+.mh-btn.primary:hover{background:var(--purple-lt);}
+
+/* SPRINT TABS */
+.sprint-row{display:flex;align-items:center;gap:0;padding:0 20px;background:var(--white);border-bottom:1px solid var(--fog);flex-shrink:0;}
+.sprint-tab{padding:9px 16px;font-size:.73rem;font-weight:700;font-family:var(--sans);color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;transition:all .12s;letter-spacing:.01em;}
+.sprint-tab:hover{color:var(--ink);}
+.sprint-tab.active{color:var(--purple);border-bottom-color:var(--purple);}
+.sprint-tab .st-badge{display:inline-block;font-size:.55rem;font-family:var(--mono);padding:1px 5px;border-radius:3px;margin-left:5px;background:var(--fog);color:var(--muted);}
+.sprint-tab.active .st-badge{background:var(--purple-pale);color:var(--purple);}
+
+/* SCROLL AREA */
+.scroll-area{flex:1;overflow-y:auto;padding:18px 20px 40px;}
+
+/* STAT ROW */
+.stat-row{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:20px;}
+.stat-card{background:var(--white);border:1px solid var(--fog);border-radius:6px;padding:13px 15px;}
+.sc-num{font-weight:800;font-size:1.6rem;line-height:1;color:var(--ink);}
+.sc-label{font-size:.66rem;color:var(--muted);margin-top:3px;font-family:var(--mono);letter-spacing:.04em;}
+.sc-bar{height:3px;background:var(--fog);border-radius:3px;margin-top:8px;overflow:hidden;}
+.sc-fill{height:100%;border-radius:3px;animation:barSlide .8s ease both;}
+
+/* GANTT */
+.gantt-wrap{background:var(--white);border:1px solid var(--fog);border-radius:6px;overflow:hidden;margin-bottom:18px;}
+.gantt-header{display:grid;grid-template-columns:200px 1fr;border-bottom:1px solid var(--fog);}
+.gh-label{padding:9px 14px;font-family:var(--mono);font-size:.58rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);border-right:1px solid var(--fog);}
+.gh-weeks{display:grid;padding:0 8px;}
+.gw-label{font-family:var(--mono);font-size:.58rem;color:var(--muted);text-align:center;padding:9px 0;letter-spacing:.04em;}
+
+.gantt-row{display:grid;grid-template-columns:200px 1fr;border-bottom:1px solid var(--fog);align-items:center;}
+.gantt-row:last-child{border-bottom:none;}
+.gantt-row.phase-header{background:var(--fog2);}
+.gr-label{padding:9px 14px;border-right:1px solid var(--fog);font-size:.78rem;}
+.gr-phase{font-weight:800;font-size:.8rem;color:var(--purple);text-transform:uppercase;letter-spacing:.04em;}
+.gr-task{color:var(--ink);font-weight:500;}
+.gr-task.done{color:var(--muted);text-decoration:line-through;}
+.gr-meta{font-family:var(--mono);font-size:.58rem;color:var(--muted);margin-top:1px;}
+.gr-bars{padding:6px 8px;position:relative;height:38px;}
+.gantt-bar{position:absolute;top:50%;transform:translateY(-50%);height:16px;border-radius:3px;display:flex;align-items:center;padding:0 8px;font-family:var(--mono);font-size:.55rem;font-weight:600;color:rgba(255,255,255,.9);white-space:nowrap;overflow:hidden;animation:barSlide .7s ease both;}
+.today-line{position:absolute;top:0;bottom:0;width:2px;background:var(--red);z-index:10;opacity:.7;}
+.today-line::before{content:'TODAY';position:absolute;top:-18px;left:-14px;font-family:var(--mono);font-size:.5rem;color:var(--red);letter-spacing:.06em;}
+
+/* STATUS BADGE */
+.status-tag{display:inline-flex;align-items:center;gap:4px;font-size:.6rem;font-family:var(--mono);font-weight:600;letter-spacing:.04em;padding:2px 7px;border-radius:3px;text-transform:uppercase;}
+.st-done{background:rgba(5,150,105,.1);color:var(--green);}
+.st-active{background:rgba(74,40,200,.1);color:var(--purple);}
+.st-blocked{background:rgba(220,38,38,.1);color:var(--red);}
+.st-pending{background:rgba(217,119,6,.1);color:var(--amber);}
+.st-review{background:rgba(8,145,178,.1);color:var(--teal);}
+
+/* TASK LIST */
+.task-section{background:var(--white);border:1px solid var(--fog);border-radius:6px;overflow:hidden;margin-bottom:18px;}
+.ts-header{padding:12px 16px;border-bottom:1px solid var(--fog);display:flex;align-items:center;gap:10px;}
+.ts-title{font-weight:800;font-size:.85rem;}
+.ts-count{font-family:var(--mono);font-size:.62rem;color:var(--muted);}
+.ts-sep{flex:1;}
+
+table.task-table{width:100%;border-collapse:collapse;}
+.task-table th{font-family:var(--mono);font-size:.55rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);padding:8px 14px;text-align:left;border-bottom:1px solid var(--fog);background:var(--bg);}
+.task-table td{padding:10px 14px;font-size:.78rem;border-bottom:1px solid var(--fog);vertical-align:middle;}
+.task-table tr:last-child td{border-bottom:none;}
+.task-table tr:hover td{background:var(--fog2);}
+.task-table tr.blocked-row td{background:#fff8f8;}
+
+.task-check{width:15px;height:15px;border-radius:3px;border:1.5px solid var(--fog);display:inline-flex;align-items:center;justify-content:center;font-size:.58rem;color:var(--green);cursor:pointer;flex-shrink:0;}
+.task-check.done{background:var(--green);border-color:var(--green);color:#fff;}
+.assignee-chip{display:inline-flex;align-items:center;gap:5px;font-size:.68rem;}
+.ac-dot{width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.58rem;font-weight:700;color:#fff;flex-shrink:0;}
+.priority-dot{width:7px;height:7px;border-radius:50%;display:inline-block;margin-right:3px;}
+
+/* VA NOTES */
+.va-notes-section{background:var(--white);border:1px solid var(--fog);border-radius:6px;padding:16px;margin-bottom:18px;}
+.va-lbl{font-family:var(--mono);font-size:.58rem;letter-spacing:.12em;text-transform:uppercase;color:var(--purple);margin-bottom:10px;}
+.va-note-row{display:flex;gap:10px;font-size:.76rem;padding:8px 0;border-bottom:1px solid var(--fog);line-height:1.5;}
+.va-note-row:last-child{border-bottom:none;}
+.vn-tag{font-family:var(--mono);font-size:.55rem;font-weight:700;letter-spacing:.06em;padding:2px 7px;border-radius:3px;flex-shrink:0;height:fit-content;margin-top:1px;}
+
+::-webkit-scrollbar{width:4px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:var(--fog);border-radius:10px;}
+</style>
+
+<!-- SEO & Performance Optimization -->
+<meta name="description" content="Philipina Andrea Chezue is a freelance Executive Virtual Assistant in Dar es Salaam, specializing in remote operations, travel logistics, and project coordination for founders globally.">
+<meta name="keywords" content="Executive Virtual Assistant, Remote VA, Operations Assistant, Project Coordination, Travel Logistics, Tanzania VA, Portfolio">
+<meta name="robots" content="index, follow">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<link rel="canonical" href="https://philipinachezue.com/">
+<link rel="manifest" href="/manifest.json">
+<link rel="icon" type="image/x-icon" href="/assets/favicon.ico">
+
+<!-- Open Graph / Social -->
+<meta property="og:title" content="Philipina Andrea Chezue — Executive Virtual Assistant">
+<meta property="og:description" content="Reclaim your time through expert operations, travel logistics, and project coordination that actually works.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://philipinachezue.com/">
+<meta property="og:image" content="https://philipinachezue.com/assets/images/img_9f2ae763.jpg">
+
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Philipina Andrea Chezue — Executive VA">
+<meta name="twitter:description" content="Reclaim your time through expert operations and project coordination.">
+<meta name="twitter:image" content="https://philipinachezue.com/assets/images/img_9f2ae763.jpg">
+
+<!-- Structured Data -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org/",
+  "@type": "Person",
+  "name": "Philipina Andrea Chezue",
+  "jobTitle": "Executive Virtual Assistant",
+  "url": "https://philipinachezue.com",
+  "email": "philipinachezue@outlook.com",
+  "address": {
+    "@type": "PostalAddress",
+    "addressLocality": "Dar es Salaam",
+    "addressCountry": "Tanzania"
+  },
+  "sameAs": [
+    "https://www.linkedin.com/in/philipinaandreachezue/"
+  ],
+  "knowsAbout": ["Executive Support", "Project Coordination", "Travel Logistics", "Operations"]
+}
+</script>
+<!-- End SEO -->
+
+</head>
+<body>
+
+<div class="topbar">
+  <div class="brand">Swift<em>Drop</em> &nbsp;/&nbsp; App Build</div>
+  <div class="tb-sep"></div>
+  <div class="tb-chip hi">Sprint 3 of 6 — Active</div>
+  <div class="tb-chip">Launch: 30 Jun 2026</div>
+  <div class="tb-chip">PM: Kezia Mwale · VA</div>
+  <div class="tb-avatar">KM</div>
+</div>
+
+<div class="shell">
+
+  <!-- LEFT -->
+  <div class="left">
+    <div class="ls-label">Project</div>
+    <div class="ls-item active"><span>📊</span>Dashboard</div>
+    <div class="ls-item"><span>🗓</span>Sprint board</div>
+    <div class="ls-item"><span>📅</span>Gantt timeline</div>
+    <div class="ls-item"><span>✅</span>All tasks<span class="ls-count">48</span></div>
+    <div class="ls-item"><span>🚨</span>Blocked<span class="ls-alert">3</span></div>
+
+    <div class="ls-label">Team</div>
+    <div class="ls-item"><span class="ls-dot" style="background:#7c3aed"></span>Dev — Backend<span class="ls-count">12</span></div>
+    <div class="ls-item"><span class="ls-dot" style="background:#0891b2"></span>Dev — Frontend<span class="ls-count">14</span></div>
+    <div class="ls-item"><span class="ls-dot" style="background:#059669"></span>UI/UX Design<span class="ls-count">8</span></div>
+    <div class="ls-item"><span class="ls-dot" style="background:#d97706"></span>QA Testing<span class="ls-count">9</span></div>
+    <div class="ls-item"><span class="ls-dot" style="background:#4a28c8"></span>Product / VA<span class="ls-count">5</span></div>
+
+    <div class="ls-label">Milestones</div>
+    <div class="ls-item"><span>🏁</span>MVP freeze</div>
+    <div class="ls-item"><span>🧪</span>Beta launch</div>
+    <div class="ls-item"><span>🚀</span>Public launch</div>
+    <div class="ls-item"><span>📣</span>Marketing go-live</div>
+
+    <div class="health-wrap">
+      <div class="health-title">Project health</div>
+      <div class="health-item"><div class="hi-label">Budget</div><div class="hi-val" style="color:var(--green)">72% used</div></div>
+      <div class="health-item"><div class="hi-label">Timeline</div><div class="hi-val" style="color:var(--amber)">5d at risk</div></div>
+      <div class="health-item"><div class="hi-label">Velocity</div><div class="hi-val" style="color:var(--purple)">84%</div></div>
+      <div class="health-item"><div class="hi-label">Morale</div><div class="hi-val" style="color:var(--green)">High ✓</div></div>
+    </div>
+  </div>
+
+  <!-- MAIN -->
+  <div class="main">
+    <div class="main-header f1">
+      <div>
+        <span class="mh-title">SwiftDrop Delivery App</span>
+        <span class="mh-sub">// Build tracker · Q2 2026</span>
+      </div>
+      <div class="mh-sep"></div>
+      <button class="mh-btn">📤 Export report</button>
+      <button class="mh-btn">🔔 Standup notes</button>
+      <button class="mh-btn primary">+ Add task</button>
+    </div>
+
+    <div class="sprint-row">
+      <div class="sprint-tab">S1 — Discovery <span class="st-badge">✓ Done</span></div>
+      <div class="sprint-tab">S2 — Design <span class="st-badge">✓ Done</span></div>
+      <div class="sprint-tab active">S3 — Core Build <span class="st-badge">Active</span></div>
+      <div class="sprint-tab">S4 — Integrations <span class="st-badge">Upcoming</span></div>
+      <div class="sprint-tab">S5 — QA & Beta <span class="st-badge">Upcoming</span></div>
+      <div class="sprint-tab">S6 — Launch <span class="st-badge">Jun 2026</span></div>
+    </div>
+
+    <div class="scroll-area">
+
+      <!-- STAT ROW -->
+      <div class="stat-row f2">
+        <div class="stat-card">
+          <div class="sc-num" style="color:var(--purple)">48</div>
+          <div class="sc-label">total tasks</div>
+          <div class="sc-bar"><div class="sc-fill" style="width:100%;background:var(--fog);"></div></div>
+        </div>
+        <div class="stat-card">
+          <div class="sc-num" style="color:var(--green)">26</div>
+          <div class="sc-label">completed</div>
+          <div class="sc-bar"><div class="sc-fill" style="width:54%;background:var(--green);"></div></div>
+        </div>
+        <div class="stat-card">
+          <div class="sc-num" style="color:var(--purple)">13</div>
+          <div class="sc-label">in progress</div>
+          <div class="sc-bar"><div class="sc-fill" style="width:27%;background:var(--purple);"></div></div>
+        </div>
+        <div class="stat-card">
+          <div class="sc-num" style="color:var(--red)">3</div>
+          <div class="sc-label">blocked</div>
+          <div class="sc-bar"><div class="sc-fill" style="width:6%;background:var(--red);"></div></div>
+        </div>
+        <div class="stat-card">
+          <div class="sc-num" style="color:var(--amber)">78<span style="font-size:.9rem;font-weight:400">d</span></div>
+          <div class="sc-label">to launch</div>
+          <div class="sc-bar"><div class="sc-fill" style="width:54%;background:var(--amber);"></div></div>
+        </div>
+      </div>
+
+      <!-- GANTT -->
+      <div class="sec-label f3" style="font-family:var(--mono);font-size:.58rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:8px;display:flex;align-items:center;gap:8px;">Gantt Timeline — Q1–Q3 2026 <span style="flex:1;height:1px;background:var(--fog);display:block;margin-left:8px;"></span></div>
+      <div class="gantt-wrap f3">
+        <div class="gantt-header">
+          <div class="gh-label">Phase / Task</div>
+          <div style="display:grid;grid-template-columns:repeat(12,1fr);padding:0 8px;border-left:1px solid var(--fog);">
+            <div class="gw-label">Jan</div><div class="gw-label">Feb</div><div class="gw-label">Mar</div>
+            <div class="gw-label" style="color:var(--purple);font-weight:700;">Apr</div>
+            <div class="gw-label" style="color:var(--purple);font-weight:700;">May</div>
+            <div class="gw-label" style="color:var(--purple);font-weight:700;">Jun</div>
+            <div class="gw-label">Jul</div><div class="gw-label">Aug</div><div class="gw-label">Sep</div>
+            <div class="gw-label">Oct</div><div class="gw-label">Nov</div><div class="gw-label">Dec</div>
+          </div>
+        </div>
+
+        <!-- Phase rows. Grid = 12 cols. Left offset & width as % of 12 cols -->
+        <!-- S1 Discovery: Jan-Feb = col 1-2 → left 0%, width 16.6% -->
+        <div class="gantt-row phase-header">
+          <div class="gr-label"><span class="gr-phase">S1 — Discovery</span></div>
+          <div class="gr-bars" style="position:relative;height:34px;">
+            <div class="today-line" style="left:28.5%;"></div>
+            <div class="gantt-bar" style="left:0%;width:16.6%;background:var(--green);animation-delay:.1s">✓ Done</div>
+          </div>
+        </div>
+        <div class="gantt-row">
+          <div class="gr-label"><div class="gr-task done">Requirements & scope</div><div class="gr-meta">Jan 5–20 · Kezia + Founder</div></div>
+          <div class="gr-bars"><div class="gantt-bar" style="left:1%;width:7%;background:rgba(5,150,105,.4);animation-delay:.12s;">done</div></div>
+        </div>
+        <div class="gantt-row">
+          <div class="gr-label"><div class="gr-task done">Tech stack decision</div><div class="gr-meta">Jan 20–31 · CTO: Darius Ko</div></div>
+          <div class="gr-bars"><div class="gantt-bar" style="left:7%;width:6%;background:rgba(5,150,105,.4);animation-delay:.14s;">done</div></div>
+        </div>
+
+        <div class="gantt-row phase-header">
+          <div class="gr-label"><span class="gr-phase">S2 — UI/UX Design</span></div>
+          <div class="gr-bars"><div class="gantt-bar" style="left:8%;width:17%;background:var(--teal);animation-delay:.16s">✓ Done</div></div>
+        </div>
+        <div class="gantt-row">
+          <div class="gr-label"><div class="gr-task done">Wireframes — all screens</div><div class="gr-meta">Feb 1–14 · Priya (Design)</div></div>
+          <div class="gr-bars"><div class="gantt-bar" style="left:8%;width:8%;background:rgba(8,145,178,.35);animation-delay:.18s">done</div></div>
+        </div>
+        <div class="gantt-row">
+          <div class="gr-label"><div class="gr-task done">UI design system + Figma</div><div class="gr-meta">Feb 15–28 · Priya + 1</div></div>
+          <div class="gr-bars"><div class="gantt-bar" style="left:12%;width:8%;background:rgba(8,145,178,.35);animation-delay:.2s">done</div></div>
+        </div>
+        <div class="gantt-row">
+          <div class="gr-label"><div class="gr-task done">Prototype review — founder</div><div class="gr-meta">Mar 1–7 · All</div></div>
+          <div class="gr-bars"><div class="gantt-bar" style="left:16.5%;width:4%;background:rgba(8,145,178,.35);animation-delay:.22s">done</div></div>
+        </div>
+
+        <div class="gantt-row phase-header">
+          <div class="gr-label"><span class="gr-phase" style="color:var(--purple)">S3 — Core Build ←NOW</span></div>
+          <div class="gr-bars" style="position:relative;">
+            <div class="today-line" style="left:28.5%;"></div>
+            <div class="gantt-bar" style="left:20%;width:25%;background:linear-gradient(90deg,var(--purple),var(--violet));animation-delay:.24s">Sprint 3 — Active</div>
+          </div>
+        </div>
+        <div class="gantt-row">
+          <div class="gr-label"><div class="gr-task done">User auth & onboarding flow</div><div class="gr-meta">Mar 8–22 · Amaka (Backend)</div></div>
+          <div class="gr-bars"><div class="gantt-bar" style="left:20%;width:9%;background:rgba(74,40,200,.35);animation-delay:.26s">✓</div></div>
+        </div>
+        <div class="gantt-row">
+          <div class="gr-label"><div class="gr-task">Order placement & tracking</div><div class="gr-meta">Mar 23 – Apr 14 · Darius + Amaka</div></div>
+          <div class="gr-bars" style="position:relative;"><div class="today-line" style="left:28.5%;"></div><div class="gantt-bar" style="left:24%;width:11%;background:linear-gradient(90deg,rgba(74,40,200,.5),rgba(74,40,200,.8));animation-delay:.28s">75%</div></div>
+        </div>
+        <div class="gantt-row">
+          <div class="gr-label"><div class="gr-task" style="color:var(--red)">⚠ Driver matching algo</div><div class="gr-meta">Apr 1–25 · Darius — BLOCKED</div></div>
+          <div class="gr-bars" style="position:relative;"><div class="today-line" style="left:28.5%;"></div><div class="gantt-bar" style="left:25%;width:16%;background:rgba(220,38,38,.3);border:1px dashed var(--red);animation-delay:.30s">Blocked — GPS API</div></div>
+        </div>
+        <div class="gantt-row">
+          <div class="gr-label"><div class="gr-task">Payment gateway (Stripe)</div><div class="gr-meta">Apr 14–28 · Amaka (Backend)</div></div>
+          <div class="gr-bars"><div class="gantt-bar" style="left:28.5%;width:10%;background:rgba(74,40,200,.4);animation-delay:.32s">Not started</div></div>
+        </div>
+        <div class="gantt-row">
+          <div class="gr-label"><div class="gr-task">Push notifications setup</div><div class="gr-meta">Apr 21 – May 5 · Leo (Frontend)</div></div>
+          <div class="gr-bars"><div class="gantt-bar" style="left:31%;width:9%;background:rgba(74,40,200,.3);animation-delay:.34s">Not started</div></div>
+        </div>
+
+        <div class="gantt-row phase-header">
+          <div class="gr-label"><span class="gr-phase" style="color:var(--muted)">S4 — Integrations</span></div>
+          <div class="gr-bars"><div class="gantt-bar" style="left:37%;width:17%;background:rgba(217,119,6,.5);animation-delay:.36s">Upcoming — May</div></div>
+        </div>
+        <div class="gantt-row">
+          <div class="gr-label"><div class="gr-task" style="color:var(--muted)">Google Maps / GPS live</div><div class="gr-meta">May 1–14 · Darius</div></div>
+          <div class="gr-bars"><div class="gantt-bar" style="left:37%;width:9%;background:rgba(217,119,6,.25);animation-delay:.38s">planned</div></div>
+        </div>
+        <div class="gantt-row">
+          <div class="gr-label"><div class="gr-task" style="color:var(--muted)">SMS alerts (Twilio)</div><div class="gr-meta">May 12–22 · Amaka</div></div>
+          <div class="gr-bars"><div class="gantt-bar" style="left:42%;width:7%;background:rgba(217,119,6,.25);animation-delay:.40s">planned</div></div>
+        </div>
+
+        <div class="gantt-row phase-header">
+          <div class="gr-label"><span class="gr-phase" style="color:var(--muted)">S5 — QA & Beta</span></div>
+          <div class="gr-bars"><div class="gantt-bar" style="left:50%;width:17%;background:rgba(8,145,178,.4);animation-delay:.42s">Jun — QA & Beta</div></div>
+        </div>
+
+        <div class="gantt-row phase-header">
+          <div class="gr-label"><span class="gr-phase" style="color:var(--muted)">S6 — Public Launch 🚀</span></div>
+          <div class="gr-bars"><div class="gantt-bar" style="left:66%;width:4%;background:rgba(74,40,200,.6);animation-delay:.44s">30 Jun</div></div>
+        </div>
+      </div>
+
+      <!-- ACTIVE SPRINT TASKS -->
+      <div class="task-section f4">
+        <div class="ts-header">
+          <div class="ts-title">Sprint 3 Tasks — Core Build</div>
+          <div class="ts-count">Apr 1–30 · 18 tasks · 10 done · 3 blocked</div>
+          <div class="ts-sep"></div>
+          <div style="font-size:.7rem;color:var(--muted);">Sort by: <strong style="color:var(--purple);cursor:pointer;">Priority</strong></div>
+        </div>
+        <table class="task-table">
+          <thead><tr><th></th><th>Task</th><th>Assignee</th><th>Module</th><th>Status</th><th>Due</th><th>Note</th></tr></thead>
+          <tbody>
+            <tr class="blocked-row">
+              <td><div class="task-check done">✓</div></td>
+              <td style="font-weight:600;">Driver matching algorithm <span style="font-size:.62rem;background:rgba(220,38,38,.1);color:var(--red);padding:1px 6px;border-radius:3px;font-family:var(--mono);font-weight:700;margin-left:4px;">BLOCKED</span></td>
+              <td><div class="assignee-chip"><div class="ac-dot" style="background:#7c3aed">DK</div>Darius Ko</div></td>
+              <td><span style="font-size:.68rem;color:var(--muted);">Core engine</span></td>
+              <td><span class="status-tag st-blocked">⚠ Blocked</span></td>
+              <td style="font-family:var(--mono);font-size:.68rem;color:var(--red);">Apr 25</td>
+              <td style="font-size:.68rem;color:var(--red);">GPS API key pending founder</td>
+            </tr>
+            <tr>
+              <td><div class="task-check"></div></td>
+              <td style="font-weight:600;">Stripe payment gateway integration</td>
+              <td><div class="assignee-chip"><div class="ac-dot" style="background:#059669">AO</div>Amaka Obi</div></td>
+              <td><span style="font-size:.68rem;color:var(--muted);">Payments</span></td>
+              <td><span class="status-tag st-active">● In progress</span></td>
+              <td style="font-family:var(--mono);font-size:.68rem;color:var(--amber);">Apr 28</td>
+              <td style="font-size:.68rem;color:var(--muted);">Test keys in env — live keys needed</td>
+            </tr>
+            <tr>
+              <td><div class="task-check"></div></td>
+              <td style="font-weight:600;">Order tracking UI — customer view</td>
+              <td><div class="assignee-chip"><div class="ac-dot" style="background:#0891b2">LN</div>Leo Nkosi</div></td>
+              <td><span style="font-size:.68rem;color:var(--muted);">Frontend</span></td>
+              <td><span class="status-tag st-active">● In progress</span></td>
+              <td style="font-family:var(--mono);font-size:.68rem;">Apr 20</td>
+              <td style="font-size:.68rem;color:var(--muted);">75% — map component remaining</td>
+            </tr>
+            <tr>
+              <td><div class="task-check"></div></td>
+              <td style="font-weight:600;">Push notifications — order updates</td>
+              <td><div class="assignee-chip"><div class="ac-dot" style="background:#0891b2">LN</div>Leo Nkosi</div></td>
+              <td><span style="font-size:.68rem;color:var(--muted);">Frontend</span></td>
+              <td><span class="status-tag st-pending">◷ Not started</span></td>
+              <td style="font-family:var(--mono);font-size:.68rem;">Apr 30</td>
+              <td style="font-size:.68rem;color:var(--muted);">Blocked on payment task completion</td>
+            </tr>
+            <tr class="blocked-row">
+              <td><div class="task-check"></div></td>
+              <td style="font-weight:600;">Driver app — GPS broadcast <span style="font-size:.62rem;background:rgba(220,38,38,.1);color:var(--red);padding:1px 6px;border-radius:3px;font-family:var(--mono);font-weight:700;margin-left:4px;">BLOCKED</span></td>
+              <td><div class="assignee-chip"><div class="ac-dot" style="background:#7c3aed">DK</div>Darius Ko</div></td>
+              <td><span style="font-size:.68rem;color:var(--muted);">Driver app</span></td>
+              <td><span class="status-tag st-blocked">⚠ Blocked</span></td>
+              <td style="font-family:var(--mono);font-size:.68rem;color:var(--red);">Apr 25</td>
+              <td style="font-size:.68rem;color:var(--red);">Same GPS API blocker</td>
+            </tr>
+            <tr>
+              <td><div class="task-check"></div></td>
+              <td style="font-weight:600;">Admin dashboard — order overview</td>
+              <td><div class="assignee-chip"><div class="ac-dot" style="background:#0891b2">LN</div>Leo Nkosi</div></td>
+              <td><span style="font-size:.68rem;color:var(--muted);">Admin panel</span></td>
+              <td><span class="status-tag st-review">◈ In review</span></td>
+              <td style="font-family:var(--mono);font-size:.68rem;">Apr 17</td>
+              <td style="font-size:.68rem;color:var(--teal);">Sent to founder for sign-off</td>
+            </tr>
+            <tr>
+              <td><div class="task-check done">✓</div></td>
+              <td style="font-weight:500;color:var(--muted);text-decoration:line-through;">User auth — login & registration</td>
+              <td><div class="assignee-chip"><div class="ac-dot" style="background:#059669">AO</div>Amaka Obi</div></td>
+              <td><span style="font-size:.68rem;color:var(--muted);">Auth</span></td>
+              <td><span class="status-tag st-done">✓ Done</span></td>
+              <td style="font-family:var(--mono);font-size:.68rem;color:var(--muted);">Mar 22</td>
+              <td style="font-size:.68rem;color:var(--green);">Completed & tested ✓</td>
+            </tr>
+            <tr>
+              <td><div class="task-check done">✓</div></td>
+              <td style="font-weight:500;color:var(--muted);text-decoration:line-through;">Database schema — orders & users</td>
+              <td><div class="assignee-chip"><div class="ac-dot" style="background:#7c3aed">DK</div>Darius Ko</div></td>
+              <td><span style="font-size:.68rem;color:var(--muted);">Backend</span></td>
+              <td><span class="status-tag st-done">✓ Done</span></td>
+              <td style="font-family:var(--mono);font-size:.68rem;color:var(--muted);">Mar 18</td>
+              <td style="font-size:.68rem;color:var(--green);">Completed ✓</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- VA NOTES -->
+      <div class="va-notes-section f5">
+        <div class="va-lbl">⚡ VA Project Notes — Kezia Mwale · 14 April 2026</div>
+        <div class="va-note-row">
+          <span class="vn-tag" style="background:rgba(220,38,38,.1);color:var(--red);">URGENT</span>
+          <span><strong>GPS API blocker (Darius + driver app):</strong> Google Maps Platform key is needed. Founder must approve billing account. I've drafted the setup guide — it's in Notion under <em>Tech Setup / API Keys</em>. Takes 15 minutes to resolve. Two tasks are blocked on this.</span>
+        </div>
+        <div class="va-note-row">
+          <span class="vn-tag" style="background:rgba(217,119,6,.1);color:var(--amber);">ACTION</span>
+          <span><strong>Stripe live keys:</strong> Test environment is working. Founder needs to activate the Stripe live account and share keys with Amaka securely (use 1Password — I've created a shared vault). Needed by Apr 21 to stay on schedule.</span>
+        </div>
+        <div class="va-note-row">
+          <span class="vn-tag" style="background:rgba(8,145,178,.1);color:var(--teal);">REVIEW</span>
+          <span><strong>Admin dashboard:</strong> Leo's build is done and looks great — please review the Figma prototype link in Slack (#admin-dashboard) and leave feedback by Apr 16 so Leo can implement changes before Apr 20 deadline.</span>
+        </div>
+        <div class="va-note-row">
+          <span class="vn-tag" style="background:rgba(74,40,200,.1);color:var(--purple);">UPDATE</span>
+          <span><strong>Sprint 3 on track overall</strong> despite 2 blockers. If GPS API is resolved this week, we recover the schedule. Sprint 4 planning call is booked for Apr 28 at 10:00 AM — I'll send the prep doc 48h before. Launch date Jun 30 is still achievable.</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+</body>
+</html>

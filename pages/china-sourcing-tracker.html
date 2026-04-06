@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Sourcing Tracker — DropRun Supplies</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Barlow+Condensed:wght@400;500;600;700&family=Roboto+Mono:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#0e1117;
+  --surface:#141820;
+  --surface2:#1a2030;
+  --surface3:#202838;
+  --border:#252d3d;
+  --border2:#2e3a4e;
+  --text:#dce4f0;
+  --muted:#5a6880;
+  --muted2:#7a8aa0;
+  --accent:#00c8ff;
+  --green:#00d084;
+  --yellow:#ffc840;
+  --red:#ff4d4d;
+  --orange:#ff8c40;
+  --violet:#a080ff;
+  --sans:'Barlow',sans-serif;
+  --cond:'Barlow Condensed',sans-serif;
+  --mono:'Roboto Mono',monospace;
+}
+body{background:var(--bg);font-family:var(--sans);color:var(--text);min-height:100vh;font-size:13px;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.3;}}
+@keyframes barIn{from{width:0;}to{}}
+.f1{animation:fadeUp .35s ease both .04s;}
+.f2{animation:fadeUp .35s ease both .08s;}
+.f3{animation:fadeUp .35s ease both .12s;}
+.f4{animation:fadeUp .35s ease both .16s;}
+.f5{animation:fadeUp .35s ease both .20s;}
+.f6{animation:fadeUp .35s ease both .24s;}
+
+/* TOPBAR */
+.topbar{height:50px;background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 24px;gap:16px;}
+.brand{font-family:var(--cond);font-size:1.1rem;font-weight:700;color:var(--text);letter-spacing:.08em;text-transform:uppercase;}
+.brand span{color:var(--accent);}
+.tb-sep{flex:1;}
+.tb-pill{font-family:var(--mono);font-size:.6rem;padding:3px 10px;border-radius:3px;letter-spacing:.06em;border:1px solid var(--border2);color:var(--muted2);}
+.tb-pill.live{border-color:rgba(0,208,132,.3);color:var(--green);}
+.live-dot{display:inline-block;width:5px;height:5px;background:var(--green);border-radius:50%;margin-right:5px;animation:pulse 1.8s ease-in-out infinite;}
+.tb-avatar{width:28px;height:28px;border-radius:4px;background:var(--accent);display:flex;align-items:center;justify-content:center;font-size:.62rem;font-weight:700;color:var(--bg);font-family:var(--cond);letter-spacing:.04em;}
+
+/* LAYOUT */
+.shell{display:grid;grid-template-columns:200px 1fr 290px;height:calc(100vh - 50px);}
+
+/* SIDEBAR */
+.sidebar{background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;padding:16px 0;overflow-y:auto;}
+.sb-label{font-family:var(--mono);font-size:.55rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);padding:0 14px 6px;margin-top:8px;}
+.sb-item{display:flex;align-items:center;gap:8px;padding:7px 14px;font-size:.78rem;color:var(--muted2);cursor:pointer;border-left:2px solid transparent;transition:all .12s;}
+.sb-item:hover{background:var(--surface2);color:var(--text);}
+.sb-item.active{border-left-color:var(--accent);background:var(--surface2);color:var(--accent);}
+.sb-item .ic{font-size:.85rem;width:16px;text-align:center;}
+.sb-count{margin-left:auto;font-family:var(--mono);font-size:.6rem;color:var(--muted);}
+.sb-alert{margin-left:auto;width:7px;height:7px;background:var(--red);border-radius:50%;}
+
+.kpi-strip{margin:12px 10px;display:flex;flex-direction:column;gap:6px;}
+.kpi-card{background:var(--surface2);border:1px solid var(--border);border-radius:4px;padding:10px 12px;}
+.kpi-num{font-family:var(--cond);font-size:1.4rem;font-weight:700;line-height:1;}
+.kpi-lbl{font-size:.62rem;color:var(--muted);margin-top:2px;font-family:var(--mono);letter-spacing:.04em;}
+
+/* MAIN */
+.main{display:flex;flex-direction:column;overflow:hidden;}
+.main-header{padding:14px 20px;border-bottom:1px solid var(--border);background:var(--surface);display:flex;align-items:center;gap:10px;flex-shrink:0;}
+.mh-title{font-family:var(--cond);font-size:1.1rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;}
+.mh-sep{flex:1;}
+.mh-btn{padding:6px 14px;border:1px solid var(--border2);border-radius:3px;font-family:var(--sans);font-size:.72rem;font-weight:600;cursor:pointer;background:none;color:var(--muted2);transition:all .12s;letter-spacing:.02em;}
+.mh-btn:hover{border-color:var(--accent);color:var(--accent);}
+.mh-btn.primary{background:var(--accent);border-color:var(--accent);color:var(--bg);}
+.mh-btn.primary:hover{background:#00aadd;}
+
+.tab-row{display:flex;border-bottom:1px solid var(--border);background:var(--surface);flex-shrink:0;}
+.tab{padding:9px 18px;font-size:.75rem;font-weight:600;font-family:var(--cond);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;transition:all .12s;}
+.tab:hover{color:var(--text);}
+.tab.active{color:var(--accent);border-bottom-color:var(--accent);}
+
+.scroll-area{flex:1;overflow-y:auto;padding:16px 20px;}
+
+/* SUPPLIER CARDS */
+.supplier-grid{display:flex;flex-direction:column;gap:10px;}
+.sup-card{background:var(--surface);border:1px solid var(--border);border-radius:5px;overflow:hidden;cursor:pointer;transition:border-color .15s;}
+.sup-card:hover{border-color:var(--border2);}
+.sup-card.selected{border-color:var(--accent);}
+.sup-card.alert{border-left:3px solid var(--red);}
+.sup-card.warn{border-left:3px solid var(--yellow);}
+.sup-card.ok{border-left:3px solid var(--green);}
+
+.sup-header{display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid var(--border);}
+.sup-num{font-family:var(--mono);font-size:.62rem;color:var(--muted);width:24px;flex-shrink:0;}
+.sup-flag{font-size:1rem;flex-shrink:0;}
+.sup-name{font-family:var(--cond);font-size:.95rem;font-weight:700;letter-spacing:.03em;flex:1;}
+.sup-name small{font-size:.68rem;font-weight:400;color:var(--muted);margin-left:6px;font-family:var(--sans);text-transform:none;letter-spacing:0;}
+.sup-status{font-family:var(--mono);font-size:.6rem;font-weight:500;letter-spacing:.06em;padding:3px 9px;border-radius:3px;text-transform:uppercase;flex-shrink:0;}
+.ss-production{background:rgba(0,208,132,.1);color:var(--green);border:1px solid rgba(0,208,132,.2);}
+.ss-shipped{background:rgba(0,200,255,.1);color:var(--accent);border:1px solid rgba(0,200,255,.2);}
+.ss-negotiating{background:rgba(255,200,64,.1);color:var(--yellow);border:1px solid rgba(255,200,64,.2);}
+.ss-delayed{background:rgba(255,77,77,.1);color:var(--red);border:1px solid rgba(255,77,77,.2);}
+.ss-sampling{background:rgba(160,128,255,.1);color:var(--violet);border:1px solid rgba(160,128,255,.2);}
+.ss-arrived{background:rgba(0,208,132,.15);color:var(--green);border:1px solid rgba(0,208,132,.3);}
+
+.sup-body{display:grid;grid-template-columns:repeat(6,1fr);gap:0;}
+.sup-cell{padding:10px 14px;border-right:1px solid var(--border);}
+.sup-cell:last-child{border-right:none;}
+.sc-label{font-family:var(--mono);font-size:.54rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:4px;}
+.sc-val{font-size:.8rem;font-weight:600;color:var(--text);line-height:1.3;}
+.sc-sub{font-size:.65rem;color:var(--muted);margin-top:2px;}
+
+/* TIMELINE BAR */
+.timeline-wrap{padding:8px 16px 12px;}
+.tl-label{font-family:var(--mono);font-size:.55rem;letter-spacing:.1em;color:var(--muted);margin-bottom:5px;display:flex;justify-content:space-between;}
+.tl-track{height:5px;background:var(--surface3);border-radius:5px;overflow:hidden;position:relative;}
+.tl-fill{height:100%;border-radius:5px;animation:barIn .8s ease both;}
+.tl-marker{position:absolute;top:-3px;width:2px;height:11px;background:var(--yellow);border-radius:1px;}
+
+/* PAYMENT STAGES */
+.pay-stages{display:flex;align-items:center;gap:0;padding:8px 16px 12px;}
+.ps-step{display:flex;flex-direction:column;align-items:center;gap:3px;flex:1;}
+.ps-dot{width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.6rem;font-weight:700;color:var(--bg);flex-shrink:0;}
+.ps-line{flex:1;height:2px;margin-top:-12px;}
+.ps-label{font-family:var(--mono);font-size:.52rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);text-align:center;margin-top:1px;}
+
+/* SECTION DIVIDER */
+.sec-div{font-family:var(--mono);font-size:.58rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin:20px 0 10px;display:flex;align-items:center;gap:8px;}
+.sec-div::after{content:'';flex:1;height:1px;background:var(--border);}
+
+/* ALERTS TABLE */
+.alerts-table{width:100%;border-collapse:collapse;}
+.alerts-table th{font-family:var(--mono);font-size:.56rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);padding:6px 10px;text-align:left;border-bottom:1px solid var(--border);}
+.alerts-table td{padding:9px 10px;font-size:.76rem;border-bottom:1px solid var(--border);vertical-align:middle;}
+.alerts-table tr:last-child td{border-bottom:none;}
+.alerts-table tr:hover td{background:var(--surface2);}
+.at-priority{width:6px;height:6px;border-radius:50%;display:inline-block;}
+
+/* RIGHT PANEL */
+.right{background:var(--surface);border-left:1px solid var(--border);overflow-y:auto;display:flex;flex-direction:column;}
+.rp-top{padding:16px;border-bottom:1px solid var(--border);}
+.rpt-label{font-family:var(--mono);font-size:.56rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:8px;}
+.rpt-name{font-family:var(--cond);font-size:1.2rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--text);margin-bottom:3px;}
+.rpt-sub{font-size:.72rem;color:var(--muted2);}
+.rpt-status-row{display:flex;align-items:center;gap:8px;margin-top:10px;}
+
+.rp-sec{padding:14px 16px;border-bottom:1px solid var(--border);}
+.rps-label{font-family:var(--mono);font-size:.56rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;}
+
+/* KV */
+.kv{display:flex;gap:8px;margin-bottom:7px;font-size:.75rem;}
+.kv-k{font-family:var(--mono);font-size:.58rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);min-width:80px;flex-shrink:0;padding-top:1px;}
+.kv-v{color:var(--text);line-height:1.4;}
+.kv-v.accent{color:var(--accent);}
+.kv-v.green{color:var(--green);}
+.kv-v.yellow{color:var(--yellow);}
+.kv-v.red{color:var(--red);}
+
+/* SHIPMENT TRACKER */
+.ship-step{display:flex;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);}
+.ship-step:last-child{border-bottom:none;}
+.ship-icon{font-size:.9rem;flex-shrink:0;width:20px;text-align:center;margin-top:1px;}
+.ship-body{flex:1;}
+.ship-title{font-size:.76rem;font-weight:600;color:var(--text);}
+.ship-meta{font-family:var(--mono);font-size:.62rem;color:var(--muted);margin-top:1px;}
+.ship-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:5px;}
+
+/* COMMS LOG */
+.comm-item{display:flex;gap:8px;padding:8px 0;border-bottom:1px solid var(--border);font-size:.73rem;}
+.comm-item:last-child{border-bottom:none;}
+.comm-dir{font-family:var(--mono);font-size:.54rem;text-transform:uppercase;color:var(--muted);min-width:32px;flex-shrink:0;padding-top:1px;}
+.comm-body{flex:1;color:var(--text);line-height:1.4;}
+.comm-date{font-family:var(--mono);font-size:.58rem;color:var(--muted);flex-shrink:0;}
+
+/* VA NOTE */
+.va-note{background:rgba(255,200,64,.06);border:1px solid rgba(255,200,64,.15);border-radius:4px;padding:10px 12px;font-size:.74rem;color:var(--text);line-height:1.7;}
+.va-note-label{font-family:var(--mono);font-size:.55rem;letter-spacing:.1em;text-transform:uppercase;color:var(--yellow);margin-bottom:5px;}
+
+/* ACTION BTNS */
+.action-row{display:flex;flex-direction:column;gap:6px;}
+.act-btn{width:100%;padding:8px;background:var(--surface2);border:1px solid var(--border2);border-radius:3px;color:var(--text);font-family:var(--sans);font-size:.73rem;font-weight:600;cursor:pointer;text-align:left;display:flex;align-items:center;gap:8px;transition:all .12s;}
+.act-btn:hover{border-color:var(--accent);color:var(--accent);}
+
+::-webkit-scrollbar{width:4px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:10px;}
+</style>
+
+<!-- SEO & Performance Optimization -->
+<meta name="description" content="Philipina Andrea Chezue is a freelance Executive Virtual Assistant in Dar es Salaam, specializing in remote operations, travel logistics, and project coordination for founders globally.">
+<meta name="keywords" content="Executive Virtual Assistant, Remote VA, Operations Assistant, Project Coordination, Travel Logistics, Tanzania VA, Portfolio">
+<meta name="robots" content="index, follow">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<link rel="canonical" href="https://philipinachezue.com/">
+<link rel="manifest" href="/manifest.json">
+<link rel="icon" type="image/x-icon" href="/assets/favicon.ico">
+
+<!-- Open Graph / Social -->
+<meta property="og:title" content="Philipina Andrea Chezue — Executive Virtual Assistant">
+<meta property="og:description" content="Reclaim your time through expert operations, travel logistics, and project coordination that actually works.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://philipinachezue.com/">
+<meta property="og:image" content="https://philipinachezue.com/assets/images/img_9f2ae763.jpg">
+
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Philipina Andrea Chezue — Executive VA">
+<meta name="twitter:description" content="Reclaim your time through expert operations and project coordination.">
+<meta name="twitter:image" content="https://philipinachezue.com/assets/images/img_9f2ae763.jpg">
+
+<!-- Structured Data -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org/",
+  "@type": "Person",
+  "name": "Philipina Andrea Chezue",
+  "jobTitle": "Executive Virtual Assistant",
+  "url": "https://philipinachezue.com",
+  "email": "philipinachezue@outlook.com",
+  "address": {
+    "@type": "PostalAddress",
+    "addressLocality": "Dar es Salaam",
+    "addressCountry": "Tanzania"
+  },
+  "sameAs": [
+    "https://www.linkedin.com/in/philipinaandreachezue/"
+  ],
+  "knowsAbout": ["Executive Support", "Project Coordination", "Travel Logistics", "Operations"]
+}
+</script>
+<!-- End SEO -->
+
+</head>
+<body>
+
+<div class="topbar">
+  <div class="brand">Drop<span>Run</span> &nbsp;/&nbsp; Sourcing HQ</div>
+  <div class="tb-sep"></div>
+  <div class="tb-pill live"><span class="live-dot"></span>6 active orders</div>
+  <div class="tb-pill">Q2 2026 · Batch 3</div>
+  <div class="tb-pill">Managed by Amara Diallo · VA</div>
+  <div class="tb-avatar">AD</div>
+</div>
+
+<div class="shell">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="kpi-strip">
+      <div class="kpi-card">
+        <div class="kpi-num" style="color:var(--accent)">$84,200</div>
+        <div class="kpi-lbl">total order value</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-num" style="color:var(--green)">3</div>
+        <div class="kpi-lbl">in production</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-num" style="color:var(--yellow)">2</div>
+        <div class="kpi-lbl">payment due</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-num" style="color:var(--red)">1</div>
+        <div class="kpi-lbl">delayed — action</div>
+      </div>
+    </div>
+
+    <div class="sb-label">Views</div>
+    <div class="sb-item active"><span class="ic">📦</span>All suppliers<span class="sb-count">6</span></div>
+    <div class="sb-item"><span class="ic">🚨</span>Alerts<span class="sb-alert"></span></div>
+    <div class="sb-item"><span class="ic">💳</span>Payments<span class="sb-count">4</span></div>
+    <div class="sb-item"><span class="ic">🚢</span>Shipments<span class="sb-count">2</span></div>
+    <div class="sb-item"><span class="ic">🧪</span>QC / Samples</div>
+    <div class="sb-item"><span class="ic">📊</span>Analytics</div>
+
+    <div class="sb-label" style="margin-top:8px;">Categories</div>
+    <div class="sb-item"><span class="ic">📱</span>Electronics</div>
+    <div class="sb-item"><span class="ic">👜</span>Accessories</div>
+    <div class="sb-item"><span class="ic">📦</span>Packaging</div>
+    <div class="sb-item"><span class="ic">🔌</span>Components</div>
+
+    <div class="sb-label" style="margin-top:8px;">Quick links</div>
+    <div class="sb-item"><span class="ic">📁</span>Shared Drive</div>
+    <div class="sb-item"><span class="ic">💬</span>WeChat log</div>
+    <div class="sb-item"><span class="ic">🗓</span>Delivery cal</div>
+  </div>
+
+  <!-- MAIN -->
+  <div class="main">
+    <div class="main-header f1">
+      <div>
+        <div class="mh-title">Supplier Order Tracker</div>
+      </div>
+      <div class="mh-sep"></div>
+      <button class="mh-btn">Export CSV</button>
+      <button class="mh-btn">📋 Payment schedule</button>
+      <button class="mh-btn primary">+ Add supplier</button>
+    </div>
+
+    <div class="tab-row">
+      <div class="tab active">All orders</div>
+      <div class="tab">In production</div>
+      <div class="tab">Shipped</div>
+      <div class="tab">Awaiting payment</div>
+      <div class="tab">Completed</div>
+    </div>
+
+    <div class="scroll-area">
+      <div class="supplier-grid f2">
+
+        <!-- SUPPLIER 1 — DELAYED / ALERT -->
+        <div class="sup-card alert selected" onclick="selectSupplier('shenzhen')">
+          <div class="sup-header">
+            <div class="sup-num">01</div>
+            <div class="sup-flag">🇨🇳</div>
+            <div class="sup-name">Shenzhen ProTech Electronics <small>Shenzhen, Guangdong</small></div>
+            <div class="sup-status ss-delayed">⚠ Delayed</div>
+          </div>
+          <div class="sup-body">
+            <div class="sup-cell"><div class="sc-label">Product</div><div class="sc-val">Wireless earbuds</div><div class="sc-sub">Model: SPT-X200</div></div>
+            <div class="sup-cell"><div class="sc-label">Order qty</div><div class="sc-val">2,000 units</div><div class="sc-sub">MOQ: 500</div></div>
+            <div class="sup-cell"><div class="sc-label">Unit cost</div><div class="sc-val">$8.40</div><div class="sc-sub">Total: $16,800</div></div>
+            <div class="sup-cell"><div class="sc-label">Payment</div><div class="sc-val" style="color:var(--yellow)">30% due</div><div class="sc-sub">Balance on ship</div></div>
+            <div class="sup-cell"><div class="sc-label">Est. delivery</div><div class="sc-val" style="color:var(--red)">Apr 28 →May 14</div><div class="sc-sub">16-day delay</div></div>
+            <div class="sup-cell"><div class="sc-label">Agent</div><div class="sc-val">Liu Wei</div><div class="sc-sub">WeChat: liuwei_spt</div></div>
+          </div>
+          <div class="timeline-wrap">
+            <div class="tl-label"><span>Order placed 12 Feb</span><span style="color:var(--red);">Delayed — new ETA 14 May</span><span>Delivery</span></div>
+            <div class="tl-track"><div class="tl-fill" style="width:62%;background:linear-gradient(90deg,var(--yellow),var(--red));"></div><div class="tl-marker" style="left:62%"></div></div>
+          </div>
+        </div>
+
+        <!-- SUPPLIER 2 — IN PRODUCTION -->
+        <div class="sup-card ok" onclick="selectSupplier('guangzhou')">
+          <div class="sup-header">
+            <div class="sup-num">02</div>
+            <div class="sup-flag">🇨🇳</div>
+            <div class="sup-name">Guangzhou FashionLink Co. <small>Guangzhou, Guangdong</small></div>
+            <div class="sup-status ss-production">● In production</div>
+          </div>
+          <div class="sup-body">
+            <div class="sup-cell"><div class="sc-label">Product</div><div class="sc-val">Insulated tote bags</div><div class="sc-sub">3 colorways</div></div>
+            <div class="sup-cell"><div class="sc-label">Order qty</div><div class="sc-val">5,000 units</div><div class="sc-sub">MOQ: 1,000</div></div>
+            <div class="sup-cell"><div class="sc-label">Unit cost</div><div class="sc-val">$4.20</div><div class="sc-sub">Total: $21,000</div></div>
+            <div class="sup-cell"><div class="sc-label">Payment</div><div class="sc-val" style="color:var(--green)">50% paid</div><div class="sc-sub">50% on delivery</div></div>
+            <div class="sup-cell"><div class="sc-label">Est. delivery</div><div class="sc-val">May 6, 2026</div><div class="sc-sub">On schedule ✓</div></div>
+            <div class="sup-cell"><div class="sc-label">Agent</div><div class="sc-val">Mei Ling</div><div class="sc-sub">WeChat: meilingFL</div></div>
+          </div>
+          <div class="timeline-wrap">
+            <div class="tl-label"><span>Order placed 2 Mar</span><span style="color:var(--green);">Production 68% complete</span><span>6 May</span></div>
+            <div class="tl-track"><div class="tl-fill" style="width:68%;background:linear-gradient(90deg,var(--green),#00ff99);"></div><div class="tl-marker" style="left:90%"></div></div>
+          </div>
+        </div>
+
+        <!-- SUPPLIER 3 — SHIPPED -->
+        <div class="sup-card ok" onclick="selectSupplier('yiwu')">
+          <div class="sup-header">
+            <div class="sup-num">03</div>
+            <div class="sup-flag">🇨🇳</div>
+            <div class="sup-name">Yiwu StarPack Trading <small>Yiwu, Zhejiang</small></div>
+            <div class="sup-status ss-shipped">✈ Shipped — in transit</div>
+          </div>
+          <div class="sup-body">
+            <div class="sup-cell"><div class="sc-label">Product</div><div class="sc-val">Custom kraft boxes</div><div class="sc-sub">Branded print</div></div>
+            <div class="sup-cell"><div class="sc-label">Order qty</div><div class="sc-val">10,000 units</div><div class="sc-sub">MOQ: 2,000</div></div>
+            <div class="sup-cell"><div class="sc-label">Unit cost</div><div class="sc-val">$0.85</div><div class="sc-sub">Total: $8,500</div></div>
+            <div class="sup-cell"><div class="sc-label">Payment</div><div class="sc-val" style="color:var(--green)">Fully paid ✓</div><div class="sc-sub">Wire 14 Mar</div></div>
+            <div class="sup-cell"><div class="sc-label">Est. delivery</div><div class="sc-val" style="color:var(--accent)">Apr 18–22</div><div class="sc-sub">Sea freight · 28 days</div></div>
+            <div class="sup-cell"><div class="sc-label">Tracking</div><div class="sc-val">COSCO 4482-B</div><div class="sc-sub">Mombasa → Dar</div></div>
+          </div>
+          <div class="timeline-wrap">
+            <div class="tl-label"><span>Departed Shanghai 22 Mar</span><span style="color:var(--accent);">At sea — ETA Dar 18 Apr</span><span>Delivery</span></div>
+            <div class="tl-track"><div class="tl-fill" style="width:78%;background:linear-gradient(90deg,var(--accent),#60e0ff);"></div><div class="tl-marker" style="left:90%"></div></div>
+          </div>
+        </div>
+
+        <!-- SUPPLIER 4 — NEGOTIATING -->
+        <div class="sup-card warn" onclick="selectSupplier('dongguan')">
+          <div class="sup-header">
+            <div class="sup-num">04</div>
+            <div class="sup-flag">🇨🇳</div>
+            <div class="sup-name">Dongguan PowerGear Ltd. <small>Dongguan, Guangdong</small></div>
+            <div class="sup-status ss-negotiating">◐ Negotiating</div>
+          </div>
+          <div class="sup-body">
+            <div class="sup-cell"><div class="sc-label">Product</div><div class="sc-val">Power banks 10K</div><div class="sc-sub">Model: PG-10 Pro</div></div>
+            <div class="sup-cell"><div class="sc-label">Order qty</div><div class="sc-val">3,000 units</div><div class="sc-sub">MOQ: 1,000</div></div>
+            <div class="sup-cell"><div class="sc-label">Unit cost</div><div class="sc-val" style="color:var(--yellow)">$6.80 (TBC)</div><div class="sc-sub">Target: $6.20</div></div>
+            <div class="sup-cell"><div class="sc-label">Payment</div><div class="sc-val" style="color:var(--muted2)">TBD</div><div class="sc-sub">Awaiting PI</div></div>
+            <div class="sup-cell"><div class="sc-label">Est. delivery</div><div class="sc-val" style="color:var(--muted2)">TBC — Jun 2026</div><div class="sc-sub">If order confirmed</div></div>
+            <div class="sup-cell"><div class="sc-label">Agent</div><div class="sc-val">Jason Chen</div><div class="sc-sub">jason@powergear.cn</div></div>
+          </div>
+          <div class="timeline-wrap">
+            <div class="tl-label"><span>First contact 1 Apr</span><span style="color:var(--yellow);">Awaiting revised proforma invoice</span><span>Target Jun</span></div>
+            <div class="tl-track"><div class="tl-fill" style="width:15%;background:var(--yellow);"></div><div class="tl-marker" style="left:15%"></div></div>
+          </div>
+        </div>
+
+        <!-- SUPPLIER 5 — SAMPLING -->
+        <div class="sup-card" onclick="selectSupplier('hangzhou')">
+          <div class="sup-header">
+            <div class="sup-num">05</div>
+            <div class="sup-flag">🇨🇳</div>
+            <div class="sup-name">Hangzhou AromaCo. <small>Hangzhou, Zhejiang</small></div>
+            <div class="sup-status ss-sampling">◈ Sampling</div>
+          </div>
+          <div class="sup-body">
+            <div class="sup-cell"><div class="sc-label">Product</div><div class="sc-val">Car air fresheners</div><div class="sc-sub">5 scents</div></div>
+            <div class="sup-cell"><div class="sc-label">Order qty</div><div class="sc-val">8,000 units</div><div class="sc-sub">MOQ: 2,000</div></div>
+            <div class="sup-cell"><div class="sc-label">Unit cost</div><div class="sc-val">$1.10</div><div class="sc-sub">Total: $8,800</div></div>
+            <div class="sup-cell"><div class="sc-label">Payment</div><div class="sc-val" style="color:var(--muted2)">Sample: $120</div><div class="sc-sub">Paid — balance TBC</div></div>
+            <div class="sup-cell"><div class="sc-label">Sample ETA</div><div class="sc-val" style="color:var(--violet)">Apr 20, 2026</div><div class="sc-sub">DHL Express</div></div>
+            <div class="sup-cell"><div class="sc-label">Agent</div><div class="sc-val">Fang Xiu</div><div class="sc-sub">fangxiu@aromaco.cn</div></div>
+          </div>
+          <div class="timeline-wrap">
+            <div class="tl-label"><span>Sample ordered 8 Apr</span><span style="color:var(--violet);">Sample in transit — ETA 20 Apr</span><span>Bulk order TBD</span></div>
+            <div class="tl-track"><div class="tl-fill" style="width:25%;background:var(--violet);"></div><div class="tl-marker" style="left:25%"></div></div>
+          </div>
+        </div>
+
+        <!-- SUPPLIER 6 — ARRIVED -->
+        <div class="sup-card ok" onclick="selectSupplier('foshan')">
+          <div class="sup-header">
+            <div class="sup-num">06</div>
+            <div class="sup-flag">🇨🇳</div>
+            <div class="sup-name">Foshan MetalCraft Industries <small>Foshan, Guangdong</small></div>
+            <div class="sup-status ss-arrived">✓ Arrived — QC pending</div>
+          </div>
+          <div class="sup-body">
+            <div class="sup-cell"><div class="sc-label">Product</div><div class="sc-val">Stainless flasks 500ml</div><div class="sc-sub">Logo engraved</div></div>
+            <div class="sup-cell"><div class="sc-label">Order qty</div><div class="sc-val">4,000 units</div><div class="sc-sub">MOQ: 500</div></div>
+            <div class="sup-cell"><div class="sc-label">Unit cost</div><div class="sc-val">$3.60</div><div class="sc-sub">Total: $14,400</div></div>
+            <div class="sup-cell"><div class="sc-label">Payment</div><div class="sc-val" style="color:var(--yellow)">Final 40% due</div><div class="sc-sub">$5,760 outstanding</div></div>
+            <div class="sup-cell"><div class="sc-label">Status</div><div class="sc-val" style="color:var(--green)">Warehouse Dar</div><div class="sc-sub">Arrived 10 Apr</div></div>
+            <div class="sup-cell"><div class="sc-label">QC</div><div class="sc-val" style="color:var(--yellow)">In progress</div><div class="sc-sub">Inspector: Hamisi J.</div></div>
+          </div>
+          <div class="timeline-wrap">
+            <div class="tl-label"><span>Order placed 28 Jan</span><span style="color:var(--green);">Arrived Dar warehouse 10 Apr</span><span>QC & payment</span></div>
+            <div class="tl-track"><div class="tl-fill" style="width:92%;background:linear-gradient(90deg,var(--green),#80ffcc);"></div><div class="tl-marker" style="left:92%"></div></div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ALERTS SECTION -->
+      <div class="sec-div f4">Action items & alerts</div>
+      <div class="f5" style="background:var(--surface);border:1px solid var(--border);border-radius:5px;overflow:hidden;">
+        <table class="alerts-table">
+          <thead><tr><th></th><th>Priority</th><th>Supplier</th><th>Issue</th><th>Action required</th><th>Deadline</th><th>Owner</th></tr></thead>
+          <tbody>
+            <tr><td><span class="at-priority" style="background:var(--red)"></span></td><td style="color:var(--red);font-family:var(--mono);font-size:.65rem;">HIGH</td><td>Shenzhen ProTech</td><td>Production delay — 16 days behind schedule</td><td>Confirm new ETA, request compensation clause</td><td style="color:var(--red);font-family:var(--mono);font-size:.68rem;">TODAY</td><td>Amara (VA)</td></tr>
+            <tr><td><span class="at-priority" style="background:var(--yellow)"></span></td><td style="color:var(--yellow);font-family:var(--mono);font-size:.65rem;">MED</td><td>Foshan MetalCraft</td><td>Final 40% payment ($5,760) due post-QC</td><td>Release payment once QC clears — expected Apr 16</td><td style="color:var(--yellow);font-family:var(--mono);font-size:.68rem;">Apr 16</td><td>Founder</td></tr>
+            <tr><td><span class="at-priority" style="background:var(--yellow)"></span></td><td style="color:var(--yellow);font-family:var(--mono);font-size:.65rem;">MED</td><td>Dongguan PowerGear</td><td>Revised PI not received — price not agreed</td><td>Follow up Jason Chen — 3rd request pending</td><td style="color:var(--yellow);font-family:var(--mono);font-size:.68rem;">Apr 16</td><td>Amara (VA)</td></tr>
+            <tr><td><span class="at-priority" style="background:var(--accent)"></span></td><td style="color:var(--accent);font-family:var(--mono);font-size:.65rem;">INFO</td><td>Yiwu StarPack</td><td>Shipment COSCO 4482-B arriving Apr 18–22</td><td>Arrange warehouse receiving + customs clearance</td><td style="color:var(--accent);font-family:var(--mono);font-size:.68rem;">Apr 17</td><td>Amara (VA)</td></tr>
+            <tr><td><span class="at-priority" style="background:var(--violet)"></span></td><td style="color:var(--violet);font-family:var(--mono);font-size:.65rem;">INFO</td><td>Hangzhou AromaCo.</td><td>Sample arriving Apr 20 — review required</td><td>Book review session with founder after receipt</td><td style="color:var(--violet);font-family:var(--mono);font-size:.68rem;">Apr 21</td><td>Amara (VA)</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- RIGHT PANEL -->
+  <div class="right">
+    <div class="rp-top f3">
+      <div class="rpt-label">Selected Supplier</div>
+      <div class="rpt-name" id="rpt-name">Shenzhen ProTech Electronics</div>
+      <div class="rpt-sub" id="rpt-sub">Shenzhen, Guangdong · Order #DR-2026-001</div>
+      <div class="rpt-status-row">
+        <span class="sup-status ss-delayed" id="rpt-status">⚠ Delayed</span>
+        <span style="font-family:var(--mono);font-size:.6rem;color:var(--muted);margin-left:4px;" id="rpt-since">Since Feb 2026</span>
+      </div>
+    </div>
+
+    <div class="rp-sec">
+      <div class="rps-label">Order Details</div>
+      <div class="kv"><span class="kv-k">Product</span><span class="kv-v accent" id="kv-prod">Wireless Earbuds SPT-X200</span></div>
+      <div class="kv"><span class="kv-k">Quantity</span><span class="kv-v" id="kv-qty">2,000 units</span></div>
+      <div class="kv"><span class="kv-k">Unit cost</span><span class="kv-v" id="kv-unit">$8.40 / unit</span></div>
+      <div class="kv"><span class="kv-k">Total value</span><span class="kv-v accent" id="kv-total">$16,800</span></div>
+      <div class="kv"><span class="kv-k">Payment</span><span class="kv-v yellow" id="kv-pay">30% deposit paid · 70% on shipment</span></div>
+      <div class="kv"><span class="kv-k">Incoterms</span><span class="kv-v" id="kv-inco">FOB Shenzhen</span></div>
+      <div class="kv"><span class="kv-k">Est. delivery</span><span class="kv-v red" id="kv-del">14 May 2026 (revised)</span></div>
+    </div>
+
+    <div class="rp-sec">
+      <div class="rps-label">Payment Stages</div>
+      <div class="pay-stages">
+        <div class="sf-step" style="flex:none;"><div class="ps-dot" style="background:var(--green);width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.6rem;font-weight:700;color:var(--bg);">✓</div><div class="ps-label">Deposit<br/>30%</div></div>
+        <div style="flex:1;height:2px;background:var(--green);margin-top:-10px;"></div>
+        <div class="sf-step" style="flex:none;"><div class="ps-dot" style="background:var(--yellow);width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.6rem;font-weight:700;color:var(--bg);">!</div><div class="ps-label">Shipment<br/>70%</div></div>
+        <div style="flex:1;height:2px;background:var(--border);margin-top:-10px;"></div>
+        <div class="sf-step" style="flex:none;"><div class="ps-dot" style="background:var(--border2);width:20px;height:20px;border-radius:50%;"></div><div class="ps-label">Released<br/>on QC</div></div>
+      </div>
+    </div>
+
+    <div class="rp-sec">
+      <div class="rps-label">Shipment Tracking</div>
+      <div id="ship-track">
+        <div class="ship-step"><div class="ship-dot" style="background:var(--green)"></div><div class="ship-body"><div class="ship-title">Order confirmed & PI signed</div><div class="ship-meta">14 Feb 2026 · Deposit wired $5,040</div></div></div>
+        <div class="ship-step"><div class="ship-dot" style="background:var(--green)"></div><div class="ship-body"><div class="ship-title">Sample approved — bulk production started</div><div class="ship-meta">22 Feb 2026 · Sample QC pass ✓</div></div></div>
+        <div class="ship-step"><div class="ship-dot" style="background:var(--red)"></div><div class="ship-body"><div class="ship-title">⚠ Production delay flagged by supplier</div><div class="ship-meta">8 Apr 2026 · Component shortage cited</div></div></div>
+        <div class="ship-step"><div class="ship-dot" style="background:var(--yellow)"></div><div class="ship-body"><div class="ship-title">New ETA confirmed: 14 May 2026</div><div class="ship-meta">10 Apr 2026 · 16-day delay from original</div></div></div>
+        <div class="ship-step"><div class="ship-dot" style="background:var(--border2)"></div><div class="ship-body"><div class="ship-title">Awaiting: production complete → QC → ship</div><div class="ship-meta">Expected ship date: ~Apr 28</div></div></div>
+      </div>
+    </div>
+
+    <div class="rp-sec">
+      <div class="rps-label">Communications Log</div>
+      <div class="comm-item"><span class="comm-dir">OUT</span><span class="comm-body">Sent compensation request to Liu Wei — asked for 5% discount or expedited freight upgrade due to delay</span><span class="comm-date">12 Apr</span></div>
+      <div class="comm-item"><span class="comm-dir">IN</span><span class="comm-body">Liu Wei: "Will escalate to manager. Expect response in 2 business days. Apologise for delay."</span><span class="comm-date">11 Apr</span></div>
+      <div class="comm-item"><span class="comm-dir">OUT</span><span class="comm-body">Formal delay notification sent. Requested revised production schedule with milestones</span><span class="comm-date">9 Apr</span></div>
+      <div class="comm-item"><span class="comm-dir">IN</span><span class="comm-body">Liu Wei: production delayed 2–3 weeks, IC chip shortage at component supplier. New ETA May 14.</span><span class="comm-date">8 Apr</span></div>
+    </div>
+
+    <div class="rp-sec">
+      <div class="rps-label">VA Note</div>
+      <div class="va-note">
+        <div class="va-note-label">⚡ Action — Amara Diallo</div>
+        Compensation response from Liu Wei expected by <strong>Apr 14</strong>. If no reply, escalate to factory manager (contact in Drive). Founder should decide by Apr 16 whether to accept delay or source alternate earbuds from backup supplier (Shenzhen TechBlue — quote on file). Freight upgrade option: DHL Air from $420 flat — cuts transit by 12 days.
+      </div>
+    </div>
+
+    <div class="rp-sec">
+      <div class="rps-label">Quick Actions</div>
+      <div class="action-row">
+        <button class="act-btn">📧 Send follow-up to Liu Wei</button>
+        <button class="act-btn">📄 View Proforma Invoice</button>
+        <button class="act-btn">🔍 Check backup supplier quotes</button>
+        <button class="act-btn">💳 Prepare balance payment</button>
+        <button class="act-btn">📁 Open supplier folder (Drive)</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+const suppliers={
+  shenzhen:{name:'Shenzhen ProTech Electronics',sub:'Shenzhen, Guangdong · Order #DR-2026-001',status:'⚠ Delayed',statusClass:'ss-delayed',since:'Since Feb 2026',prod:'Wireless Earbuds SPT-X200',qty:'2,000 units',unit:'$8.40 / unit',total:'$16,800',pay:'30% deposit paid · 70% on shipment',inco:'FOB Shenzhen',del:'14 May 2026 (revised — 16d delay)'},
+  guangzhou:{name:'Guangzhou FashionLink Co.',sub:'Guangzhou, Guangdong · Order #DR-2026-002',status:'● In production',statusClass:'ss-production',since:'Since Mar 2026',prod:'Insulated Tote Bags (3 colorways)',qty:'5,000 units',unit:'$4.20 / unit',total:'$21,000',pay:'50% paid ($10,500) · 50% on delivery',inco:'FOB Guangzhou',del:'6 May 2026 (on schedule)'},
+  yiwu:{name:'Yiwu StarPack Trading',sub:'Yiwu, Zhejiang · Order #DR-2026-003',status:'✈ Shipped — in transit',statusClass:'ss-shipped',since:'Since Jan 2026',prod:'Custom Branded Kraft Boxes',qty:'10,000 units',unit:'$0.85 / unit',total:'$8,500',pay:'Fully paid — wire transfer 14 Mar',inco:'CIF Dar es Salaam',del:'18–22 Apr 2026 · COSCO 4482-B'},
+  dongguan:{name:'Dongguan PowerGear Ltd.',sub:'Dongguan, Guangdong · Order #DR-2026-004',status:'◐ Negotiating',statusClass:'ss-negotiating',since:'Since Apr 2026',prod:'Power Banks 10,000mAh PG-10 Pro',qty:'3,000 units (target)',unit:'$6.80 quoted ($6.20 target)',total:'$20,400 quoted',pay:'No deposit yet — awaiting PI',inco:'TBD',del:'Jun 2026 if confirmed'},
+  hangzhou:{name:'Hangzhou AromaCo.',sub:'Hangzhou, Zhejiang · Order #DR-2026-005',status:'◈ Sampling',statusClass:'ss-sampling',since:'Since Apr 2026',prod:'Car Air Fresheners (5 scents)',qty:'8,000 units (planned)',unit:'$1.10 / unit',total:'$8,800 est.',pay:'Sample fee $120 paid · bulk TBD',inco:'FOB Hangzhou',del:'TBD — bulk order after sample approval'},
+  foshan:{name:'Foshan MetalCraft Industries',sub:'Foshan, Guangdong · Order #DR-2026-006',status:'✓ Arrived — QC pending',statusClass:'ss-arrived',since:'Since Jan 2026',prod:'Stainless Steel Flasks 500ml (logo engraved)',qty:'4,000 units',unit:'$3.60 / unit',total:'$14,400',pay:'60% paid · 40% ($5,760) due post-QC',inco:'CFR Dar es Salaam',del:'Arrived 10 Apr 2026 · warehouse Dar'}
+};
+
+function selectSupplier(id){
+  const s=suppliers[id];
+  if(!s)return;
+  document.getElementById('rpt-name').textContent=s.name;
+  document.getElementById('rpt-sub').textContent=s.sub;
+  const st=document.getElementById('rpt-status');
+  st.textContent=s.status;
+  st.className='sup-status '+s.statusClass;
+  document.getElementById('rpt-since').textContent=s.since;
+  document.getElementById('kv-prod').textContent=s.prod;
+  document.getElementById('kv-qty').textContent=s.qty;
+  document.getElementById('kv-unit').textContent=s.unit;
+  document.getElementById('kv-total').textContent=s.total;
+  document.getElementById('kv-pay').textContent=s.pay;
+  document.getElementById('kv-inco').textContent=s.inco;
+  document.getElementById('kv-del').textContent=s.del;
+  document.querySelectorAll('.sup-card').forEach(c=>c.classList.remove('selected'));
+  event.currentTarget.classList.add('selected');
+}
+</script>
+</body>
+</html>

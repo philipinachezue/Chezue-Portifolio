@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Content Calendar — Bloom & Root</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#fef9f4;
+  --white:#ffffff;
+  --ink:#1c1410;
+  --terracotta:#c4522a;
+  --terracotta-lt:#e07848;
+  --blush:#e8a090;
+  --sage:#4a7c5c;
+  --sage-lt:#7aaa8a;
+  --gold:#c08030;
+  --sky:#3a78c4;
+  --plum:#7a3a8c;
+  --fog:#eee8df;
+  --fog2:#f5f0e8;
+  --muted:#8a7a6e;
+  --serif:'DM Serif Display',serif;
+  --sans:'Plus Jakarta Sans',sans-serif;
+  --mono:'Space Mono',monospace;
+}
+body{background:var(--bg);font-family:var(--sans);color:var(--ink);min-height:100vh;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+@keyframes shimmer{0%{background-position:-200% center;}100%{background-position:200% center;}}
+
+/* HEADER */
+.header{background:var(--ink);padding:0 32px;height:60px;display:flex;align-items:center;gap:20px;}
+.brand{font-family:var(--serif);font-size:1.3rem;color:#fff;letter-spacing:.01em;}
+.brand span{color:var(--blush);}
+.hd-sep{flex:1;}
+.hd-tag{font-family:var(--mono);font-size:.62rem;color:#8a7a6e;letter-spacing:.08em;text-transform:uppercase;}
+.hd-month{font-family:var(--serif);font-size:.95rem;font-style:italic;color:var(--blush);}
+.hd-avatar{width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,var(--terracotta),var(--blush));display:flex;align-items:center;justify-content:center;font-size:.65rem;font-weight:700;color:#fff;}
+
+/* LAYOUT */
+.shell{display:grid;grid-template-columns:220px 1fr 280px;height:calc(100vh - 60px);}
+
+/* LEFT SIDEBAR */
+.left{background:var(--white);border-right:1px solid var(--fog);padding:20px 0;overflow-y:auto;}
+.ls-section{margin-bottom:24px;}
+.ls-label{font-size:.6rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);padding:0 18px 8px;}
+.ls-item{display:flex;align-items:center;gap:9px;padding:8px 18px;font-size:.78rem;color:var(--ink);cursor:pointer;transition:background .12s;border-left:3px solid transparent;}
+.ls-item:hover{background:var(--fog2);}
+.ls-item.active{border-left-color:var(--terracotta);background:#fdf3ee;color:var(--terracotta);font-weight:600;}
+.ls-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.ls-count{margin-left:auto;font-size:.62rem;font-family:var(--mono);color:var(--muted);}
+
+.stat-mini{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:4px 18px;}
+.sm-card{background:var(--fog2);border-radius:5px;padding:10px 10px;}
+.sm-num{font-family:var(--serif);font-size:1.3rem;color:var(--ink);}
+.sm-label{font-size:.62rem;color:var(--muted);margin-top:1px;}
+
+/* MAIN CALENDAR */
+.main{display:flex;flex-direction:column;overflow:hidden;}
+.cal-toolbar{background:var(--white);border-bottom:1px solid var(--fog);padding:14px 24px;display:flex;align-items:center;gap:12px;flex-shrink:0;}
+.ct-title{font-family:var(--serif);font-size:1.3rem;font-style:italic;color:var(--ink);}
+.ct-sub{font-size:.7rem;color:var(--muted);font-family:var(--mono);}
+.ct-spacer{flex:1;}
+.filter-pill{padding:5px 12px;border:1.5px solid var(--fog);border-radius:40px;font-size:.7rem;font-weight:600;cursor:pointer;transition:all .12s;color:var(--muted);background:var(--white);}
+.filter-pill:hover{border-color:var(--terracotta);color:var(--terracotta);}
+.filter-pill.on{background:var(--terracotta);border-color:var(--terracotta);color:#fff;}
+.add-btn{background:var(--terracotta);color:#fff;border:none;border-radius:5px;padding:8px 16px;font-family:var(--sans);font-size:.74rem;font-weight:700;cursor:pointer;letter-spacing:.04em;transition:background .15s;}
+.add-btn:hover{background:var(--terracotta-lt);}
+
+/* WEEK HEADER */
+.week-cols{display:grid;grid-template-columns:repeat(7,1fr);border-bottom:2px solid var(--fog);background:var(--white);flex-shrink:0;}
+.wc-head{padding:10px 12px;text-align:center;border-right:1px solid var(--fog);}
+.wc-head:last-child{border-right:none;}
+.wcd{font-size:.58rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-family:var(--mono);}
+.wcn{font-size:1.1rem;font-family:var(--serif);font-style:italic;color:var(--ink);margin-top:1px;}
+.wc-head.today .wcn{color:var(--terracotta);}
+
+/* CALENDAR GRID */
+.cal-grid-scroll{flex:1;overflow-y:auto;}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);align-items:start;}
+.cal-cell{border-right:1px solid var(--fog);border-bottom:1px solid var(--fog);min-height:140px;padding:8px;position:relative;transition:background .12s;}
+.cal-cell:nth-child(7n){border-right:none;}
+.cal-cell:hover{background:#fdf9f5;}
+.cal-cell.today{background:#fff8f4;}
+.cal-cell.other-month{background:#f9f7f2;}
+.cell-date{font-size:.7rem;font-family:var(--mono);color:var(--muted);margin-bottom:6px;}
+.cal-cell.today .cell-date{color:var(--terracotta);font-weight:700;}
+
+/* POST CARDS */
+.post-card{border-radius:5px;padding:7px 8px;margin-bottom:5px;cursor:pointer;transition:filter .15s,transform .12s;animation:fadeUp .3s ease both;}
+.post-card:hover{filter:brightness(1.04);transform:translateY(-1px);}
+.pc-platform{font-size:.55rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;font-family:var(--mono);margin-bottom:3px;display:flex;align-items:center;gap:4px;}
+.pc-title{font-size:.71rem;font-weight:600;line-height:1.3;color:#fff;}
+.pc-time{font-size:.6rem;color:rgba(255,255,255,.7);margin-top:2px;font-family:var(--mono);}
+.pc-status{display:inline-block;font-size:.52rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:1px 5px;border-radius:20px;background:rgba(255,255,255,.2);color:#fff;margin-top:3px;}
+
+/* Platform colors */
+.p-ig{background:linear-gradient(135deg,#c13584,#e1306c,#fd1d1d);}
+.p-tt{background:linear-gradient(135deg,#010101,#333);}
+.p-li{background:linear-gradient(135deg,#0077b5,#0a9dd9);}
+.p-pin{background:linear-gradient(135deg,#bd081c,#e60023);}
+.p-fb{background:linear-gradient(135deg,#1877f2,#42a5f5);}
+.p-yt{background:linear-gradient(135deg,#ff0000,#ff5252);}
+
+/* ADD CELL */
+.add-cell{border:1.5px dashed var(--fog);border-radius:5px;padding:6px;text-align:center;cursor:pointer;color:var(--muted);font-size:.65rem;transition:all .12s;margin-bottom:5px;}
+.add-cell:hover{border-color:var(--terracotta);color:var(--terracotta);background:#fff5f0;}
+
+/* RIGHT PANEL */
+.right{background:var(--white);border-left:1px solid var(--fog);overflow-y:auto;display:flex;flex-direction:column;}
+.rp-sec{padding:18px 18px;border-bottom:1px solid var(--fog);}
+.rp-lbl{font-size:.6rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);margin-bottom:14px;display:flex;align-items:center;gap:8px;}
+.rp-lbl::after{content:'';flex:1;height:1px;background:var(--fog);}
+
+/* POST DETAIL */
+.pd-platform-badge{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:20px;font-size:.65rem;font-weight:700;letter-spacing:.06em;font-family:var(--mono);color:#fff;margin-bottom:10px;}
+.pd-title{font-family:var(--serif);font-size:1.1rem;font-style:italic;color:var(--ink);margin-bottom:8px;line-height:1.3;}
+.pd-kv{display:flex;gap:8px;margin-bottom:7px;font-size:.76rem;}
+.pd-key{color:var(--muted);font-size:.63rem;text-transform:uppercase;letter-spacing:.08em;font-family:var(--mono);min-width:68px;flex-shrink:0;padding-top:1px;}
+.pd-val{color:var(--ink);line-height:1.5;}
+.pd-caption{background:var(--fog2);border-radius:5px;padding:12px;font-size:.75rem;line-height:1.75;color:var(--ink);margin-top:10px;font-style:italic;border-left:3px solid var(--terracotta);}
+.pd-hashtags{margin-top:8px;font-size:.68rem;color:var(--sky);font-family:var(--mono);}
+
+/* STATUS FLOW */
+.status-flow{display:flex;align-items:center;gap:0;margin:10px 0;}
+.sf-step{flex:1;text-align:center;position:relative;}
+.sf-dot{width:24px;height:24px;border-radius:50%;margin:0 auto 4px;display:flex;align-items:center;justify-content:center;font-size:.65rem;color:#fff;font-weight:700;}
+.sf-label{font-size:.58rem;font-family:var(--mono);text-transform:uppercase;letter-spacing:.06em;color:var(--muted);}
+.sf-line{flex:1;height:2px;margin-top:-14px;}
+
+/* PLATFORM BREAKDOWN */
+.platform-row{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+.prow-icon{width:28px;height:28px;border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:.75rem;flex-shrink:0;}
+.prow-name{font-size:.78rem;font-weight:600;flex:1;}
+.prow-bar{flex:1.5;height:5px;background:var(--fog);border-radius:5px;overflow:hidden;}
+.prow-fill{height:100%;border-radius:5px;}
+.prow-count{font-family:var(--mono);font-size:.68rem;color:var(--muted);min-width:28px;text-align:right;}
+
+/* APPROVAL */
+.approval-item{display:flex;gap:10px;padding:9px 0;border-bottom:1px solid var(--fog);align-items:flex-start;}
+.approval-item:last-child{border-bottom:none;}
+.ai-status{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.62rem;color:#fff;flex-shrink:0;margin-top:1px;}
+.ai-body{flex:1;}
+.ai-title{font-size:.78rem;font-weight:600;color:var(--ink);margin-bottom:2px;}
+.ai-meta{font-size:.66rem;color:var(--muted);}
+.ai-action{font-size:.66rem;font-weight:600;color:var(--terracotta);cursor:pointer;flex-shrink:0;padding-top:2px;}
+
+::-webkit-scrollbar{width:4px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:var(--fog);border-radius:10px;}
+</style>
+
+<!-- SEO & Performance Optimization -->
+<meta name="description" content="Philipina Andrea Chezue is a freelance Executive Virtual Assistant in Dar es Salaam, specializing in remote operations, travel logistics, and project coordination for founders globally.">
+<meta name="keywords" content="Executive Virtual Assistant, Remote VA, Operations Assistant, Project Coordination, Travel Logistics, Tanzania VA, Portfolio">
+<meta name="robots" content="index, follow">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<link rel="canonical" href="https://philipinachezue.com/">
+<link rel="manifest" href="/manifest.json">
+<link rel="icon" type="image/x-icon" href="/assets/favicon.ico">
+
+<!-- Open Graph / Social -->
+<meta property="og:title" content="Philipina Andrea Chezue — Executive Virtual Assistant">
+<meta property="og:description" content="Reclaim your time through expert operations, travel logistics, and project coordination that actually works.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://philipinachezue.com/">
+<meta property="og:image" content="https://philipinachezue.com/assets/images/img_9f2ae763.jpg">
+
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Philipina Andrea Chezue — Executive VA">
+<meta name="twitter:description" content="Reclaim your time through expert operations and project coordination.">
+<meta name="twitter:image" content="https://philipinachezue.com/assets/images/img_9f2ae763.jpg">
+
+<!-- Structured Data -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org/",
+  "@type": "Person",
+  "name": "Philipina Andrea Chezue",
+  "jobTitle": "Executive Virtual Assistant",
+  "url": "https://philipinachezue.com",
+  "email": "philipinachezue@outlook.com",
+  "address": {
+    "@type": "PostalAddress",
+    "addressLocality": "Dar es Salaam",
+    "addressCountry": "Tanzania"
+  },
+  "sameAs": [
+    "https://www.linkedin.com/in/philipinaandreachezue/"
+  ],
+  "knowsAbout": ["Executive Support", "Project Coordination", "Travel Logistics", "Operations"]
+}
+</script>
+<!-- End SEO -->
+
+</head>
+<body>
+
+<div class="header">
+  <div class="brand">Bloom <span>&</span> Root</div>
+  <div class="hd-sep"></div>
+  <div class="hd-tag">Content Calendar</div>
+  <div class="hd-month">April 2026</div>
+  <div class="hd-tag">Managed by Zara Mensah · VA</div>
+  <div class="hd-avatar">ZM</div>
+</div>
+
+<div class="shell">
+
+  <!-- LEFT -->
+  <div class="left">
+    <div class="ls-section">
+      <div class="ls-label">View</div>
+      <div class="ls-item active"><span>📅</span> Monthly calendar</div>
+      <div class="ls-item"><span>📋</span> List view</div>
+      <div class="ls-item"><span>🗂</span> By platform</div>
+      <div class="ls-item"><span>⏳</span> Awaiting approval</div>
+    </div>
+
+    <div class="ls-section">
+      <div class="ls-label">Platforms</div>
+      <div class="ls-item active"><span class="ls-dot" style="background:#e1306c"></span>Instagram<span class="ls-count">14</span></div>
+      <div class="ls-item"><span class="ls-dot" style="background:#010101"></span>TikTok<span class="ls-count">8</span></div>
+      <div class="ls-item"><span class="ls-dot" style="background:#0077b5"></span>LinkedIn<span class="ls-count">6</span></div>
+      <div class="ls-item"><span class="ls-dot" style="background:#e60023"></span>Pinterest<span class="ls-count">10</span></div>
+      <div class="ls-item"><span class="ls-dot" style="background:#1877f2"></span>Facebook<span class="ls-count">4</span></div>
+    </div>
+
+    <div class="ls-section">
+      <div class="ls-label">Content pillars</div>
+      <div class="ls-item"><span class="ls-dot" style="background:var(--terracotta)"></span>Product launch</div>
+      <div class="ls-item"><span class="ls-dot" style="background:var(--sage)"></span>Education / tips</div>
+      <div class="ls-item"><span class="ls-dot" style="background:var(--gold)"></span>Community / UGC</div>
+      <div class="ls-item"><span class="ls-dot" style="background:var(--plum)"></span>Behind the scenes</div>
+      <div class="ls-item"><span class="ls-dot" style="background:var(--sky)"></span>Seasonal / trends</div>
+    </div>
+
+    <div class="ls-section">
+      <div class="ls-label">April at a glance</div>
+      <div class="stat-mini">
+        <div class="sm-card"><div class="sm-num" style="color:var(--terracotta)">42</div><div class="sm-label">Total posts</div></div>
+        <div class="sm-card"><div class="sm-num" style="color:var(--sage)">28</div><div class="sm-label">Approved</div></div>
+        <div class="sm-card"><div class="sm-num" style="color:var(--gold)">9</div><div class="sm-label">In review</div></div>
+        <div class="sm-card"><div class="sm-num" style="color:var(--plum)">5</div><div class="sm-label">Drafts</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN CALENDAR -->
+  <div class="main">
+    <div class="cal-toolbar">
+      <div>
+        <div class="ct-title">April 2026</div>
+        <div class="ct-sub">BLOOM & ROOT · CONTENT SCHEDULE</div>
+      </div>
+      <div class="ct-spacer"></div>
+      <div class="filter-pill on" onclick="this.classList.toggle('on')">Instagram</div>
+      <div class="filter-pill" onclick="this.classList.toggle('on')">TikTok</div>
+      <div class="filter-pill" onclick="this.classList.toggle('on')">LinkedIn</div>
+      <div class="filter-pill" onclick="this.classList.toggle('on')">Pinterest</div>
+      <button class="add-btn">+ Add post</button>
+    </div>
+
+    <!-- WEEK HEADER -->
+    <div class="week-cols">
+      <div class="wc-head"><div class="wcd">Mon</div></div>
+      <div class="wc-head"><div class="wcd">Tue</div></div>
+      <div class="wc-head"><div class="wcd">Wed</div></div>
+      <div class="wc-head"><div class="wcd">Thu</div></div>
+      <div class="wc-head"><div class="wcd">Fri</div></div>
+      <div class="wc-head"><div class="wcd">Sat</div></div>
+      <div class="wc-head"><div class="wcd">Sun</div></div>
+    </div>
+
+    <div class="cal-grid-scroll">
+      <div class="cal-grid">
+
+        <!-- Week 1: Mar 30 – Apr 5 -->
+        <div class="cal-cell other-month"><div class="cell-date">30</div></div>
+        <div class="cal-cell other-month"><div class="cell-date">31</div></div>
+        <div class="cal-cell"><div class="cell-date">1</div>
+          <div class="post-card p-ig" onclick="showPost('spring-launch')">
+            <div class="pc-platform">📸 IG</div>
+            <div class="pc-title">Spring collection launch carousel</div>
+            <div class="pc-time">9:00 AM</div>
+            <div class="pc-status">✓ Live</div>
+          </div>
+          <div class="post-card p-pin" onclick="showPost('spring-pin')">
+            <div class="pc-platform">📌 PIN</div>
+            <div class="pc-title">Spring skincare ritual board</div>
+            <div class="pc-time">12:00 PM</div>
+            <div class="pc-status">✓ Live</div>
+          </div>
+        </div>
+        <div class="cal-cell"><div class="cell-date">2</div>
+          <div class="post-card p-tt" onclick="showPost('tiktok-routine')">
+            <div class="pc-platform">▶ TT</div>
+            <div class="pc-title">Morning ritual — 60 sec reel</div>
+            <div class="pc-time">6:00 PM</div>
+            <div class="pc-status">✓ Live</div>
+          </div>
+        </div>
+        <div class="cal-cell"><div class="cell-date">3</div>
+          <div class="post-card p-li" onclick="showPost('li-founder')">
+            <div class="pc-platform">in LI</div>
+            <div class="pc-title">Founder story — why we started B&R</div>
+            <div class="pc-time">8:00 AM</div>
+            <div class="pc-status">✓ Live</div>
+          </div>
+        </div>
+        <div class="cal-cell"><div class="cell-date">4</div></div>
+        <div class="cal-cell"><div class="cell-date">5</div>
+          <div class="post-card p-ig" onclick="showPost('ugc-sunday')">
+            <div class="pc-platform">📸 IG</div>
+            <div class="pc-title">UGC Sunday — customer feature</div>
+            <div class="pc-time">11:00 AM</div>
+            <div class="pc-status">✓ Live</div>
+          </div>
+        </div>
+
+        <!-- Week 2: Apr 6–12 -->
+        <div class="cal-cell"><div class="cell-date">6</div>
+          <div class="post-card p-ig" onclick="showPost('ingredient-monday')">
+            <div class="pc-platform">📸 IG</div>
+            <div class="pc-title">Ingredient spotlight — rosehip oil</div>
+            <div class="pc-time">9:00 AM</div>
+            <div class="pc-status">✓ Live</div>
+          </div>
+        </div>
+        <div class="cal-cell"><div class="cell-date">7</div>
+          <div class="post-card p-tt">
+            <div class="pc-platform">▶ TT</div>
+            <div class="pc-title">Hydration myth-busting video</div>
+            <div class="pc-time">6:00 PM</div>
+            <div class="pc-status">✓ Live</div>
+          </div>
+        </div>
+        <div class="cal-cell"><div class="cell-date">8</div>
+          <div class="post-card p-ig" onclick="showPost('quiz-post')">
+            <div class="pc-platform">📸 IG</div>
+            <div class="pc-title">Skin type quiz — story series</div>
+            <div class="pc-time">10:00 AM</div>
+            <div class="pc-status">✓ Live</div>
+          </div>
+          <div class="post-card p-pin">
+            <div class="pc-platform">📌 PIN</div>
+            <div class="pc-title">Top 5 serums for sensitive skin</div>
+            <div class="pc-time">2:00 PM</div>
+            <div class="pc-status">✓ Live</div>
+          </div>
+        </div>
+        <div class="cal-cell"><div class="cell-date">9</div>
+          <div class="post-card p-li">
+            <div class="pc-platform">in LI</div>
+            <div class="pc-title">The business of clean beauty</div>
+            <div class="pc-time">8:00 AM</div>
+            <div class="pc-status">✓ Live</div>
+          </div>
+        </div>
+        <div class="cal-cell"><div class="cell-date">10</div>
+          <div class="post-card p-ig" onclick="showPost('bts-friday')">
+            <div class="pc-platform">📸 IG</div>
+            <div class="pc-title">BTS — formulation lab day</div>
+            <div class="pc-time">3:00 PM</div>
+            <div class="pc-status">✓ Live</div>
+          </div>
+        </div>
+        <div class="cal-cell"><div class="cell-date">11</div></div>
+        <div class="cal-cell"><div class="cell-date">12</div>
+          <div class="post-card p-ig">
+            <div class="pc-platform">📸 IG</div>
+            <div class="pc-title">Sunday ritual reel — user photo</div>
+            <div class="pc-time">11:00 AM</div>
+            <div class="pc-status">✓ Live</div>
+          </div>
+        </div>
+
+        <!-- Week 3: Apr 13–19 (current week) -->
+        <div class="cal-cell"><div class="cell-date">13</div>
+          <div class="post-card p-ig" onclick="showPost('earth-day-teaser')">
+            <div class="pc-platform">📸 IG</div>
+            <div class="pc-title">Earth Day countdown teaser</div>
+            <div class="pc-time">9:00 AM</div>
+            <div class="pc-status">✓ Scheduled</div>
+          </div>
+        </div>
+        <div class="cal-cell today"><div class="cell-date">14</div>
+          <div class="post-card p-ig" onclick="showPost('new-serum')">
+            <div class="pc-platform">📸 IG</div>
+            <div class="pc-title">✨ NEW: Vitamin C Glow Serum drop</div>
+            <div class="pc-time">9:00 AM</div>
+            <div class="pc-status">✓ Scheduled</div>
+          </div>
+          <div class="post-card p-tt" onclick="showPost('serum-tiktok')">
+            <div class="pc-platform">▶ TT</div>
+            <div class="pc-title">Serum application routine — reel</div>
+            <div class="pc-time">6:00 PM</div>
+            <div class="pc-status">📝 In review</div>
+          </div>
+        </div>
+        <div class="cal-cell"><div class="cell-date">15</div>
+          <div class="post-card p-li" onclick="showPost('li-collab')">
+            <div class="pc-platform">in LI</div>
+            <div class="pc-title">Collab announcement — GreenFirst Lab</div>
+            <div class="pc-time">8:00 AM</div>
+            <div class="pc-status">📝 In review</div>
+          </div>
+          <div class="post-card p-pin">
+            <div class="pc-platform">📌 PIN</div>
+            <div class="pc-title">Vitamin C skincare guide infographic</div>
+            <div class="pc-time">12:00 PM</div>
+            <div class="pc-status">✓ Scheduled</div>
+          </div>
+        </div>
+        <div class="cal-cell"><div class="cell-date">16</div>
+          <div class="post-card p-ig" onclick="showPost('giveaway')">
+            <div class="pc-platform">📸 IG</div>
+            <div class="pc-title">💚 Giveaway — Earth Week</div>
+            <div class="pc-time">10:00 AM</div>
+            <div class="pc-status">📝 In review</div>
+          </div>
+        </div>
+        <div class="cal-cell"><div class="cell-date">17</div>
+          <div class="post-card p-tt">
+            <div class="pc-platform">▶ TT</div>
+            <div class="pc-title">Before/after — 30 day challenge</div>
+            <div class="pc-time">5:00 PM</div>
+            <div class="pc-status">✏️ Draft</div>
+          </div>
+        </div>
+        <div class="cal-cell"><div class="cell-date">18</div></div>
+        <div class="cal-cell"><div class="cell-date">19</div>
+          <div class="post-card p-ig">
+            <div class="pc-platform">📸 IG</div>
+            <div class="pc-title">Community post — share your glow</div>
+            <div class="pc-time">11:00 AM</div>
+            <div class="pc-status">✏️ Draft</div>
+          </div>
+        </div>
+
+        <!-- Week 4: Apr 20–26 -->
+        <div class="cal-cell"><div class="cell-date">20</div></div>
+        <div class="cal-cell"><div class="cell-date">21</div>
+          <div class="post-card p-ig">
+            <div class="pc-platform">📸 IG</div>
+            <div class="pc-title">🌍 Earth Day — brand values post</div>
+            <div class="pc-time">9:00 AM</div>
+            <div class="pc-status">✏️ Draft</div>
+          </div>
+        </div>
+        <div class="cal-cell"><div class="cell-date">22</div>
+          <div class="post-card p-li">
+            <div class="pc-platform">in LI</div>
+            <div class="pc-title">Sustainability report 2026</div>
+            <div class="pc-time">8:00 AM</div>
+            <div class="pc-status">✏️ Draft</div>
+          </div>
+          <div class="post-card p-tt">
+            <div class="pc-platform">▶ TT</div>
+            <div class="pc-title">Behind our packaging redesign</div>
+            <div class="pc-time">6:00 PM</div>
+            <div class="pc-status">✏️ Draft</div>
+          </div>
+        </div>
+        <div class="cal-cell"><div class="cell-date">23</div>
+          <div class="add-cell">+ Add post</div>
+        </div>
+        <div class="cal-cell"><div class="cell-date">24</div>
+          <div class="add-cell">+ Add post</div>
+        </div>
+        <div class="cal-cell"><div class="cell-date">25</div></div>
+        <div class="cal-cell"><div class="cell-date">26</div></div>
+
+        <!-- Week 5 -->
+        <div class="cal-cell"><div class="cell-date">27</div></div>
+        <div class="cal-cell"><div class="cell-date">28</div></div>
+        <div class="cal-cell"><div class="cell-date">29</div>
+          <div class="post-card p-ig">
+            <div class="pc-platform">📸 IG</div>
+            <div class="pc-title">May preview — what's coming</div>
+            <div class="pc-time">9:00 AM</div>
+            <div class="pc-status">✏️ Draft</div>
+          </div>
+        </div>
+        <div class="cal-cell"><div class="cell-date">30</div></div>
+        <div class="cal-cell other-month"><div class="cell-date">1</div></div>
+        <div class="cal-cell other-month"><div class="cell-date">2</div></div>
+        <div class="cal-cell other-month"><div class="cell-date">3</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT PANEL -->
+  <div class="right">
+    <div class="rp-sec">
+      <div class="rp-lbl">Post Detail</div>
+      <div id="post-detail">
+        <div class="pd-platform-badge p-ig">📸 Instagram</div>
+        <div class="pd-title" id="pd-title">✨ NEW: Vitamin C Glow Serum Drop</div>
+        <div class="pd-kv"><span class="pd-key">Date</span><span class="pd-val" id="pd-date">Monday 14 Apr · 9:00 AM</span></div>
+        <div class="pd-kv"><span class="pd-key">Type</span><span class="pd-val" id="pd-type">Product launch · Carousel (6 slides)</span></div>
+        <div class="pd-kv"><span class="pd-key">Pillar</span><span class="pd-val" id="pd-pillar">Product launch</span></div>
+        <div class="pd-kv"><span class="pd-key">Status</span><span class="pd-val" id="pd-status">✓ Scheduled · approved by Aisha</span></div>
+        <div class="pd-caption" id="pd-caption">"Glow is not a product. It's a practice. ✨ Introducing our Vitamin C Glow Serum — 8 weeks of research, 3 reformulations, and your feedback made this. Shop link in bio."</div>
+        <div class="pd-hashtags" id="pd-hashtags">#BloomAndRoot #VitaminCSerum #CleanBeauty #GlowUp #SkincareRoutine #NaturalSkincare</div>
+      </div>
+    </div>
+
+    <div class="rp-sec">
+      <div class="rp-lbl">Status Flow</div>
+      <div class="status-flow">
+        <div class="sf-step"><div class="sf-dot" style="background:var(--sage);">✓</div><div class="sf-label">Brief</div></div>
+        <div class="sf-line" style="background:var(--sage);height:2px;margin-top:-14px;"></div>
+        <div class="sf-step"><div class="sf-dot" style="background:var(--sage);">✓</div><div class="sf-label">Copy</div></div>
+        <div class="sf-line" style="background:var(--sage);height:2px;margin-top:-14px;"></div>
+        <div class="sf-step"><div class="sf-dot" style="background:var(--sage);">✓</div><div class="sf-label">Design</div></div>
+        <div class="sf-line" style="background:var(--sage);height:2px;margin-top:-14px;"></div>
+        <div class="sf-step"><div class="sf-dot" style="background:var(--sage);">✓</div><div class="sf-label">Approved</div></div>
+        <div class="sf-line" style="background:var(--fog);height:2px;margin-top:-14px;"></div>
+        <div class="sf-step"><div class="sf-dot" style="background:var(--fog);color:var(--muted);">→</div><div class="sf-label">Live</div></div>
+      </div>
+    </div>
+
+    <div class="rp-sec">
+      <div class="rp-lbl">Platform Breakdown</div>
+      <div class="platform-row">
+        <div class="prow-icon p-ig" style="border-radius:5px;color:#fff;font-size:.8rem;width:26px;height:26px;display:flex;align-items:center;justify-content:center;">📸</div>
+        <div class="prow-name">Instagram</div>
+        <div class="prow-bar"><div class="prow-fill" style="width:70%;background:linear-gradient(90deg,#c13584,#e1306c);"></div></div>
+        <div class="prow-count">14</div>
+      </div>
+      <div class="platform-row">
+        <div class="prow-icon" style="background:#111;border-radius:5px;color:#fff;font-size:.8rem;width:26px;height:26px;display:flex;align-items:center;justify-content:center;">▶</div>
+        <div class="prow-name">TikTok</div>
+        <div class="prow-bar"><div class="prow-fill" style="width:40%;background:#333;"></div></div>
+        <div class="prow-count">8</div>
+      </div>
+      <div class="platform-row">
+        <div class="prow-icon" style="background:#0077b5;border-radius:5px;color:#fff;font-size:.65rem;font-weight:700;width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-family:var(--sans);">in</div>
+        <div class="prow-name">LinkedIn</div>
+        <div class="prow-bar"><div class="prow-fill" style="width:30%;background:#0077b5;"></div></div>
+        <div class="prow-count">6</div>
+      </div>
+      <div class="platform-row">
+        <div class="prow-icon" style="background:#e60023;border-radius:5px;color:#fff;font-size:.8rem;width:26px;height:26px;display:flex;align-items:center;justify-content:center;">📌</div>
+        <div class="prow-name">Pinterest</div>
+        <div class="prow-bar"><div class="prow-fill" style="width:50%;background:#e60023;"></div></div>
+        <div class="prow-count">10</div>
+      </div>
+    </div>
+
+    <div class="rp-sec">
+      <div class="rp-lbl">Pending Approval</div>
+      <div class="approval-item">
+        <div class="ai-status" style="background:var(--sky);">?</div>
+        <div class="ai-body">
+          <div class="ai-title">Serum TikTok — application reel</div>
+          <div class="ai-meta">TikTok · 14 Apr · Sent to Aisha 2 Apr</div>
+        </div>
+        <div class="ai-action">Review →</div>
+      </div>
+      <div class="approval-item">
+        <div class="ai-status" style="background:var(--sky);">?</div>
+        <div class="ai-body">
+          <div class="ai-title">Collab post — GreenFirst Lab</div>
+          <div class="ai-meta">LinkedIn · 15 Apr · Needs legal sign-off</div>
+        </div>
+        <div class="ai-action">Review →</div>
+      </div>
+      <div class="approval-item">
+        <div class="ai-status" style="background:var(--gold);">!</div>
+        <div class="ai-body">
+          <div class="ai-title">Giveaway post — Earth Week</div>
+          <div class="ai-meta">Instagram · 16 Apr · T&Cs need update</div>
+        </div>
+        <div class="ai-action">Fix →</div>
+      </div>
+      <div class="approval-item">
+        <div class="ai-status" style="background:var(--terracotta);">✗</div>
+        <div class="ai-body">
+          <div class="ai-title">Earth Day carousel — all platforms</div>
+          <div class="ai-meta">All · 22 Apr · Copy not started yet</div>
+        </div>
+        <div class="ai-action">Start →</div>
+      </div>
+    </div>
+
+    <div class="rp-sec">
+      <div class="rp-lbl">VA Notes</div>
+      <div style="font-size:.76rem;color:var(--ink);line-height:1.75;background:var(--fog2);border-radius:5px;padding:12px;border-left:3px solid var(--terracotta);">
+        🌿 <strong>Earth Week (21–27 Apr)</strong> is our biggest content moment this month. 5 posts planned across all platforms — Earth Day carousel copy needs to start this week.<br/><br/>
+        ⚡ The Vitamin C serum launch today (14 Apr) — all assets are in the shared Drive folder. Influencer posts going live 2–4 PM.<br/><br/>
+        📋 Giveaway T&Cs: please review updated draft in Notion before approving the 16 Apr post.
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const posts = {
+  'spring-launch':{platform:'📸 Instagram',title:'Spring Collection Launch Carousel',date:'Wednesday 1 Apr · 9:00 AM',type:'Product launch · Carousel (8 slides)',pillar:'Product launch',status:'✓ Live',caption:'"Spring doesn\'t start with the calendar. It starts with your skin. 🌸 Our Spring Collection is here — botanical actives, refillable packaging, and the scent of something new. Shop now — link in bio."',tags:'#BloomAndRoot #SpringSkincare #CleanBeauty #Sustainable #BotanicalSkincare'},
+  'tiktok-routine':{platform:'▶ TikTok',title:'Morning Ritual — 60 Second Reel',date:'Thursday 2 Apr · 6:00 PM',type:'Education / lifestyle · Short video (60s)',pillar:'Education / tips',status:'✓ Live',caption:'"Your 5-step morning ritual, under 5 minutes. Save this. 🌿 #morningroutine #skincaretiktok"',tags:'#MorningRoutine #SkincareRoutine #CleanBeauty #BloomAndRoot'},
+  'li-founder':{platform:'in LinkedIn',title:'Founder Story — Why We Started Bloom & Root',date:'Friday 3 Apr · 8:00 AM',type:'Brand story · Long-form post',pillar:'Education / tips',status:'✓ Live',caption:'"3 years ago I had a reaction to a product I\'d used for a decade. That was the day I decided to make something I could trust. Bloom & Root exists because clean shouldn\'t be a luxury."',tags:'#Entrepreneurship #CleanBeauty #FounderStory #BloomAndRoot #WomenInBusiness'},
+  'ugc-sunday':{platform:'📸 Instagram',title:'UGC Sunday — Customer Feature',date:'Sunday 5 Apr · 11:00 AM',type:'Community / UGC · Single image repost',pillar:'Community / UGC',status:'✓ Live',caption:'"This week\'s glow belongs to @selin_cares 🌿 She\'s been using our Nourish Oil for 3 weeks. We don\'t photoshop testimonials — we let the skin speak. Tag us to be featured."',tags:'#RealResults #BloomAndRoot #CustomerLove #NaturalGlow'},
+  'ingredient-monday':{platform:'📸 Instagram',title:'Ingredient Spotlight — Rosehip Oil',date:'Monday 6 Apr · 9:00 AM',type:'Education · Carousel (5 slides)',pillar:'Education / tips',status:'✓ Live',caption:'"Rosehip oil: one ingredient, twelve benefits. We\'ve used it in 7 of our products for a reason. 🌹 Swipe to see why it\'s the backbone of our formulations."',tags:'#Rosehip #IngredientEducation #CleanBeauty #BloomAndRoot #Skincare'},
+  'quiz-post':{platform:'📸 Instagram',title:'Skin Type Quiz — Story Series',date:'Wednesday 8 Apr · 10:00 AM',type:'Interactive · Stories (6 frames)',pillar:'Education / tips',status:'✓ Live',caption:'"Not sure what your skin type actually is? Most people get this wrong. Take our 5-question quiz in stories — we\'ll tell you exactly which products are made for you."',tags:'#SkinType #SkinCareQuiz #BloomAndRoot'},
+  'bts-friday':{platform:'📸 Instagram',title:'BTS — Formulation Lab Day',date:'Friday 10 Apr · 3:00 PM',type:'Behind the scenes · Reel (45s)',pillar:'Behind the scenes',status:'✓ Live',caption:'"You asked, we showed up. A day inside our formulation lab — no filters, no staged shots. Just science, smell, and the search for something extraordinary. 🔬🌿"',tags:'#BehindTheScenes #Formulation #CleanBeauty #BloomAndRoot #Transparent'},
+  'earth-day-teaser':{platform:'📸 Instagram',title:'Earth Day Countdown Teaser',date:'Monday 13 Apr · 9:00 AM',type:'Seasonal · Single image',pillar:'Seasonal / trends',status:'✓ Scheduled',caption:'"8 days. Something big is growing. 🌍 Stay close. #EarthWeek #BloomAndRoot"',tags:'#EarthDay #EarthWeek #Sustainability #CleanBeauty'},
+  'new-serum':{platform:'📸 Instagram',title:'✨ NEW: Vitamin C Glow Serum Drop',date:'Monday 14 Apr · 9:00 AM',type:'Product launch · Carousel (6 slides)',pillar:'Product launch',status:'✓ Scheduled · approved by Aisha',caption:'"Glow is not a product. It\'s a practice. ✨ Introducing our Vitamin C Glow Serum — 8 weeks of research, 3 reformulations, and your feedback made this. Shop link in bio."',tags:'#BloomAndRoot #VitaminCSerum #CleanBeauty #GlowUp #SkincareRoutine #NaturalSkincare'},
+  'serum-tiktok':{platform:'▶ TikTok',title:'Serum Application Routine — Reel',date:'Monday 14 Apr · 6:00 PM',type:'Product demo · Video (45s)',pillar:'Product launch',status:'📝 In review — awaiting Aisha',caption:'"1 pump. 3 steps. Glow by morning. 🌟 Our new Vitamin C serum application tutorial. Save this for your night routine."',tags:'#VitaminCSerum #SkincareTikTok #GlowUp #BloomAndRoot'},
+  'li-collab':{platform:'in LinkedIn',title:'Collab Announcement — GreenFirst Lab',date:'Tuesday 15 Apr · 8:00 AM',type:'Partnership announcement',pillar:'Brand / partnerships',status:'📝 In review — needs legal',caption:'"Thrilled to announce our R&D partnership with GreenFirst Lab. Together we\'re developing the next generation of biofermented actives — fully traceable, zero synthetic preservatives."',tags:'#Partnership #CleanBeauty #Innovation #GreenFirst #BloomAndRoot'},
+  'giveaway':{platform:'📸 Instagram',title:'💚 Giveaway — Earth Week',date:'Wednesday 16 Apr · 10:00 AM',type:'Community / engagement · Single image',pillar:'Community / UGC',status:'📝 In review — T&Cs update needed',caption:'"To celebrate Earth Week, we\'re giving away our entire Spring Collection (worth $240) to 3 of you. To enter: follow us, like this post, and tag a friend who deserves to glow. 🌍"',tags:'#Giveaway #EarthWeek #BloomAndRoot #Win #CleanBeauty'}
+};
+
+function showPost(id){
+  const p=posts[id];
+  if(!p)return;
+  document.getElementById('pd-title').textContent=p.title;
+  document.getElementById('pd-date').textContent=p.date;
+  document.getElementById('pd-type').textContent=p.type;
+  document.getElementById('pd-pillar').textContent=p.pillar;
+  document.getElementById('pd-status').textContent=p.status;
+  document.getElementById('pd-caption').textContent=p.caption;
+  document.getElementById('pd-hashtags').textContent=p.tags;
+}
+</script>
+</body>
+</html>

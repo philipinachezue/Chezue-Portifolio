@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Executive Calendar — Meridian Consulting</title>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Mulish:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#f0eff5;
+  --white:#ffffff;
+  --navy:#1a1d2e;
+  --navy2:#252840;
+  --indigo:#3d42a0;
+  --indigo-lt:#5a60c8;
+  --violet:#7c5cbf;
+  --rose:#c0446a;
+  --teal:#2a8a7a;
+  --amber:#c47a18;
+  --fog:#e4e2ee;
+  --fog2:#ece9f5;
+  --muted:#7a788e;
+  --text:#1a1d2e;
+  --serif:'Instrument Serif',serif;
+  --sans:'Mulish',sans-serif;
+  --mono:'JetBrains Mono',monospace;
+}
+body{background:var(--bg);font-family:var(--sans);color:var(--text);min-height:100vh;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.4;}}
+.fade{animation:fadeUp .4s ease both;}
+.f1{animation-delay:.05s;}.f2{animation-delay:.1s;}.f3{animation-delay:.15s;}.f4{animation-delay:.2s;}.f5{animation-delay:.25s;}.f6{animation-delay:.3s;}
+
+/* TOPBAR */
+.topbar{background:var(--navy);height:54px;display:flex;align-items:center;padding:0 28px;gap:18px;}
+.brand{font-family:var(--serif);font-size:1.2rem;color:#fff;letter-spacing:.02em;}
+.brand em{font-style:italic;color:#a8a5f0;}
+.tb-sep{flex:1;}
+.tb-chip{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:40px;padding:4px 13px;font-size:.7rem;color:#a8a5d8;font-family:var(--mono);letter-spacing:.04em;}
+.tb-chip.live{color:#7debb0;}
+.live-dot{display:inline-block;width:6px;height:6px;background:#7debb0;border-radius:50%;margin-right:5px;animation:pulse 1.6s ease-in-out infinite;}
+.tb-avatar{width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,var(--indigo),var(--violet));display:flex;align-items:center;justify-content:center;font-size:.68rem;font-weight:700;color:#fff;}
+
+/* SHELL */
+.shell{display:flex;height:calc(100vh - 54px);overflow:hidden;}
+
+/* SIDEBAR */
+.sidebar{width:240px;background:var(--white);border-right:1px solid var(--fog);display:flex;flex-direction:column;padding:20px 0;flex-shrink:0;overflow-y:auto;}
+.mini-cal{padding:0 16px 20px;}
+.mc-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
+.mc-month{font-family:var(--serif);font-size:1rem;font-style:italic;color:var(--navy);}
+.mc-nav{background:none;border:none;color:var(--muted);cursor:pointer;font-size:.9rem;padding:2px 6px;border-radius:3px;}
+.mc-nav:hover{background:var(--fog);}
+.mc-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;}
+.mc-dow{font-size:.58rem;text-align:center;color:var(--muted);font-weight:600;letter-spacing:.06em;padding:3px 0;font-family:var(--mono);}
+.mc-day{font-size:.72rem;text-align:center;padding:5px 2px;border-radius:4px;cursor:pointer;color:var(--muted);transition:background .12s;}
+.mc-day:hover{background:var(--fog);}
+.mc-day.has-event{color:var(--navy);font-weight:600;}
+.mc-day.today{background:var(--indigo);color:#fff;font-weight:700;}
+.mc-day.selected{background:var(--fog2);color:var(--indigo);font-weight:700;}
+.mc-day.other-month{color:#d0cedf;}
+
+.sb-section{margin-bottom:4px;}
+.sb-label{font-size:.6rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);padding:6px 18px 4px;}
+.sb-item{display:flex;align-items:center;gap:10px;padding:8px 18px;font-size:.78rem;color:var(--navy);cursor:pointer;border-left:3px solid transparent;transition:all .12s;}
+.sb-item:hover{background:var(--fog2);}
+.sb-item.active{border-left-color:var(--indigo);background:var(--fog2);color:var(--indigo);font-weight:600;}
+.sb-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.sb-count{margin-left:auto;font-size:.62rem;font-family:var(--mono);color:var(--muted);}
+
+/* CALENDAR MAIN */
+.cal-main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
+.cal-header{padding:16px 24px;border-bottom:1px solid var(--fog);display:flex;align-items:center;gap:12px;background:var(--white);}
+.cal-title{font-family:var(--serif);font-size:1.4rem;font-style:italic;color:var(--navy);}
+.cal-sub{font-size:.72rem;color:var(--muted);font-family:var(--mono);}
+.cal-spacer{flex:1;}
+.cal-view-btns{display:flex;border:1px solid var(--fog);border-radius:5px;overflow:hidden;}
+.cvb{padding:6px 13px;font-size:.72rem;font-family:var(--sans);font-weight:500;cursor:pointer;background:none;border:none;color:var(--muted);transition:background .12s;}
+.cvb:hover{background:var(--fog);}
+.cvb.active{background:var(--indigo);color:#fff;}
+.cal-btn{background:var(--indigo);color:#fff;border:none;border-radius:4px;padding:7px 16px;font-family:var(--sans);font-size:.75rem;font-weight:600;cursor:pointer;transition:background .15s;}
+.cal-btn:hover{background:var(--indigo-lt);}
+
+/* WEEK VIEW */
+.week-scroll{flex:1;overflow-y:auto;overflow-x:hidden;}
+.week-grid{display:grid;grid-template-columns:56px repeat(5,1fr);}
+.week-header-row{display:grid;grid-template-columns:56px repeat(5,1fr);border-bottom:1px solid var(--fog);background:var(--white);position:sticky;top:0;z-index:10;}
+.wh-spacer{border-right:1px solid var(--fog);}
+.wh-day{padding:10px 14px;border-right:1px solid var(--fog);text-align:center;}
+.wh-dow{font-size:.62rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-family:var(--mono);}
+.wh-date{font-size:1.3rem;font-family:var(--serif);font-style:italic;color:var(--navy);line-height:1.1;}
+.wh-day.today .wh-date{color:var(--indigo);}
+.wh-day.today .wh-dow{color:var(--indigo);}
+
+.time-col{display:flex;flex-direction:column;}
+.time-slot{height:56px;border-right:1px solid var(--fog);padding:0 6px;display:flex;align-items:flex-start;padding-top:4px;}
+.time-label{font-size:.58rem;font-family:var(--mono);color:var(--muted);white-space:nowrap;}
+.day-col{border-right:1px solid var(--fog);position:relative;}
+.day-col.today-col{background:rgba(61,66,160,.025);}
+.hour-line{height:56px;border-bottom:1px dashed #e8e6f0;}
+
+/* EVENTS */
+.event-block{position:absolute;left:4px;right:4px;border-radius:5px;padding:5px 8px;cursor:pointer;overflow:hidden;transition:filter .15s,transform .15s;z-index:2;}
+.event-block:hover{filter:brightness(1.06);transform:translateX(1px);}
+.eb-title{font-size:.73rem;font-weight:700;line-height:1.25;color:#fff;}
+.eb-sub{font-size:.63rem;color:rgba(255,255,255,.75);margin-top:2px;line-height:1.3;}
+.eb-tag{display:inline-block;font-size:.55rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;background:rgba(255,255,255,.2);border-radius:20px;padding:1px 6px;margin-top:3px;}
+
+/* COLORS */
+.ev-indigo{background:linear-gradient(135deg,var(--indigo),var(--indigo-lt));}
+.ev-violet{background:linear-gradient(135deg,var(--violet),#9b7de0);}
+.ev-rose{background:linear-gradient(135deg,var(--rose),#e06090);}
+.ev-teal{background:linear-gradient(135deg,var(--teal),#3aaa96);}
+.ev-amber{background:linear-gradient(135deg,var(--amber),#e09030);}
+.ev-muted{background:linear-gradient(135deg,#6a6880,#8a88a0);}
+
+/* NOW LINE */
+.now-line{position:absolute;left:0;right:0;height:2px;background:var(--rose);z-index:5;}
+.now-line::before{content:'';position:absolute;left:-1px;top:-4px;width:10px;height:10px;border-radius:50%;background:var(--rose);}
+
+/* RIGHT PANEL */
+.right-panel{width:280px;border-left:1px solid var(--fog);background:var(--white);display:flex;flex-direction:column;overflow-y:auto;flex-shrink:0;}
+.rp-section{padding:20px 18px;border-bottom:1px solid var(--fog);}
+.rp-label{font-size:.6rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);margin-bottom:14px;display:flex;align-items:center;gap:8px;}
+.rp-label::after{content:'';flex:1;height:1px;background:var(--fog);}
+
+/* SELECTED EVENT DETAIL */
+.ev-detail-card{background:var(--fog2);border-radius:6px;padding:14px;}
+.edc-color{width:100%;height:3px;border-radius:3px;margin-bottom:12px;}
+.edc-title{font-family:var(--serif);font-size:1.05rem;font-style:italic;color:var(--navy);margin-bottom:4px;}
+.edc-time{font-family:var(--mono);font-size:.68rem;color:var(--muted);margin-bottom:10px;}
+.edc-kv{display:flex;gap:8px;margin-bottom:7px;font-size:.76rem;}
+.edc-key{color:var(--muted);min-width:70px;flex-shrink:0;font-size:.66rem;text-transform:uppercase;letter-spacing:.08em;font-family:var(--mono);padding-top:1px;}
+.edc-val{color:var(--navy);line-height:1.5;}
+.prep-item{display:flex;align-items:flex-start;gap:8px;font-size:.74rem;padding:6px 0;border-bottom:1px solid var(--fog);color:var(--navy);}
+.prep-item:last-child{border-bottom:none;}
+.prep-check{width:14px;height:14px;border-radius:3px;flex-shrink:0;margin-top:1px;display:flex;align-items:center;justify-content:center;font-size:.58rem;color:#fff;cursor:pointer;}
+.prep-done{background:var(--teal);}
+.prep-todo{background:var(--fog);border:1.5px solid var(--fog);}
+.prep-text{line-height:1.4;}
+.prep-done-text{text-decoration:line-through;color:var(--muted);}
+
+/* UPCOMING */
+.upcoming-item{display:flex;gap:10px;padding:9px 0;border-bottom:1px solid var(--fog);cursor:pointer;transition:opacity .12s;}
+.upcoming-item:hover{opacity:.75;}
+.upcoming-item:last-child{border-bottom:none;}
+.ui-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:4px;}
+.ui-body{flex:1;}
+.ui-title{font-size:.78rem;font-weight:600;color:var(--navy);margin-bottom:2px;}
+.ui-meta{font-size:.68rem;color:var(--muted);}
+.ui-time{font-family:var(--mono);font-size:.64rem;color:var(--muted);flex-shrink:0;}
+
+/* FOCUS TIME */
+.focus-bar{margin-bottom:8px;}
+.fb-head{display:flex;justify-content:space-between;font-size:.72rem;margin-bottom:5px;}
+.fb-label{color:var(--muted);}
+.fb-val{font-family:var(--mono);font-weight:500;}
+.fb-track{height:6px;background:var(--fog);border-radius:6px;overflow:hidden;}
+.fb-fill{height:100%;border-radius:6px;transition:width .6s ease;}
+
+/* BUFFER TAGS */
+.buffer-tags{display:flex;flex-wrap:wrap;gap:6px;}
+.buf-tag{font-size:.65rem;padding:4px 10px;border-radius:20px;font-family:var(--mono);}
+
+::-webkit-scrollbar{width:4px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:var(--fog);border-radius:10px;}
+</style>
+
+<!-- SEO & Performance Optimization -->
+<meta name="description" content="Philipina Andrea Chezue is a freelance Executive Virtual Assistant in Dar es Salaam, specializing in remote operations, travel logistics, and project coordination for founders globally.">
+<meta name="keywords" content="Executive Virtual Assistant, Remote VA, Operations Assistant, Project Coordination, Travel Logistics, Tanzania VA, Portfolio">
+<meta name="robots" content="index, follow">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<link rel="canonical" href="https://philipinachezue.com/">
+<link rel="manifest" href="/manifest.json">
+<link rel="icon" type="image/x-icon" href="/assets/favicon.ico">
+
+<!-- Open Graph / Social -->
+<meta property="og:title" content="Philipina Andrea Chezue — Executive Virtual Assistant">
+<meta property="og:description" content="Reclaim your time through expert operations, travel logistics, and project coordination that actually works.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://philipinachezue.com/">
+<meta property="og:image" content="https://philipinachezue.com/assets/images/img_9f2ae763.jpg">
+
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Philipina Andrea Chezue — Executive VA">
+<meta name="twitter:description" content="Reclaim your time through expert operations and project coordination.">
+<meta name="twitter:image" content="https://philipinachezue.com/assets/images/img_9f2ae763.jpg">
+
+<!-- Structured Data -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org/",
+  "@type": "Person",
+  "name": "Philipina Andrea Chezue",
+  "jobTitle": "Executive Virtual Assistant",
+  "url": "https://philipinachezue.com",
+  "email": "philipinachezue@outlook.com",
+  "address": {
+    "@type": "PostalAddress",
+    "addressLocality": "Dar es Salaam",
+    "addressCountry": "Tanzania"
+  },
+  "sameAs": [
+    "https://www.linkedin.com/in/philipinaandreachezue/"
+  ],
+  "knowsAbout": ["Executive Support", "Project Coordination", "Travel Logistics", "Operations"]
+}
+</script>
+<!-- End SEO -->
+
+</head>
+<body>
+
+<div class="topbar">
+  <div class="brand">Meridian <em>Consulting</em></div>
+  <div class="tb-sep"></div>
+  <div class="tb-chip"><span class="live-dot"></span>Week of 14 April 2026</div>
+  <div class="tb-chip">Executive Calendar · Isabel Ferreira</div>
+  <div class="tb-avatar">IF</div>
+</div>
+
+<div class="shell">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <!-- Mini Calendar -->
+    <div class="mini-cal">
+      <div class="mc-header">
+        <div class="mc-month">April 2026</div>
+        <div style="display:flex;gap:2px;">
+          <button class="mc-nav">‹</button>
+          <button class="mc-nav">›</button>
+        </div>
+      </div>
+      <div class="mc-grid">
+        <div class="mc-dow">M</div><div class="mc-dow">T</div><div class="mc-dow">W</div>
+        <div class="mc-dow">T</div><div class="mc-dow">F</div><div class="mc-dow">S</div><div class="mc-dow">S</div>
+        <div class="mc-day other-month">30</div><div class="mc-day other-month">31</div>
+        <div class="mc-day">1</div><div class="mc-day">2</div><div class="mc-day">3</div>
+        <div class="mc-day">4</div><div class="mc-day">5</div>
+        <div class="mc-day">6</div><div class="mc-day">7</div><div class="mc-day has-event">8</div>
+        <div class="mc-day has-event">9</div><div class="mc-day has-event">10</div>
+        <div class="mc-day">11</div><div class="mc-day">12</div>
+        <div class="mc-day has-event selected">13</div><div class="mc-day has-event today">14</div>
+        <div class="mc-day has-event">15</div><div class="mc-day has-event">16</div>
+        <div class="mc-day has-event">17</div><div class="mc-day">18</div><div class="mc-day">19</div>
+        <div class="mc-day">20</div><div class="mc-day has-event">21</div>
+        <div class="mc-day has-event">22</div><div class="mc-day has-event">23</div>
+        <div class="mc-day">24</div><div class="mc-day">25</div><div class="mc-day">26</div>
+        <div class="mc-day">27</div><div class="mc-day">28</div>
+        <div class="mc-day has-event">29</div><div class="mc-day">30</div>
+      </div>
+    </div>
+
+    <div class="sb-section">
+      <div class="sb-label">Calendars</div>
+      <div class="sb-item active"><span class="sb-dot" style="background:var(--indigo)"></span>Client meetings<span class="sb-count">8</span></div>
+      <div class="sb-item"><span class="sb-dot" style="background:var(--violet)"></span>Internal / team<span class="sb-count">5</span></div>
+      <div class="sb-item"><span class="sb-dot" style="background:var(--rose)"></span>Speaking & press<span class="sb-count">2</span></div>
+      <div class="sb-item"><span class="sb-dot" style="background:var(--teal)"></span>Deep work blocks<span class="sb-count">6</span></div>
+      <div class="sb-item"><span class="sb-dot" style="background:var(--amber)"></span>Travel<span class="sb-count">3</span></div>
+      <div class="sb-item"><span class="sb-dot" style="background:var(--muted)"></span>Personal<span class="sb-count">4</span></div>
+    </div>
+
+    <div class="sb-section">
+      <div class="sb-label">Quick stats — April</div>
+      <div style="padding:4px 18px 12px;">
+        <div class="focus-bar">
+          <div class="fb-head"><span class="fb-label">Focus time</span><span class="fb-val" style="color:var(--teal)">14.5h</span></div>
+          <div class="fb-track"><div class="fb-fill" style="width:60%;background:var(--teal);"></div></div>
+        </div>
+        <div class="focus-bar">
+          <div class="fb-head"><span class="fb-label">Meetings</span><span class="fb-val" style="color:var(--indigo)">22h</span></div>
+          <div class="fb-track"><div class="fb-fill" style="width:78%;background:var(--indigo);"></div></div>
+        </div>
+        <div class="focus-bar">
+          <div class="fb-head"><span class="fb-label">Buffer blocks</span><span class="fb-val">4h</span></div>
+          <div class="fb-track"><div class="fb-fill" style="width:25%;background:var(--amber);"></div></div>
+        </div>
+        <div style="font-size:.68rem;color:var(--rose);margin-top:8px;font-weight:600;">⚡ 3 meetings need prep this week</div>
+      </div>
+    </div>
+
+    <div class="sb-section">
+      <div class="sb-label">Scheduling rules</div>
+      <div style="padding:4px 18px 4px;display:flex;flex-direction:column;gap:6px;">
+        <div style="font-size:.72rem;color:var(--muted);display:flex;gap:6px;align-items:flex-start;"><span>🚫</span><span>No meetings before <strong style="color:var(--navy)">9:00 AM</strong></span></div>
+        <div style="font-size:.72rem;color:var(--muted);display:flex;gap:6px;align-items:flex-start;"><span>🚫</span><span>No back-to-back calls — 15min buffer required</span></div>
+        <div style="font-size:.72rem;color:var(--muted);display:flex;gap:6px;align-items:flex-start;"><span>✅</span><span>Deep work: <strong style="color:var(--navy)">Tue & Thu mornings</strong> blocked</span></div>
+        <div style="font-size:.72rem;color:var(--muted);display:flex;gap:6px;align-items:flex-start;"><span>✅</span><span>Fridays: internal only, no client calls</span></div>
+        <div style="font-size:.72rem;color:var(--muted);display:flex;gap:6px;align-items:flex-start;"><span>📌</span><span>All external calls: Zoom (Isabel's room)</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CALENDAR MAIN -->
+  <div class="cal-main">
+    <div class="cal-header fade f1">
+      <div>
+        <div class="cal-title">Week of 14 April</div>
+        <div class="cal-sub">MANAGED BY AMARA OSEI · EXECUTIVE VA</div>
+      </div>
+      <div class="cal-spacer"></div>
+      <div class="cal-view-btns">
+        <button class="cvb">Day</button>
+        <button class="cvb active">Week</button>
+        <button class="cvb">Month</button>
+      </div>
+      <button class="cal-btn">+ New Event</button>
+    </div>
+
+    <div class="week-scroll">
+      <!-- DAY HEADERS -->
+      <div class="week-header-row fade f2">
+        <div class="wh-spacer"></div>
+        <div class="wh-day today">
+          <div class="wh-dow">MON</div>
+          <div class="wh-date">14</div>
+        </div>
+        <div class="wh-day">
+          <div class="wh-dow">TUE</div>
+          <div class="wh-date">15</div>
+        </div>
+        <div class="wh-day">
+          <div class="wh-dow">WED</div>
+          <div class="wh-date">16</div>
+        </div>
+        <div class="wh-day">
+          <div class="wh-dow">THU</div>
+          <div class="wh-date">17</div>
+        </div>
+        <div class="wh-day">
+          <div class="wh-dow">FRI</div>
+          <div class="wh-date">18</div>
+        </div>
+      </div>
+
+      <!-- TIME GRID -->
+      <div class="week-grid fade f3" style="position:relative;min-height:700px;">
+        <!-- Time column -->
+        <div class="time-col">
+          <div class="time-slot" style="height:56px;"><span class="time-label">8 AM</span></div>
+          <div class="time-slot" style="height:56px;"></div>
+          <div class="time-slot" style="height:56px;"><span class="time-label">9 AM</span></div>
+          <div class="time-slot" style="height:56px;"></div>
+          <div class="time-slot" style="height:56px;"><span class="time-label">10 AM</span></div>
+          <div class="time-slot" style="height:56px;"></div>
+          <div class="time-slot" style="height:56px;"><span class="time-label">11 AM</span></div>
+          <div class="time-slot" style="height:56px;"></div>
+          <div class="time-slot" style="height:56px;"><span class="time-label">12 PM</span></div>
+          <div class="time-slot" style="height:56px;"></div>
+          <div class="time-slot" style="height:56px;"><span class="time-label">1 PM</span></div>
+          <div class="time-slot" style="height:56px;"></div>
+          <div class="time-slot" style="height:56px;"><span class="time-label">2 PM</span></div>
+          <div class="time-slot" style="height:56px;"></div>
+          <div class="time-slot" style="height:56px;"><span class="time-label">3 PM</span></div>
+          <div class="time-slot" style="height:56px;"></div>
+          <div class="time-slot" style="height:56px;"><span class="time-label">4 PM</span></div>
+          <div class="time-slot" style="height:56px;"></div>
+          <div class="time-slot" style="height:56px;"><span class="time-label">5 PM</span></div>
+        </div>
+
+        <!-- MON col -->
+        <div class="day-col today-col" style="position:relative;">
+          <div class="now-line" style="top:252px;"></div>
+          <div class="hour-line" style="top:56px;"></div><div class="hour-line" style="top:112px;"></div>
+          <div class="hour-line" style="top:168px;"></div><div class="hour-line" style="top:224px;"></div>
+          <div class="hour-line" style="top:280px;"></div><div class="hour-line" style="top:336px;"></div>
+          <div class="hour-line" style="top:392px;"></div><div class="hour-line" style="top:448px;"></div>
+          <div class="hour-line" style="top:504px;"></div><div class="hour-line" style="top:560px;"></div>
+          <!-- 9:00 Standup -->
+          <div class="event-block ev-muted" style="top:56px;height:42px;" onclick="selectEvent('standup')">
+            <div class="eb-title">Team standup</div>
+            <div class="eb-sub">9:00 – 9:30</div>
+          </div>
+          <!-- 10:00 Client -->
+          <div class="event-block ev-indigo" style="top:112px;height:84px;" onclick="selectEvent('rbc')">
+            <div class="eb-title">RBC Capital — Quarterly review</div>
+            <div class="eb-sub">10:00 – 11:30 · Zoom</div>
+            <div class="eb-tag">Client</div>
+          </div>
+          <!-- 2:00 Strategy -->
+          <div class="event-block ev-violet" style="top:336px;height:56px;" onclick="selectEvent('strategy')">
+            <div class="eb-title">Q2 strategy session</div>
+            <div class="eb-sub">2:00 – 3:00</div>
+          </div>
+          <!-- 4:30 Buffer -->
+          <div class="event-block ev-muted" style="top:476px;height:42px;opacity:.6;" onclick="selectEvent('buffer')">
+            <div class="eb-title">Buffer / email</div>
+            <div class="eb-sub">4:30 – 5:00</div>
+          </div>
+        </div>
+
+        <!-- TUE col -->
+        <div class="day-col" style="position:relative;">
+          <div class="hour-line" style="top:56px;"></div><div class="hour-line" style="top:112px;"></div>
+          <div class="hour-line" style="top:168px;"></div><div class="hour-line" style="top:224px;"></div>
+          <div class="hour-line" style="top:280px;"></div><div class="hour-line" style="top:336px;"></div>
+          <div class="hour-line" style="top:392px;"></div><div class="hour-line" style="top:448px;"></div>
+          <div class="hour-line" style="top:504px;"></div><div class="hour-line" style="top:560px;"></div>
+          <!-- Deep work block -->
+          <div class="event-block ev-teal" style="top:0px;height:112px;opacity:.85;" onclick="selectEvent('deepwork')">
+            <div class="eb-title">🔒 Deep work block</div>
+            <div class="eb-sub">8:00 – 10:00</div>
+            <div class="eb-tag">Focus</div>
+          </div>
+          <!-- 11:00 new biz -->
+          <div class="event-block ev-rose" style="top:168px;height:56px;" onclick="selectEvent('newbiz')">
+            <div class="eb-title">New business — Volta Labs</div>
+            <div class="eb-sub">11:00 – 12:00 · Zoom</div>
+          </div>
+          <!-- 2:30 speaking prep -->
+          <div class="event-block ev-amber" style="top:364px;height:56px;" onclick="selectEvent('speakingprep')">
+            <div class="eb-title">TEDx talk prep</div>
+            <div class="eb-sub">2:30 – 3:30</div>
+            <div class="eb-tag">Speaking</div>
+          </div>
+        </div>
+
+        <!-- WED col -->
+        <div class="day-col" style="position:relative;">
+          <div class="hour-line" style="top:56px;"></div><div class="hour-line" style="top:112px;"></div>
+          <div class="hour-line" style="top:168px;"></div><div class="hour-line" style="top:224px;"></div>
+          <div class="hour-line" style="top:280px;"></div><div class="hour-line" style="top:336px;"></div>
+          <div class="hour-line" style="top:392px;"></div><div class="hour-line" style="top:448px;"></div>
+          <div class="hour-line" style="top:504px;"></div>
+          <!-- 9:30 media -->
+          <div class="event-block ev-rose" style="top:84px;height:42px;" onclick="selectEvent('media')">
+            <div class="eb-title">Forbes interview — live</div>
+            <div class="eb-sub">9:30 – 10:00 · Zoom</div>
+          </div>
+          <!-- 10:30 client -->
+          <div class="event-block ev-indigo" style="top:140px;height:70px;" onclick="selectEvent('terracheck')">
+            <div class="eb-title">Terra Ventures — check-in</div>
+            <div class="eb-sub">10:30 – 11:45 · In-person</div>
+          </div>
+          <!-- 1:00 lunch -->
+          <div class="event-block ev-muted" style="top:280px;height:56px;opacity:.65;">
+            <div class="eb-title">Lunch — working</div>
+            <div class="eb-sub">1:00 – 2:00</div>
+          </div>
+          <!-- 3:00 proposal review -->
+          <div class="event-block ev-violet" style="top:392px;height:56px;">
+            <div class="eb-title">Proposal review — Helios</div>
+            <div class="eb-sub">3:00 – 4:00</div>
+          </div>
+        </div>
+
+        <!-- THU col -->
+        <div class="day-col" style="position:relative;">
+          <div class="hour-line" style="top:56px;"></div><div class="hour-line" style="top:112px;"></div>
+          <div class="hour-line" style="top:168px;"></div><div class="hour-line" style="top:224px;"></div>
+          <div class="hour-line" style="top:280px;"></div><div class="hour-line" style="top:336px;"></div>
+          <div class="hour-line" style="top:392px;"></div><div class="hour-line" style="top:448px;"></div>
+          <div class="hour-line" style="top:504px;"></div>
+          <!-- Deep work -->
+          <div class="event-block ev-teal" style="top:0px;height:112px;opacity:.85;">
+            <div class="eb-title">🔒 Deep work block</div>
+            <div class="eb-sub">8:00 – 10:00</div>
+            <div class="eb-tag">Focus</div>
+          </div>
+          <!-- 10:30 board -->
+          <div class="event-block ev-indigo" style="top:140px;height:98px;" onclick="selectEvent('board')">
+            <div class="eb-title">Board prep — Meridian Advisory</div>
+            <div class="eb-sub">10:30 – 12:15</div>
+            <div class="eb-tag">Priority</div>
+          </div>
+          <!-- 2:00 1:1 -->
+          <div class="event-block ev-violet" style="top:336px;height:42px;">
+            <div class="eb-title">1:1 — Marcus Chen (COO)</div>
+            <div class="eb-sub">2:00 – 2:45</div>
+          </div>
+        </div>
+
+        <!-- FRI col -->
+        <div class="day-col" style="position:relative;">
+          <div class="hour-line" style="top:56px;"></div><div class="hour-line" style="top:112px;"></div>
+          <div class="hour-line" style="top:168px;"></div><div class="hour-line" style="top:224px;"></div>
+          <div class="hour-line" style="top:280px;"></div><div class="hour-line" style="top:336px;"></div>
+          <div class="hour-line" style="top:392px;"></div>
+          <!-- 9:00 all hands -->
+          <div class="event-block ev-violet" style="top:56px;height:70px;">
+            <div class="eb-title">All-hands — Meridian team</div>
+            <div class="eb-sub">9:00 – 10:15</div>
+          </div>
+          <!-- 11:00 weekly wrap -->
+          <div class="event-block ev-muted" style="top:168px;height:56px;opacity:.65;">
+            <div class="eb-title">Weekly wrap + planning</div>
+            <div class="eb-sub">11:00 – 12:00 · Internal</div>
+          </div>
+          <!-- Free afternoon indicator -->
+          <div style="position:absolute;top:280px;left:4px;right:4px;height:280px;background:repeating-linear-gradient(-45deg,transparent,transparent 6px,rgba(61,66,160,.04) 6px,rgba(61,66,160,.04) 7px);border-radius:5px;border:1px dashed var(--fog);display:flex;align-items:center;justify-content:center;">
+            <div style="text-align:center;color:var(--muted);font-size:.7rem;font-family:var(--mono);">FREE AFTERNOON<br/>protected</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT PANEL -->
+  <div class="right-panel">
+    <div class="rp-section fade f4">
+      <div class="rp-label">Selected Event</div>
+      <div class="ev-detail-card" id="event-detail">
+        <div class="edc-color" style="background:linear-gradient(90deg,var(--indigo),var(--indigo-lt));"></div>
+        <div class="edc-title" id="edc-title">RBC Capital — Quarterly Review</div>
+        <div class="edc-time" id="edc-time">Monday 14 Apr · 10:00 – 11:30 · Zoom</div>
+        <div class="edc-kv"><span class="edc-key">Type</span><span class="edc-val" id="edc-type">Client meeting</span></div>
+        <div class="edc-kv"><span class="edc-key">Attendees</span><span class="edc-val" id="edc-att">Isabel + Diana Moura (RBC), James Yi</span></div>
+        <div class="edc-kv"><span class="edc-key">Location</span><span class="edc-val" id="edc-loc">Zoom — Isabel's room<br/><span style="font-family:var(--mono);font-size:.68rem;color:var(--muted)">Link sent to all parties ✓</span></span></div>
+        <div class="edc-kv"><span class="edc-key">VA note</span><span class="edc-val" id="edc-note" style="color:var(--indigo);font-style:italic;">"Q1 deck updated last night — check inbox. Diana prefers no small talk, go straight to numbers."</span></div>
+      </div>
+    </div>
+
+    <div class="rp-section fade f5">
+      <div class="rp-label">Meeting Prep</div>
+      <div id="prep-list">
+        <div class="prep-item"><div class="prep-check prep-done">✓</div><div class="prep-text prep-done-text">Send agenda to all attendees</div></div>
+        <div class="prep-item"><div class="prep-check prep-done">✓</div><div class="prep-text prep-done-text">Update Q1 performance slides</div></div>
+        <div class="prep-item"><div class="prep-check prep-done">✓</div><div class="prep-text prep-done-text">Confirm Zoom link with Diana</div></div>
+        <div class="prep-item"><div class="prep-check prep-todo" onclick="togglePrep(this)"></div><div class="prep-text">Review RBC's Q1 brief (attached)</div></div>
+        <div class="prep-item"><div class="prep-check prep-todo" onclick="togglePrep(this)"></div><div class="prep-text">Print one-pager summary (backup)</div></div>
+      </div>
+    </div>
+
+    <div class="rp-section fade f6">
+      <div class="rp-label">Upcoming This Week</div>
+      <div class="upcoming-item" onclick="selectEvent('newbiz')">
+        <div class="ui-dot" style="background:var(--rose)"></div>
+        <div class="ui-body">
+          <div class="ui-title">New biz — Volta Labs</div>
+          <div class="ui-meta">Tue 15 · 11:00 AM · Zoom</div>
+        </div>
+        <div class="ui-time">11:00</div>
+      </div>
+      <div class="upcoming-item">
+        <div class="ui-dot" style="background:var(--rose)"></div>
+        <div class="ui-body">
+          <div class="ui-title">Forbes interview — live</div>
+          <div class="ui-meta">Wed 16 · 9:30 AM · Zoom</div>
+        </div>
+        <div class="ui-time">9:30</div>
+      </div>
+      <div class="upcoming-item" onclick="selectEvent('board')">
+        <div class="ui-dot" style="background:var(--indigo)"></div>
+        <div class="ui-body">
+          <div class="ui-title">Board prep — advisory</div>
+          <div class="ui-meta">Thu 17 · 10:30 AM · Internal</div>
+        </div>
+        <div class="ui-time">10:30</div>
+      </div>
+      <div class="upcoming-item">
+        <div class="ui-dot" style="background:var(--violet)"></div>
+        <div class="ui-body">
+          <div class="ui-title">All-hands · Meridian team</div>
+          <div class="ui-meta">Fri 18 · 9:00 AM · In-office</div>
+        </div>
+        <div class="ui-time">9:00</div>
+      </div>
+    </div>
+
+    <div class="rp-section fade f6">
+      <div class="rp-label">Buffer Health</div>
+      <div style="font-size:.72rem;color:var(--muted);margin-bottom:10px;">Buffers protected this week</div>
+      <div class="buffer-tags">
+        <span class="buf-tag" style="background:rgba(42,138,122,.1);color:var(--teal);">Mon 12:00 – 1:00</span>
+        <span class="buf-tag" style="background:rgba(42,138,122,.1);color:var(--teal);">Tue EOD</span>
+        <span class="buf-tag" style="background:rgba(196,122,24,.1);color:var(--amber);">⚠ Wed 4–5 PM open</span>
+        <span class="buf-tag" style="background:rgba(42,138,122,.1);color:var(--teal);">Fri PM protected</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const events = {
+  rbc:{title:'RBC Capital — Quarterly Review',time:'Monday 14 Apr · 10:00 – 11:30 · Zoom',type:'Client meeting',att:'Isabel + Diana Moura (RBC), James Yi',loc:'Zoom — Isabel\'s room\nLink sent to all parties ✓',note:'"Q1 deck updated last night — check inbox. Diana prefers no small talk, go straight to numbers."',preps:['Send agenda to all attendees','Update Q1 performance slides','Confirm Zoom link with Diana','Review RBC Q1 brief (attached)','Print one-pager summary (backup)'],done:[true,true,true,false,false]},
+  standup:{title:'Team Standup',time:'Monday 14 Apr · 9:00 – 9:30 · Teams',type:'Internal',att:'Full Meridian team (8 people)',loc:'Microsoft Teams',note:'"Standing agenda in shared doc. Keep to 30 min — Isabel hard stops at 9:30."',preps:['Review yesterday\'s action items','Prepare 2-min update'],done:[true,false]},
+  strategy:{title:'Q2 Strategy Session',time:'Monday 14 Apr · 2:00 – 3:00',type:'Internal / leadership',att:'Isabel + COO + Head of Growth',loc:'Conference Room B, HQ',note:'"Please pull the competitive landscape doc and Q1 actuals before this meeting."',preps:['Pull Q1 actuals deck','Book Conference Room B','Circulate pre-read doc'],done:[true,true,false]},
+  buffer:{title:'Buffer / Email Block',time:'Monday 14 Apr · 4:30 – 5:00',type:'Protected time',att:'—',loc:'—',note:'"Do not schedule over this. Isabel uses this to clear inbox and respond to urgent items."',preps:['Clear unread emails','Reply to any flagged items'],done:[false,false]},
+  deepwork:{title:'Deep Work Block',time:'Tuesday 15 Apr · 8:00 – 10:00',type:'Focus block (protected)',att:'—',loc:'—',note:'"No interruptions. Phone on DND. Only emergency contacts may reach Isabel during this time."',preps:['Set Slack to DND','Forward urgent calls to VA'],done:[true,true]},
+  newbiz:{title:'New Business — Volta Labs',time:'Tuesday 15 Apr · 11:00 – 12:00 · Zoom',type:'New business pitch',att:'Isabel + Kofi Anning (Volta Labs CEO)',loc:'Zoom — Isabel\'s room',note:'"Referred by James Yi. Kofi is ex-Google. Send capability deck 24hrs before. They\'re evaluating 2 other firms."',preps:['Send capability deck to Kofi','Research Volta Labs Q1 news','Prepare rate card / scope template','Confirm Zoom link'],done:[true,false,false,true]},
+  speakingprep:{title:'TEDx Talk Prep',time:'Tuesday 15 Apr · 2:30 – 3:30',type:'Speaking prep',att:'Isabel + speech coach (Dr. Reyes)',loc:'Office / phone',note:'"Script is on v4. Key focus today: opening hook and data slide pacing."',preps:['Print script v4','Book Dr. Reyes on calendar','Confirm venue logistics for 22 Apr'],done:[true,true,false]},
+  media:{title:'Forbes Interview — Live',time:'Wednesday 16 Apr · 9:30 – 10:00',type:'Press / media',att:'Isabel + Priya Shah (Forbes)',loc:'Zoom — Forbes link (in invite)',note:'"Topic: Women in Consulting. Key messages briefing doc sent to Isabel yesterday. Avoid Q3 revenue figures."',preps:['Review key messages doc','Confirm Zoom link with Priya','Prep background: tidy, good lighting'],done:[true,true,false]},
+  terracheck:{title:'Terra Ventures — Check-in',time:'Wednesday 16 Apr · 10:30 – 11:45 · In-person',type:'Client meeting',att:'Isabel + Selin Arslan (Terra CEO)',loc:'Terra HQ, 14 Innovation Drive',note:'"Selin likes printed reports. Bring 2 copies of the progress update. Parking is in the basement — Level B2."',preps:['Print 2x progress reports','Allow 20min travel time','Confirm meeting still on'],done:[false,false,true]},
+  board:{title:'Board Prep — Meridian Advisory',time:'Thursday 17 Apr · 10:30 – 12:15',type:'Internal priority',att:'Isabel + full advisory board (7 members)',loc:'Boardroom, HQ — 10th floor',note:'"Board pack needs to be circulated by Wed EOD. Key focus: H1 projections and new service line proposal."',preps:['Finalise board pack','Circulate to all board members by Wed','Book catering for boardroom','Confirm AV setup'],done:[false,false,false,true]}
+};
+
+function selectEvent(id){
+  const e=events[id];
+  if(!e)return;
+  document.getElementById('edc-title').textContent=e.title;
+  document.getElementById('edc-time').textContent=e.time;
+  document.getElementById('edc-type').textContent=e.type;
+  document.getElementById('edc-att').textContent=e.att;
+  document.getElementById('edc-loc').innerHTML=e.loc.replace('\n','<br/>');
+  document.getElementById('edc-note').textContent=e.note;
+  const pl=document.getElementById('prep-list');
+  pl.innerHTML='';
+  e.preps.forEach((p,i)=>{
+    const done=e.done[i];
+    pl.innerHTML+=`<div class="prep-item"><div class="prep-check ${done?'prep-done':'prep-todo'}" onclick="togglePrep(this)">${done?'✓':''}</div><div class="prep-text ${done?'prep-done-text':''}">${p}</div></div>`;
+  });
+  pl.querySelectorAll('.prep-todo').forEach(b=>b.addEventListener('click',function(){togglePrep(this);}));
+}
+
+function togglePrep(el){
+  const done=el.classList.contains('prep-done');
+  el.classList.toggle('prep-done',!done);
+  el.classList.toggle('prep-todo',done);
+  el.textContent=done?'':'✓';
+  const txt=el.nextElementSibling;
+  if(txt)txt.classList.toggle('prep-done-text',!done);
+}
+</script>
+</body>
+</html>

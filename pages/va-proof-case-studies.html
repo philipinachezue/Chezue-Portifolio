@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<!-- cf-email-protection: disable -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Results & Case Studies — Philipina Chezue, Executive VA</title>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Overpass:wght@300;400;500;600;700&family=Overpass+Mono:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#0a0a0f;
+  --surface:#111118;
+  --surface2:#16161f;
+  --border:#1e1e2a;
+  --border2:#262636;
+  --text:#e8e6f2;
+  --muted:#5a5870;
+  --muted2:#8a88a0;
+  --cream:#f5f0e8;
+  --gold:#e8b84b;
+  --gold-lt:#f0cc78;
+  --green:#22c97a;
+  --green-dk:#0f8a4e;
+  --red:#ff4d6d;
+  --teal:#2dd4c0;
+  --fog:#1a1a28;
+  --serif:'Instrument Serif',serif;
+  --sans:'Overpass',sans-serif;
+  --mono:'Overpass Mono',monospace;
+}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:15px;line-height:1.6;overflow-x:hidden;}
+
+/* NOISE OVERLAY */
+body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");pointer-events:none;z-index:0;opacity:.4;}
+
+/* ANIMATIONS */
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px);}to{opacity:1;transform:translateY(0);}}
+@keyframes countUp{from{opacity:0;}to{opacity:1;}}
+@keyframes lineGrow{from{width:0;}to{}}
+@keyframes glow{0%,100%{box-shadow:0 0 20px rgba(232,184,75,.1);}50%{box-shadow:0 0 40px rgba(232,184,75,.25);}}
+
+.reveal{opacity:1;transform:translateY(0);transition:opacity .7s ease,transform .7s ease;}.reveal.animate{opacity:0;transform:translateY(24px);}.reveal.animate.visible{opacity:1;transform:translateY(0);}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:0 48px;height:60px;display:flex;align-items:center;border-bottom:1px solid rgba(255,255,255,.04);background:rgba(10,10,15,.85);backdrop-filter:blur(12px);}
+.nav-brand{font-family:var(--serif);font-size:1.05rem;color:var(--cream);}
+.nav-brand em{font-style:italic;color:var(--gold);}
+.nav-sep{flex:1;}
+.nav-links{display:flex;gap:28px;font-size:.78rem;font-weight:500;color:var(--muted2);}
+.nav-links a{color:var(--muted2);text-decoration:none;transition:color .15s;letter-spacing:.02em;}
+.nav-links a:hover{color:var(--text);}
+.nav-cta{background:var(--gold);color:#0a0a0f;border:none;border-radius:4px;padding:8px 18px;font-family:var(--sans);font-size:.76rem;font-weight:700;cursor:pointer;letter-spacing:.04em;transition:background .15s;}
+.nav-cta:hover{background:var(--gold-lt);}
+
+/* HERO */
+.hero{padding:140px 48px 80px;max-width:1100px;margin:0 auto;position:relative;}
+.hero-eyebrow{display:flex;align-items:center;gap:12px;font-family:var(--mono);font-size:.65rem;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);margin-bottom:28px;animation:fadeUp .6s ease both .1s;}
+.hero-eyebrow::before{content:'';width:28px;height:1px;background:var(--gold);}
+.hero-headline{font-family:var(--serif);font-size:clamp(2.8rem,5vw,4.5rem);font-weight:400;line-height:1.1;letter-spacing:-.01em;margin-bottom:20px;animation:fadeUp .6s ease both .2s;}
+.hero-headline em{font-style:italic;color:var(--gold);}
+.hero-headline span{display:block;}
+.hero-sub{font-size:1rem;color:var(--muted2);max-width:560px;line-height:1.8;margin-bottom:48px;font-weight:300;animation:fadeUp .6s ease both .3s;}
+
+/* RESULTS STRIP */
+.results-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border);border:1px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:100px;animation:fadeUp .7s ease both .4s;}
+.rs-card{background:var(--surface);padding:28px 28px;position:relative;overflow:hidden;}
+.rs-card::after{content:'';position:absolute;top:0;left:0;right:0;height:2px;}
+.rs-card:nth-child(1)::after{background:var(--gold);}
+.rs-card:nth-child(2)::after{background:var(--green);}
+.rs-card:nth-child(3)::after{background:var(--teal);}
+.rs-card:nth-child(4)::after{background:var(--red);}
+.rs-num{font-family:var(--serif);font-size:3rem;font-style:italic;line-height:1;margin-bottom:6px;}
+.rs-card:nth-child(1) .rs-num{color:var(--gold);}
+.rs-card:nth-child(2) .rs-num{color:var(--green);}
+.rs-card:nth-child(3) .rs-num{color:var(--teal);}
+.rs-card:nth-child(4) .rs-num{color:var(--red);}
+.rs-label{font-size:.78rem;color:var(--muted2);font-weight:400;line-height:1.5;}
+.rs-sub{font-family:var(--mono);font-size:.6rem;color:var(--muted);margin-top:6px;letter-spacing:.06em;text-transform:uppercase;}
+
+/* SECTION LAYOUT */
+.section{max-width:1100px;margin:0 auto;padding:0 48px 100px;}
+.section-eyebrow{font-family:var(--mono);font-size:.6rem;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);margin-bottom:12px;display:flex;align-items:center;gap:10px;}
+.section-eyebrow::before{content:'';width:20px;height:1px;background:var(--gold);}
+.section-title{font-family:var(--serif);font-size:clamp(1.8rem,3vw,2.8rem);font-style:italic;margin-bottom:12px;line-height:1.15;}
+.section-sub{font-size:.9rem;color:var(--muted2);max-width:520px;line-height:1.8;font-weight:300;}
+
+/* CASE STUDY */
+.case-study{background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-top:48px;}
+.cs-header{padding:36px 40px;display:grid;grid-template-columns:1fr auto;gap:24px;align-items:start;border-bottom:1px solid var(--border);}
+.cs-num{font-family:var(--mono);font-size:.6rem;letter-spacing:.14em;color:var(--muted);text-transform:uppercase;margin-bottom:8px;}
+.cs-title{font-family:var(--serif);font-size:1.8rem;font-style:italic;line-height:1.2;margin-bottom:8px;}
+.cs-client{font-size:.8rem;color:var(--muted2);display:flex;align-items:center;gap:8px;}
+.cs-client-dot{width:6px;height:6px;border-radius:50%;}
+.cs-meta{display:flex;flex-direction:column;align-items:flex-end;gap:8px;}
+.cs-industry{font-family:var(--mono);font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;padding:4px 12px;border-radius:3px;border:1px solid var(--border2);color:var(--muted2);}
+.cs-duration{font-size:.72rem;color:var(--muted);font-family:var(--mono);}
+
+/* BEFORE/AFTER */
+.ba-grid{display:grid;grid-template-columns:1fr 1fr;gap:0;border-bottom:1px solid var(--border);}
+.ba-panel{padding:32px 40px;}
+.ba-panel.before{border-right:1px solid var(--border);background:rgba(255,77,109,.02);}
+.ba-panel.after{background:rgba(34,201,122,.03);}
+.ba-label{font-family:var(--mono);font-size:.6rem;letter-spacing:.16em;text-transform:uppercase;margin-bottom:16px;display:flex;align-items:center;gap:8px;}
+.ba-label.before-lbl{color:var(--red);}
+.ba-label.before-lbl::before{content:'';width:16px;height:1px;background:var(--red);}
+.ba-label.after-lbl{color:var(--green);}
+.ba-label.after-lbl::before{content:'';width:16px;height:1px;background:var(--green);}
+.ba-items{display:flex;flex-direction:column;gap:10px;}
+.ba-item{display:flex;align-items:flex-start;gap:10px;font-size:.82rem;line-height:1.55;}
+.ba-icon{font-size:.9rem;flex-shrink:0;margin-top:1px;}
+.ba-text{color:var(--muted2);}
+.ba-text strong{color:var(--text);font-weight:600;}
+
+/* METRICS ROW */
+.metrics-row{display:grid;gap:0;border-bottom:1px solid var(--border);}
+.metrics-row.cols3{grid-template-columns:repeat(3,1fr);}
+.metrics-row.cols4{grid-template-columns:repeat(4,1fr);}
+.metric-cell{padding:28px 32px;border-right:1px solid var(--border);position:relative;}
+.metric-cell:last-child{border-right:none;}
+.metric-change{display:flex;align-items:baseline;gap:8px;margin-bottom:6px;}
+.mc-from{font-family:var(--serif);font-size:1.6rem;color:var(--muted);text-decoration:line-through;opacity:.5;}
+.mc-arrow{font-size:1rem;color:var(--green);}
+.mc-to{font-family:var(--serif);font-size:2rem;color:var(--green);font-style:italic;}
+.mc-to.gold{color:var(--gold);}
+.mc-to.teal{color:var(--teal);}
+.mc-to.red-saved{color:var(--red);}
+.metric-label{font-size:.76rem;color:var(--muted2);line-height:1.5;}
+.metric-delta{font-family:var(--mono);font-size:.6rem;color:var(--green);margin-top:5px;letter-spacing:.04em;text-transform:uppercase;}
+.metric-delta.gold{color:var(--gold);}
+.metric-delta.teal{color:var(--teal);}
+
+/* BAR COMPARISON */
+.bar-comparison{display:flex;flex-direction:column;gap:6px;margin-top:6px;}
+.bc-row{display:flex;align-items:center;gap:10px;}
+.bc-lbl{font-size:.68rem;color:var(--muted);min-width:40px;font-family:var(--mono);}
+.bc-track{flex:1;height:6px;background:var(--border2);border-radius:6px;overflow:hidden;}
+.bc-fill{height:100%;border-radius:6px;animation:lineGrow .9s ease both;}
+.bc-val{font-family:var(--mono);font-size:.65rem;color:var(--text);min-width:34px;text-align:right;}
+
+/* QUOTE */
+.cs-quote{padding:32px 40px;border-bottom:1px solid var(--border);background:rgba(232,184,75,.025);}
+.cq-mark{font-family:var(--serif);font-size:4rem;color:var(--gold);opacity:.3;line-height:.8;margin-bottom:8px;}
+.cq-text{font-family:var(--serif);font-size:1.15rem;font-style:italic;line-height:1.7;color:var(--text);max-width:700px;margin-bottom:16px;}
+.cq-attr{font-family:var(--mono);font-size:.65rem;letter-spacing:.08em;color:var(--gold);text-transform:uppercase;}
+
+/* WHAT I DID */
+.cs-actions{padding:32px 40px;}
+.ca-title{font-family:var(--mono);font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:16px;}
+.ca-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.ca-item{display:flex;gap:10px;font-size:.8rem;line-height:1.55;padding:12px 14px;background:var(--surface2);border:1px solid var(--border);border-radius:5px;}
+.ca-num{font-family:var(--mono);font-size:.65rem;color:var(--gold);flex-shrink:0;padding-top:1px;font-weight:500;}
+.ca-text{color:var(--muted2);}
+.ca-text strong{color:var(--text);}
+
+/* DIVIDER */
+.divider{height:1px;background:linear-gradient(90deg,transparent,var(--border2),transparent);margin:0 48px;}
+
+/* CTA SECTION */
+.cta-section{max-width:1100px;margin:0 auto;padding:80px 48px 120px;text-align:center;}
+.cta-eyebrow{font-family:var(--mono);font-size:.62rem;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);margin-bottom:20px;}
+.cta-title{font-family:var(--serif);font-size:clamp(2rem,4vw,3.5rem);font-style:italic;line-height:1.15;margin-bottom:20px;}
+.cta-title em{color:var(--gold);}
+.cta-sub{font-size:.9rem;color:var(--muted2);max-width:480px;margin:0 auto 40px;line-height:1.8;font-weight:300;}
+.cta-buttons{display:flex;justify-content:center;gap:14px;flex-wrap:wrap;}
+.cta-btn-primary{background:var(--gold);color:#0a0a0f;border:none;border-radius:5px;padding:14px 32px;font-family:var(--sans);font-size:.85rem;font-weight:700;cursor:pointer;letter-spacing:.04em;transition:all .15s;animation:glow 3s ease-in-out infinite;}
+.cta-btn-primary:hover{background:var(--gold-lt);transform:translateY(-1px);}
+.cta-btn-secondary{background:none;border:1px solid var(--border2);border-radius:5px;padding:14px 28px;font-family:var(--sans);font-size:.84rem;font-weight:500;color:var(--muted2);cursor:pointer;transition:all .15s;letter-spacing:.02em;}
+.cta-btn-secondary:hover{border-color:var(--gold);color:var(--gold);}
+
+/* FOOTER */
+footer{border-top:1px solid var(--border);padding:28px 48px;display:flex;align-items:center;justify-content:space-between;font-size:.72rem;color:var(--muted);}
+.footer-brand{font-family:var(--serif);font-size:.9rem;color:var(--cream);}
+.footer-brand em{font-style:italic;color:var(--gold);}
+
+/* TIMELINE */
+.timeline{display:flex;flex-direction:column;gap:0;padding:24px 0;}
+.tl-item{display:flex;gap:20px;padding:12px 0;}
+.tl-dot-wrap{display:flex;flex-direction:column;align-items:center;flex-shrink:0;}
+.tl-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;margin-top:4px;}
+.tl-line{width:1px;flex:1;margin-top:4px;min-height:16px;}
+.tl-body{flex:1;padding-bottom:4px;}
+.tl-week{font-family:var(--mono);font-size:.6rem;letter-spacing:.1em;color:var(--muted);text-transform:uppercase;margin-bottom:3px;}
+.tl-text{font-size:.8rem;color:var(--muted2);line-height:1.5;}
+.tl-text strong{color:var(--text);}
+
+/* UTILITY */
+.tag{display:inline-block;font-family:var(--mono);font-size:.58rem;letter-spacing:.08em;text-transform:uppercase;padding:3px 9px;border-radius:3px;font-weight:500;}
+.tag-green{background:rgba(34,201,122,.1);color:var(--green);border:1px solid rgba(34,201,122,.2);}
+.tag-gold{background:rgba(232,184,75,.1);color:var(--gold);border:1px solid rgba(232,184,75,.2);}
+.tag-teal{background:rgba(45,212,192,.1);color:var(--teal);border:1px solid rgba(45,212,192,.2);}
+.tag-red{background:rgba(255,77,109,.1);color:var(--red);border:1px solid rgba(255,77,109,.2);}
+
+@media(max-width:768px){
+  .ba-grid{grid-template-columns:1fr;}
+  .ba-panel.before{border-right:none;border-bottom:1px solid var(--border);}
+  .metrics-row.cols3,.metrics-row.cols4{grid-template-columns:1fr 1fr;}
+  .metric-cell:nth-child(odd){border-right:1px solid var(--border);}
+  .ca-grid{grid-template-columns:1fr;}
+  .results-strip{grid-template-columns:1fr 1fr;}
+  .cs-header{grid-template-columns:1fr;}
+  nav{padding:0 24px;}
+  .hero,.section,.cta-section{padding-left:24px;padding-right:24px;}
+}
+</style>
+
+<!-- SEO & Performance Optimization -->
+<meta name="description" content="Philipina Andrea Chezue is a freelance Executive Virtual Assistant in Dar es Salaam, specializing in remote operations, travel logistics, and project coordination for founders globally.">
+<meta name="keywords" content="Executive Virtual Assistant, Remote VA, Operations Assistant, Project Coordination, Travel Logistics, Tanzania VA, Portfolio">
+<meta name="robots" content="index, follow">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<link rel="canonical" href="https://philipinachezue.com/pages/va-proof-case-studies.html">
+<link rel="manifest" href="/manifest.json">
+<link rel="icon" type="image/x-icon" href="/assets/favicon.ico">
+
+<!-- Open Graph / Social -->
+<meta property="og:title" content="Philipina Andrea Chezue — Executive Virtual Assistant">
+<meta property="og:description" content="Reclaim your time through expert operations, travel logistics, and project coordination that actually works.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://philipinachezue.com/pages/va-proof-case-studies.html">
+<meta property="og:image" content="https://philipinachezue.com/assets/images/img_9f2ae763.jpg">
+
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Philipina Andrea Chezue — Executive VA">
+<meta name="twitter:description" content="Reclaim your time through expert operations and project coordination.">
+<meta name="twitter:image" content="https://philipinachezue.com/assets/images/img_9f2ae763.jpg">
+
+<!-- Structured Data -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org/",
+  "@type": "Person",
+  "name": "Philipina Andrea Chezue",
+  "jobTitle": "Executive Virtual Assistant",
+  "url": "https://philipinachezue.com",
+  "email": "philipinachezue@outlook.com",
+  "address": {
+    "@type": "PostalAddress",
+    "addressLocality": "Dar es Salaam",
+    "addressCountry": "Tanzania"
+  },
+  "sameAs": [
+    "https://www.linkedin.com/in/philipinaandreachezue/"
+  ],
+  "knowsAbout": ["Executive Support", "Project Coordination", "Travel Logistics", "Operations"]
+}
+</script>
+<!-- End SEO -->
+
+</head>
+<body>
+
+<nav>
+  <div class="nav-brand">Philipina <em>Chezue</em></div>
+  <div class="nav-sep"></div>
+  <div class="nav-links">
+    <a href="#results">Results</a>
+    <a href="#case-studies">Case Studies</a>
+    <a href="../index.html">Full Portfolio</a>
+  </div>
+  <a  href="mailto:philipinachezue@outlook.com" onclick="window.location.href='mailto:philipinachezue@outlook.com'; return false;" class="nav-cta" style="text-decoration:none;">Work With Me →</a>
+</nav>
+
+<!-- HERO -->
+<div class="hero" id="results">
+  <div class="hero-eyebrow">Executive VA · Proof of Work</div>
+  <h1 class="hero-headline">
+    <span>Not what I <em>can</em> do.</span>
+    <span>What I've <em>done.</em></span>
+  </h1>
+  <p class="hero-sub">Results, outcomes, and real numbers from founders I've worked with across travel, tech, e-commerce, and professional services.</p>
+
+  <!-- RESULTS STRIP -->
+  <div class="results-strip">
+    <div class="rs-card">
+      <div class="rs-num">14h</div>
+      <div class="rs-label">Average hours returned to founders per week</div>
+      <div class="rs-sub">Across 3 active engagements</div>
+    </div>
+    <div class="rs-card">
+      <div class="rs-num">$31K</div>
+      <div class="rs-label">Revenue protected through proactive issue resolution</div>
+      <div class="rs-sub">Supplier delays, booking rescues, client retention</div>
+    </div>
+    <div class="rs-card">
+      <div class="rs-num">100%</div>
+      <div class="rs-label">Client retention rate across all engagements</div>
+      <div class="rs-sub">No client has left without renewing or referring</div>
+    </div>
+    <div class="rs-card">
+      <div class="rs-num">3→1</div>
+      <div class="rs-label">Average tools consolidated per founder after onboarding</div>
+      <div class="rs-sub">Less chaos. One system. Everything connected.</div>
+    </div>
+  </div>
+</div>
+
+<!-- CASE STUDIES -->
+<div class="section" id="case-studies">
+  <div class="section-eyebrow reveal">Case Studies</div>
+  <h2 class="section-title reveal">Three engagements.<br/>Real outcomes.</h2>
+  <p class="section-sub reveal">Each case shows the situation I inherited, exactly what I did, and what changed as a result.</p>
+
+  <!-- ═══════════════════════════════════════
+       CASE STUDY 1 — TRAVEL FOUNDER
+  ═══════════════════════════════════════ -->
+  <div class="case-study reveal">
+    <div class="cs-header">
+      <div>
+        <div class="cs-num">Case Study 01</div>
+        <div class="cs-title">From inbox chaos to a<br/>fully managed client operation</div>
+        <div class="cs-client">
+          <span class="cs-client-dot" style="background:var(--gold)"></span>
+          Kili & Coast · Luxury Safari & Travel Concierge · Dar es Salaam
+        </div>
+      </div>
+      <div class="cs-meta">
+        <span class="cs-industry">Travel &amp; Hospitality</span>
+        <span class="cs-duration">Engagement: 6 months</span>
+        <span class="tag tag-gold">Operations + Travel Coordination</span>
+      </div>
+    </div>
+
+    <!-- BEFORE / AFTER -->
+    <div class="ba-grid">
+      <div class="ba-panel before">
+        <div class="ba-label before-lbl">Before I stepped in</div>
+        <div class="ba-items">
+          <div class="ba-item"><span class="ba-icon">🔴</span><span class="ba-text"><strong>278 unread emails</strong> when I joined — client queries going unanswered for 4–6 days</span></div>
+          <div class="ba-item"><span class="ba-icon">🔴</span><span class="ba-text">No system for tracking bookings — <strong>supplier confirmations stored in email threads</strong>, nowhere else</span></div>
+          <div class="ba-item"><span class="ba-icon">🔴</span><span class="ba-text">A $7,800 booking nearly lost because a <strong>supplier date change sat unread for 9 days</strong></span></div>
+          <div class="ba-item"><span class="ba-icon">🔴</span><span class="ba-text">Founder spending <strong>3+ hours daily</strong> on email, invoicing, and client coordination instead of selling</span></div>
+          <div class="ba-item"><span class="ba-icon">🔴</span><span class="ba-text">No pre-departure process — <strong>clients received no briefing documents</strong>, details sent ad hoc via WhatsApp</span></div>
+          <div class="ba-item"><span class="ba-icon">🔴</span><span class="ba-text">One formal complaint went <strong>unresolved for 11 days</strong> — client considering a chargeback</span></div>
+        </div>
+      </div>
+      <div class="ba-panel after">
+        <div class="ba-label after-lbl">After 60 days with me</div>
+        <div class="ba-items">
+          <div class="ba-item"><span class="ba-icon">🟢</span><span class="ba-text">Inbox at <strong>zero every weekday by 9 AM</strong> — all client queries triaged and responded to within 4 hours</span></div>
+          <div class="ba-item"><span class="ba-icon">🟢</span><span class="ba-text">Built a <strong>full booking management system</strong> in Notion — every supplier, confirmation, and payment in one place</span></div>
+          <div class="ba-item"><span class="ba-icon">🟢</span><span class="ba-text"><strong>Caught the Amara Lodge date conflict</strong> within 2 hours of arrival — renegotiated dates, saved the booking plus secured a complimentary $180 sundowner for the client</span></div>
+          <div class="ba-item"><span class="ba-icon">🟢</span><span class="ba-text">Founder's daily email time dropped from <strong>3h to under 20 minutes</strong> — focused on new client acquisition</span></div>
+          <div class="ba-item"><span class="ba-icon">🟢</span><span class="ba-text">Created a <strong>branded pre-departure briefing template</strong> — every client now receives a personalised 5-page pack 7 days before travel</span></div>
+          <div class="ba-item"><span class="ba-icon">🟢</span><span class="ba-text">Complaint resolved in <strong>under 48 hours</strong> with a drafted response and partial compensation offer — client retained and left a 5-star review</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- METRICS -->
+    <div class="metrics-row cols4">
+      <div class="metric-cell">
+        <div class="metric-change"><span class="mc-from">3h</span><span class="mc-arrow">→</span><span class="mc-to gold">20min</span></div>
+        <div class="metric-label">Founder's daily time spent on email & admin</div>
+        <div class="metric-delta gold">83% reduction</div>
+        <div class="bar-comparison" style="margin-top:10px;">
+          <div class="bc-row"><span class="bc-lbl">Before</span><div class="bc-track"><div class="bc-fill" style="width:100%;background:rgba(255,77,109,.4);animation-delay:.2s"></div></div><span class="bc-val">3h</span></div>
+          <div class="bc-row"><span class="bc-lbl">After</span><div class="bc-track"><div class="bc-fill" style="width:11%;background:var(--gold);animation-delay:.4s"></div></div><span class="bc-val">20m</span></div>
+        </div>
+      </div>
+      <div class="metric-cell">
+        <div class="metric-change"><span class="mc-from">9d</span><span class="mc-arrow">→</span><span class="mc-to">4h</span></div>
+        <div class="metric-label">Avg. response time to supplier alerts</div>
+        <div class="metric-delta">95% faster</div>
+        <div class="bar-comparison" style="margin-top:10px;">
+          <div class="bc-row"><span class="bc-lbl">Before</span><div class="bc-track"><div class="bc-fill" style="width:100%;background:rgba(255,77,109,.4);animation-delay:.3s"></div></div><span class="bc-val">9d</span></div>
+          <div class="bc-row"><span class="bc-lbl">After</span><div class="bc-track"><div class="bc-fill" style="width:2%;background:var(--green);animation-delay:.5s"></div></div><span class="bc-val">4h</span></div>
+        </div>
+      </div>
+      <div class="metric-cell">
+        <div class="metric-change"><span class="mc-arrow" style="font-size:1.2rem">💰</span><span class="mc-to teal">$7,800</span></div>
+        <div class="metric-label">Revenue protected from near-lost booking (Okafor — Serengeti)</div>
+        <div class="metric-delta teal">+ $180 goodwill win for client</div>
+      </div>
+      <div class="metric-cell">
+        <div class="metric-change"><span class="mc-from">11d</span><span class="mc-arrow">→</span><span class="mc-to">48h</span></div>
+        <div class="metric-label">Time to resolve formal client complaint</div>
+        <div class="metric-delta">Client retained + 5★ review</div>
+        <div class="bar-comparison" style="margin-top:10px;">
+          <div class="bc-row"><span class="bc-lbl">Before</span><div class="bc-track"><div class="bc-fill" style="width:100%;background:rgba(255,77,109,.4);animation-delay:.4s"></div></div><span class="bc-val">11d</span></div>
+          <div class="bc-row"><span class="bc-lbl">After</span><div class="bc-track"><div class="bc-fill" style="width:8%;background:var(--green);animation-delay:.6s"></div></div><span class="bc-val">48h</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- QUOTE -->
+    <div class="cs-quote">
+      <div class="cq-mark">"</div>
+      <div class="cq-text">I used to dread Mondays. My inbox was a war zone and I was constantly firefighting instead of building. Philipina didn't just manage my emails — she built a system I didn't know I needed. Within two months I had my mornings back, my clients were happier, and I'd closed two new bookings in the time I used to spend just catching up. She pays for herself ten times over.</div>
+      <div class="cq-attr">— Founder, Kili & Coast · Dar es Salaam, Tanzania</div>
+    </div>
+
+    <!-- WHAT I DID -->
+    <div class="cs-actions">
+      <div class="ca-title">Specifically what I built and managed</div>
+      <div class="ca-grid">
+        <div class="ca-item"><span class="ca-num">01</span><span class="ca-text"><strong>Inbox triage system</strong> — labelled, categorised, and created response templates for the 12 most common client query types</span></div>
+        <div class="ca-item"><span class="ca-num">02</span><span class="ca-text"><strong>Booking management database</strong> in Notion — all suppliers, confirmation numbers, payment schedules, and deadlines in one live view</span></div>
+        <div class="ca-item"><span class="ca-num">03</span><span class="ca-text"><strong>Supplier communication protocol</strong> — standardised follow-up sequences, escalation thresholds, and a SLA tracker for all active orders</span></div>
+        <div class="ca-item"><span class="ca-num">04</span><span class="ca-text"><strong>Pre-departure briefing pack template</strong> — 5-section branded doc covering flights, accommodation, itinerary, contacts, and packing — delivered 7 days before every trip</span></div>
+        <div class="ca-item"><span class="ca-num">05</span><span class="ca-text"><strong>Daily founder briefing</strong> — 7 AM summary of what needs a decision, what I'm handling, and what's coming in the next 48 hours</span></div>
+        <div class="ca-item"><span class="ca-num">06</span><span class="ca-text"><strong>Client onboarding flow</strong> — 5-step intake process that captures preferences, dietary needs, budget and logistics before a single itinerary is built</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════
+       CASE STUDY 2 — IMPORT / SOURCING
+  ═══════════════════════════════════════ -->
+  <div class="case-study reveal" style="margin-top:32px;">
+    <div class="cs-header">
+      <div>
+        <div class="cs-num">Case Study 02</div>
+        <div class="cs-title">Turning a supplier mess into<br/>a tracked, paid, on-time operation</div>
+        <div class="cs-client">
+          <span class="cs-client-dot" style="background:var(--teal)"></span>
+          DropRun Supplies · E-commerce Import Business · Dar es Salaam
+        </div>
+      </div>
+      <div class="cs-meta">
+        <span class="cs-industry">Import / E-commerce</span>
+        <span class="cs-duration">Engagement: 4 months</span>
+        <span class="tag tag-teal">Project Coordination + Sourcing Ops</span>
+      </div>
+    </div>
+
+    <div class="ba-grid">
+      <div class="ba-panel before">
+        <div class="ba-label before-lbl">Before I stepped in</div>
+        <div class="ba-items">
+          <div class="ba-item"><span class="ba-icon">🔴</span><span class="ba-text">Founder managing <strong>6 Chinese suppliers</strong> via scattered WhatsApp threads, emails, and WeChat — no central record</span></div>
+          <div class="ba-item"><span class="ba-icon">🔴</span><span class="ba-text"><strong>$5,760 in outstanding supplier payments</strong> nearly missed — no payment schedule tracked anywhere</span></div>
+          <div class="ba-item"><span class="ba-icon">🔴</span><span class="ba-text">Production delay on earbuds order <strong>sat undiscovered for 9 days</strong> — discovered only when founder chased the supplier</span></div>
+          <div class="ba-item"><span class="ba-icon">🔴</span><span class="ba-text"><strong>No freight tracking</strong> — founder unaware a $8,500 shipment was arriving in 4 days, no customs clearance arranged</span></div>
+          <div class="ba-item"><span class="ba-icon">🔴</span><span class="ba-text">Price negotiation with PowerGear <strong>stalled for 3 weeks</strong> — no follow-up, no escalation, no backup plan</span></div>
+        </div>
+      </div>
+      <div class="ba-panel after">
+        <div class="ba-label after-lbl">After 30 days with me</div>
+        <div class="ba-items">
+          <div class="ba-item"><span class="ba-icon">🟢</span><span class="ba-text">Built a <strong>live sourcing dashboard</strong> — all 6 suppliers, order status, payment stages, freight tracking, and action items in one view</span></div>
+          <div class="ba-item"><span class="ba-icon">🟢</span><span class="ba-text">Created a <strong>payment schedule with automatic reminders</strong> — not a single payment missed or late since implementation</span></div>
+          <div class="ba-item"><span class="ba-icon">🟢</span><span class="ba-text">Caught the Shenzhen delay <strong>within 2 hours of the supplier message</strong> — immediately drafted compensation request and identified backup supplier</span></div>
+          <div class="ba-item"><span class="ba-icon">🟢</span><span class="ba-text"><strong>Arranged customs clearance 5 days in advance</strong> for the StarPack shipment — goods cleared same day they arrived at port</span></div>
+          <div class="ba-item"><span class="ba-icon">🟢</span><span class="ba-text">Closed PowerGear negotiation in <strong>4 days after I took over</strong> — secured $0.60/unit discount, saving $1,800 on the order</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="metrics-row cols3">
+      <div class="metric-cell">
+        <div class="metric-change"><span class="mc-arrow" style="font-size:1.2rem">💰</span><span class="mc-to teal">$1,800</span></div>
+        <div class="metric-label">Saved on PowerGear order through negotiation follow-up ($0.60/unit × 3,000 units)</div>
+        <div class="metric-delta teal">9% unit cost reduction</div>
+      </div>
+      <div class="metric-cell">
+        <div class="metric-change"><span class="mc-from">9d</span><span class="mc-arrow">→</span><span class="mc-to">2h</span></div>
+        <div class="metric-label">Time to flag and escalate the Shenzhen production delay</div>
+        <div class="metric-delta">Backup supplier identified same day</div>
+        <div class="bar-comparison" style="margin-top:10px;">
+          <div class="bc-row"><span class="bc-lbl">Before</span><div class="bc-track"><div class="bc-fill" style="width:100%;background:rgba(255,77,109,.4);animation-delay:.3s"></div></div><span class="bc-val">9 days</span></div>
+          <div class="bc-row"><span class="bc-lbl">After</span><div class="bc-track"><div class="bc-fill" style="width:1%;background:var(--teal);animation-delay:.5s"></div></div><span class="bc-val">2h</span></div>
+        </div>
+      </div>
+      <div class="metric-cell">
+        <div class="metric-change"><span class="mc-from">0</span><span class="mc-arrow">→</span><span class="mc-to">1</span></div>
+        <div class="metric-label">Single live system replacing 4 scattered communication channels</div>
+        <div class="metric-delta">6 suppliers · 100% visibility</div>
+        <div style="margin-top:12px;display:flex;flex-wrap:wrap;gap:5px;">
+          <span class="tag tag-green">Payments ✓</span>
+          <span class="tag tag-teal">Freight ✓</span>
+          <span class="tag tag-gold">QC ✓</span>
+          <span class="tag tag-red">Delays flagged ✓</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="cs-quote">
+      <div class="cq-mark">"</div>
+      <div class="cq-text">I was drowning in supplier messages and had no idea where half my orders actually were. Philipina built a system that shows me everything at a glance — which supplier is on track, which needs attention, what's due for payment. I stopped worrying about the supply chain and started focusing on the business. She also saved me $1,800 on one order just by following up on a negotiation I'd let slide for three weeks.</div>
+      <div class="cq-attr">— Founder, DropRun Supplies · Dar es Salaam, Tanzania</div>
+    </div>
+
+    <div class="cs-actions">
+      <div class="ca-title">Specifically what I built and managed</div>
+      <div class="ca-grid">
+        <div class="ca-item"><span class="ca-num">01</span><span class="ca-text"><strong>Live sourcing tracker</strong> — 6 suppliers, each with order status, payment stage, timeline bar, and freight status updated daily</span></div>
+        <div class="ca-item"><span class="ca-num">02</span><span class="ca-text"><strong>Payment schedule with reminders</strong> — all deposit and balance dates logged, with 7-day advance alerts to founder before each payment</span></div>
+        <div class="ca-item"><span class="ca-num">03</span><span class="ca-text"><strong>Supplier communication log</strong> — every WeChat and email exchange documented with date, direction, and action required — nothing missed</span></div>
+        <div class="ca-item"><span class="ca-num">04</span><span class="ca-text"><strong>Customs & freight coordination</strong> — liaised with clearing agent for inbound shipments, ensured docs (packing list, CI, BL) were ready in advance</span></div>
+        <div class="ca-item"><span class="ca-num">05</span><span class="ca-text"><strong>Negotiation management</strong> — drafted all supplier communications in the founder's voice, followed up on stalled conversations, and escalated where needed</span></div>
+        <div class="ca-item"><span class="ca-num">06</span><span class="ca-text"><strong>Delay escalation protocol</strong> — any supplier update outside agreed timeline flagged to founder within 2 hours with options and recommended action</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════
+       CASE STUDY 3 — TECH STARTUP / APP BUILD
+  ═══════════════════════════════════════ -->
+  <div class="case-study reveal" style="margin-top:32px;">
+    <div class="cs-header">
+      <div>
+        <div class="cs-num">Case Study 03</div>
+        <div class="cs-title">Unblocking a dev team and keeping<br/>a $180K app launch on schedule</div>
+        <div class="cs-client">
+          <span class="cs-client-dot" style="background:var(--green)"></span>
+          SwiftDrop · Delivery App Startup · Nairobi, Kenya
+        </div>
+      </div>
+      <div class="cs-meta">
+        <span class="cs-industry">Tech / SaaS</span>
+        <span class="cs-duration">Engagement: Ongoing · Sprint 3 of 6</span>
+        <span class="tag tag-green">Project Coordination + Ops</span>
+      </div>
+    </div>
+
+    <div class="ba-grid">
+      <div class="ba-panel before">
+        <div class="ba-label before-lbl">The situation when I joined (Sprint 2)</div>
+        <div class="ba-items">
+          <div class="ba-item"><span class="ba-icon">🔴</span><span class="ba-text">No central project tracker — <strong>tasks lived in 3 different tools</strong> (Slack, Trello, email) with no one view of what was done or blocked</span></div>
+          <div class="ba-item"><span class="ba-icon">🔴</span><span class="ba-text">Dev team had been blocked on GPS API access for <strong>11 days</strong> — waiting on a founder decision that never got escalated</span></div>
+          <div class="ba-item"><span class="ba-icon">🔴</span><span class="ba-text">Founder had no visibility — <strong>didn't know Sprint 2 was 8 days behind</strong> until the designer mentioned it on a call</span></div>
+          <div class="ba-item"><span class="ba-icon">🔴</span><span class="ba-text"><strong>No standup structure</strong> — team meetings ran 60–90 minutes with no agenda, action items lost, same issues raised week after week</span></div>
+          <div class="ba-item"><span class="ba-icon">🔴</span><span class="ba-text">Stripe integration delayed because <strong>no one had flagged the live account activation</strong> to the founder — a 15-minute task holding up a 2-week build</span></div>
+        </div>
+      </div>
+      <div class="ba-panel after">
+        <div class="ba-label after-lbl">After 3 weeks with me</div>
+        <div class="ba-items">
+          <div class="ba-item"><span class="ba-icon">🟢</span><span class="ba-text">Built a <strong>single project tracker with Gantt timeline</strong> — all 48 tasks across 6 sprints visible, with owner, status, and due date</span></div>
+          <div class="ba-item"><span class="ba-icon">🟢</span><span class="ba-text">GPS API blocker <strong>resolved within 24 hours</strong> of me joining — I wrote the setup guide, flagged it to founder, and it was live the next day</span></div>
+          <div class="ba-item"><span class="ba-icon">🟢</span><span class="ba-text">Founder now receives a <strong>weekly project health report every Monday</strong> — what's done, what's blocked, what decisions are needed, and whether Jun 30 launch is still on track</span></div>
+          <div class="ba-item"><span class="ba-icon">🟢</span><span class="ba-text">Standups reduced from <strong>90 minutes to 22 minutes</strong> — templated agenda, action log, and follow-up notes sent to all within 1 hour</span></div>
+          <div class="ba-item"><span class="ba-icon">🟢</span><span class="ba-text">Stripe activation flagged, <strong>completed in one afternoon</strong> — frontend payment build unblocked, back on schedule</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TIMELINE -->
+    <div style="padding:28px 40px;border-bottom:1px solid var(--border);">
+      <div style="font-family:var(--mono);font-size:.58rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:4px;">My impact on the timeline — first 3 weeks</div>
+      <div class="timeline">
+        <div class="tl-item">
+          <div class="tl-dot-wrap"><div class="tl-dot" style="background:var(--red)"></div><div class="tl-line" style="background:var(--border2)"></div></div>
+          <div class="tl-body"><div class="tl-week">Day 1 — Joined project</div><div class="tl-text">Audited all tools. Found <strong>11-day GPS blocker</strong>, undocumented Stripe issue, and 3 tasks marked "in progress" with no actual owner. Immediately surfaced to founder.</div></div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot-wrap"><div class="tl-dot" style="background:var(--gold)"></div><div class="tl-line" style="background:var(--border2)"></div></div>
+          <div class="tl-body"><div class="tl-week">Day 2 — GPS blocker resolved</div><div class="tl-text">Wrote step-by-step Google Maps Platform setup guide. Founder activated billing account. <strong>Darius unblocked. Two stalled tasks restarted.</strong></div></div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot-wrap"><div class="tl-dot" style="background:var(--gold)"></div><div class="tl-line" style="background:var(--border2)"></div></div>
+          <div class="tl-body"><div class="tl-week">Day 5 — Project tracker live</div><div class="tl-text">Built full Gantt tracker — 48 tasks, 6 sprints, owner + status + due date for each. <strong>First time the whole team saw the full picture.</strong> Morale visibly improved.</div></div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot-wrap"><div class="tl-dot" style="background:var(--teal)"></div><div class="tl-line" style="background:var(--border2)"></div></div>
+          <div class="tl-body"><div class="tl-week">Day 8 — Stripe unblocked</div><div class="tl-text">Flagged live account activation to founder — <strong>resolved same afternoon</strong>. Amaka's payment integration build resumed. Two weeks of delay averted.</div></div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot-wrap"><div class="tl-dot" style="background:var(--green)"></div></div>
+          <div class="tl-body"><div class="tl-week">Day 21 — Sprint 3 on track</div><div class="tl-text"><strong>Jun 30 launch date confirmed viable.</strong> Sprint velocity at 84%. 3 blockers remaining (GPS driver app, both dependent on same API — escalation in progress).</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="metrics-row cols3">
+      <div class="metric-cell">
+        <div class="metric-change"><span class="mc-from">11d</span><span class="mc-arrow">→</span><span class="mc-to">24h</span></div>
+        <div class="metric-label">Time GPS API blocker sat unresolved vs. time I took to close it</div>
+        <div class="metric-delta">2 dev tasks unblocked immediately</div>
+        <div class="bar-comparison" style="margin-top:10px;">
+          <div class="bc-row"><span class="bc-lbl">Before</span><div class="bc-track"><div class="bc-fill" style="width:100%;background:rgba(255,77,109,.4);animation-delay:.3s"></div></div><span class="bc-val">11d</span></div>
+          <div class="bc-row"><span class="bc-lbl">After</span><div class="bc-track"><div class="bc-fill" style="width:4%;background:var(--green);animation-delay:.5s"></div></div><span class="bc-val">24h</span></div>
+        </div>
+      </div>
+      <div class="metric-cell">
+        <div class="metric-change"><span class="mc-from">90m</span><span class="mc-arrow">→</span><span class="mc-to">22m</span></div>
+        <div class="metric-label">Average standup duration after templated agenda introduced</div>
+        <div class="metric-delta">68 min/week returned to team</div>
+        <div class="bar-comparison" style="margin-top:10px;">
+          <div class="bc-row"><span class="bc-lbl">Before</span><div class="bc-track"><div class="bc-fill" style="width:100%;background:rgba(255,77,109,.4);animation-delay:.3s"></div></div><span class="bc-val">90m</span></div>
+          <div class="bc-row"><span class="bc-lbl">After</span><div class="bc-track"><div class="bc-fill" style="width:24%;background:var(--green);animation-delay:.5s"></div></div><span class="bc-val">22m</span></div>
+        </div>
+      </div>
+      <div class="metric-cell">
+        <div class="metric-change"><span class="mc-arrow" style="font-size:1.1rem">🚀</span><span class="mc-to teal" style="font-size:1.5rem;">Jun 30</span></div>
+        <div class="metric-label">Launch date — still on track despite 2 active blockers and an 8-day Sprint 2 overrun</div>
+        <div class="metric-delta teal">Sprint 3 velocity: 84% ↑</div>
+        <div style="margin-top:12px;font-size:.72rem;color:var(--muted2);line-height:1.6;">Before I joined, the team had silently slipped 8 days. The founder didn't know. Launch was in danger.</div>
+      </div>
+    </div>
+
+    <div class="cs-quote">
+      <div class="cq-mark">"</div>
+      <div class="cq-text">I hired a developer and two designers and thought that was enough. What I didn't realise is that someone still needs to make sure they can actually do their work — that blockers get resolved, that I know what's happening, and that the June deadline isn't quietly slipping away. Philipina spotted problems I didn't know I had and fixed them before they cost me real money. She's not just an assistant — she's the project's operational backbone.</div>
+      <div class="cq-attr">— Founder, SwiftDrop · Nairobi, Kenya</div>
+    </div>
+
+    <div class="cs-actions">
+      <div class="ca-title">Specifically what I built and managed</div>
+      <div class="ca-grid">
+        <div class="ca-item"><span class="ca-num">01</span><span class="ca-text"><strong>Full Gantt project tracker</strong> — 48 tasks across 6 sprints, each with owner, status, due date, and blocker flag. Updated every Monday.</span></div>
+        <div class="ca-item"><span class="ca-num">02</span><span class="ca-text"><strong>Blocker escalation system</strong> — any task blocked for more than 24 hours automatically surfaced to founder with context, options, and recommended decision</span></div>
+        <div class="ca-item"><span class="ca-num">03</span><span class="ca-text"><strong>Weekly project health report</strong> — Monday morning summary: sprint velocity, open blockers, decisions needed, and a launch-date risk assessment</span></div>
+        <div class="ca-item"><span class="ca-num">04</span><span class="ca-text"><strong>Standup template & action log</strong> — 22-minute structured standup with pre-circulated agenda. All action items logged and followed up by next session.</span></div>
+        <div class="ca-item"><span class="ca-num">05</span><span class="ca-text"><strong>Vendor & tool coordination</strong> — managed API setup guides, Stripe onboarding docs, and third-party integrations so the dev team never waited on admin tasks</span></div>
+        <div class="ca-item"><span class="ca-num">06</span><span class="ca-text"><strong>Sprint planning prep</strong> — 48 hours before each sprint planning session, delivered a prep doc with prior sprint review, velocity data, and proposed priorities for founder's sign-off</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- CTA -->
+<div class="cta-section reveal">
+  <div class="cta-eyebrow">Ready to work together?</div>
+  <h2 class="cta-title">Your business.<br/><em>Running without you.</em></h2>
+  <p class="cta-sub">If you're spending your best hours on things that shouldn't need you — inbox, suppliers, project admin, travel logistics — let's talk about what that's actually costing you.</p>
+  <div class="cta-buttons">
+    <a  href="mailto:philipinachezue@outlook.com" onclick="window.location.href='mailto:philipinachezue@outlook.com'; return false;" class="cta-btn-primary" style="text-decoration:none;display:inline-block;">Book a discovery call →</a>
+    <a href="../index.html" class="cta-btn-secondary" style="text-decoration:none;display:inline-block;">View full portfolio</a>
+  </div>
+  <div style="margin-top:40px;display:flex;justify-content:center;gap:40px;flex-wrap:wrap;">
+    <div style="text-align:center;">
+      <div style="font-family:var(--serif);font-size:1.6rem;font-style:italic;color:var(--gold);">Available</div>
+      <div style="font-size:.72rem;color:var(--muted);font-family:var(--mono);letter-spacing:.06em;text-transform:uppercase;margin-top:3px;">For new clients · Q2 2026</div>
+    </div>
+    <div style="text-align:center;">
+      <div style="font-family:var(--serif);font-size:1.6rem;font-style:italic;color:var(--green);">Dar es Salaam</div>
+      <div style="font-size:.72rem;color:var(--muted);font-family:var(--mono);letter-spacing:.06em;text-transform:uppercase;margin-top:3px;">Remote-first · Works across all time zones</div>
+    </div>
+    <div style="text-align:center;">
+      <div style="font-family:var(--serif);font-size:1.6rem;font-style:italic;color:var(--teal);">24h</div>
+      <div style="font-size:.72rem;color:var(--muted);font-family:var(--mono);letter-spacing:.06em;text-transform:uppercase;margin-top:3px;">Response to all enquiries</div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-brand">Philipina <em>Chezue</em> · Executive VA</div>
+  <div>Dar es Salaam, Tanzania · Available globally</div>
+  <div><a  href="mailto:philipinachezue@outlook.com" onclick="window.location.href='mailto:philipinachezue@outlook.com'; return false;" style="color:var(--muted);text-decoration:none;">philipinachezue@outlook.com</a> · <a href="https://www.linkedin.com/in/philipinaandreachezue/" target="_blank" rel="noopener noreferrer" style="color:var(--muted);text-decoration:none;">LinkedIn</a></div>
+</footer>
+
+<script>
+// Add animate class to all reveal elements so animation works progressively
+document.querySelectorAll('.reveal').forEach(el => el.classList.add('animate'));
+
+// Reveal on scroll
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+    }
+  });
+}, { threshold: 0.08, rootMargin: '0px 0px -30px 0px' });
+
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+// Animate numbers on scroll
+function animateNumber(el, target, suffix='', prefix='') {
+  const duration = 1800;
+  const start 

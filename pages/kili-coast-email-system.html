@@ -1,0 +1,1078 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Kili & Coast — Email Hub</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --sand: #f5efe6;
+    --warm-white: #faf7f2;
+    --bark: #3b2c1e;
+    --clay: #a0603a;
+    --gold: #c9973f;
+    --moss: #4a5c42;
+    --dusk: #7b6e62;
+    --fog: #e8dfd5;
+    --red: #b94040;
+    --teal: #2d6e6e;
+    --radius: 4px;
+  }
+
+  body {
+    background: var(--warm-white);
+    font-family: 'DM Sans', sans-serif;
+    color: var(--bark);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ── TOP BAR ── */
+  .topbar {
+    background: var(--bark);
+    color: var(--sand);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 28px;
+    height: 56px;
+    flex-shrink: 0;
+  }
+  .brand {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.45rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+  }
+  .brand span { color: var(--gold); }
+  .topbar-right {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    font-size: 0.8rem;
+    color: #c4b8aa;
+  }
+  .avatar {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    background: var(--clay);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: #fff;
+    letter-spacing: 0.05em;
+  }
+  .status-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: #6bcf8f; display: inline-block; margin-right: 5px;
+  }
+
+  /* ── LAYOUT ── */
+  .shell {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+    height: calc(100vh - 56px);
+  }
+
+  /* ── SIDEBAR ── */
+  .sidebar {
+    width: 220px;
+    background: var(--sand);
+    border-right: 1px solid var(--fog);
+    display: flex;
+    flex-direction: column;
+    padding: 20px 0;
+    flex-shrink: 0;
+  }
+  .sidebar-section { margin-bottom: 28px; }
+  .sidebar-label {
+    font-size: 0.65rem;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--dusk);
+    padding: 0 18px;
+    margin-bottom: 6px;
+  }
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 18px;
+    font-size: 0.82rem;
+    color: var(--bark);
+    cursor: pointer;
+    border-left: 3px solid transparent;
+    transition: background 0.15s, border-color 0.15s;
+  }
+  .nav-item:hover { background: var(--fog); }
+  .nav-item.active {
+    border-left-color: var(--clay);
+    background: #edddd0;
+    font-weight: 500;
+    color: var(--clay);
+  }
+  .nav-item .icon { font-size: 0.95rem; width: 18px; text-align: center; }
+  .badge {
+    margin-left: auto;
+    background: var(--clay);
+    color: #fff;
+    font-size: 0.62rem;
+    font-weight: 600;
+    padding: 2px 7px;
+    border-radius: 20px;
+    letter-spacing: 0.02em;
+  }
+  .badge.gold { background: var(--gold); }
+  .badge.moss { background: var(--moss); }
+
+  .compose-btn {
+    margin: 0 14px 20px;
+    padding: 10px;
+    background: var(--clay);
+    color: #fff;
+    border: none;
+    border-radius: var(--radius);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.82rem;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    cursor: pointer;
+    transition: background 0.15s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+  }
+  .compose-btn:hover { background: #8f4e28; }
+
+  /* ── INBOX LIST ── */
+  .inbox-panel {
+    width: 360px;
+    border-right: 1px solid var(--fog);
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    background: #fff;
+  }
+  .inbox-header {
+    padding: 18px 20px 12px;
+    border-bottom: 1px solid var(--fog);
+  }
+  .inbox-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: var(--bark);
+  }
+  .inbox-meta {
+    font-size: 0.75rem;
+    color: var(--dusk);
+    margin-top: 2px;
+  }
+  .search-bar {
+    margin: 10px 20px 14px;
+    position: relative;
+  }
+  .search-bar input {
+    width: 100%;
+    padding: 8px 12px 8px 34px;
+    border: 1px solid var(--fog);
+    border-radius: var(--radius);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.78rem;
+    background: var(--warm-white);
+    color: var(--bark);
+    outline: none;
+  }
+  .search-bar input:focus { border-color: var(--clay); }
+  .search-bar .search-icon {
+    position: absolute; left: 10px; top: 50%;
+    transform: translateY(-50%); font-size: 0.85rem; color: var(--dusk);
+  }
+
+  .filter-tabs {
+    display: flex;
+    gap: 0;
+    border-bottom: 1px solid var(--fog);
+    padding: 0 20px;
+  }
+  .filter-tab {
+    font-size: 0.72rem;
+    font-weight: 500;
+    color: var(--dusk);
+    padding: 7px 12px 7px 0;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+    letter-spacing: 0.03em;
+    transition: color 0.15s;
+  }
+  .filter-tab.active { color: var(--clay); border-bottom-color: var(--clay); }
+
+  .email-list { overflow-y: auto; flex: 1; }
+  .email-item {
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--fog);
+    cursor: pointer;
+    transition: background 0.12s;
+    position: relative;
+  }
+  .email-item:hover { background: var(--warm-white); }
+  .email-item.active { background: #fdf0e6; border-left: 3px solid var(--clay); padding-left: 17px; }
+  .email-item.unread .email-sender { font-weight: 600; }
+  .email-item.unread::after {
+    content: '';
+    width: 7px; height: 7px;
+    background: var(--clay);
+    border-radius: 50%;
+    position: absolute;
+    right: 16px;
+    top: 18px;
+  }
+  .email-row1 {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 3px;
+  }
+  .email-sender { font-size: 0.83rem; color: var(--bark); }
+  .email-time { font-size: 0.7rem; color: var(--dusk); flex-shrink: 0; margin-left: 8px; }
+  .email-subject { font-size: 0.78rem; color: var(--bark); margin-bottom: 3px; }
+  .email-preview { font-size: 0.73rem; color: var(--dusk); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .email-tags { display: flex; gap: 5px; margin-top: 6px; flex-wrap: wrap; }
+  .tag {
+    font-size: 0.62rem;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    padding: 2px 7px;
+    border-radius: 20px;
+    text-transform: uppercase;
+  }
+  .tag-vip { background: #f9edd6; color: #9a6715; }
+  .tag-urgent { background: #fce8e8; color: #922; }
+  .tag-itinerary { background: #e4eee4; color: var(--moss); }
+  .tag-payment { background: #e6ecf5; color: #2d4f8e; }
+  .tag-inquiry { background: #ede8f5; color: #5a3d8e; }
+  .tag-followup { background: #f5e8f0; color: #7a2d5e; }
+  .tag-confirmed { background: #e4eee4; color: #2d6e4e; }
+  .tag-logistics { background: #e8f0f5; color: #2d5e6e; }
+  .tag-complaint { background: #fde8e8; color: #8e2d2d; }
+
+  /* ── READING PANE ── */
+  .reading-pane {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    background: #fff;
+  }
+  .reading-toolbar {
+    padding: 14px 28px;
+    border-bottom: 1px solid var(--fog);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .tool-btn {
+    background: none;
+    border: 1px solid var(--fog);
+    border-radius: var(--radius);
+    padding: 6px 12px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.75rem;
+    color: var(--bark);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    transition: background 0.12s, border-color 0.12s;
+  }
+  .tool-btn:hover { background: var(--fog); border-color: var(--dusk); }
+  .tool-btn.primary {
+    background: var(--clay);
+    border-color: var(--clay);
+    color: #fff;
+  }
+  .tool-btn.primary:hover { background: #8f4e28; }
+  .tool-btn-sep { width: 1px; height: 24px; background: var(--fog); margin: 0 4px; }
+  .ml-auto { margin-left: auto; }
+
+  .email-body { flex: 1; overflow-y: auto; padding: 30px 40px; }
+  .email-body-header { margin-bottom: 24px; padding-bottom: 20px; border-bottom: 1px solid var(--fog); }
+  .email-body-subject {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.6rem;
+    font-weight: 600;
+    line-height: 1.3;
+    color: var(--bark);
+    margin-bottom: 14px;
+  }
+  .email-meta-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  .sender-avatar {
+    width: 40px; height: 40px; border-radius: 50%;
+    background: var(--clay);
+    display: flex; align-items: center; justify-content: center;
+    color: #fff; font-size: 0.85rem; font-weight: 500;
+    flex-shrink: 0;
+  }
+  .sa-green { background: var(--moss); }
+  .sa-teal { background: var(--teal); }
+  .sa-gold { background: var(--gold); }
+  .sa-red { background: var(--red); }
+  .sa-bark { background: var(--bark); }
+  .meta-info { flex: 1; }
+  .meta-from { font-size: 0.85rem; font-weight: 500; color: var(--bark); }
+  .meta-details { font-size: 0.74rem; color: var(--dusk); margin-top: 2px; line-height: 1.6; }
+  .meta-time { font-size: 0.74rem; color: var(--dusk); flex-shrink: 0; }
+
+  .email-content {
+    font-size: 0.87rem;
+    line-height: 1.85;
+    color: #3b2c1e;
+  }
+  .email-content p { margin-bottom: 14px; }
+  .email-content .greeting { font-style: italic; color: var(--dusk); }
+  .email-content strong { color: var(--bark); font-weight: 500; }
+
+  .info-box {
+    background: var(--warm-white);
+    border-left: 3px solid var(--gold);
+    padding: 14px 18px;
+    border-radius: 0 4px 4px 0;
+    margin: 18px 0;
+    font-size: 0.82rem;
+    line-height: 1.7;
+  }
+  .info-box.alert { border-left-color: var(--red); background: #fff8f8; }
+  .info-box.confirm { border-left-color: var(--moss); background: #f4f8f4; }
+  .info-box-title { font-weight: 600; font-size: 0.77rem; text-transform: uppercase; letter-spacing: 0.07em; color: var(--dusk); margin-bottom: 6px; }
+
+  .itinerary-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 16px 0;
+    font-size: 0.8rem;
+  }
+  .itinerary-table th {
+    background: var(--bark);
+    color: var(--sand);
+    padding: 8px 12px;
+    text-align: left;
+    font-weight: 500;
+    font-size: 0.72rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .itinerary-table td {
+    padding: 9px 12px;
+    border-bottom: 1px solid var(--fog);
+    color: var(--bark);
+  }
+  .itinerary-table tr:nth-child(even) td { background: var(--warm-white); }
+
+  .email-attachments {
+    margin-top: 24px;
+    padding-top: 18px;
+    border-top: 1px solid var(--fog);
+  }
+  .attach-label { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--dusk); font-weight: 500; margin-bottom: 10px; }
+  .attach-files { display: flex; gap: 10px; flex-wrap: wrap; }
+  .attach-file {
+    display: flex; align-items: center; gap: 8px;
+    border: 1px solid var(--fog);
+    border-radius: var(--radius);
+    padding: 8px 12px;
+    font-size: 0.76rem;
+    color: var(--bark);
+    cursor: pointer;
+    transition: background 0.12s;
+  }
+  .attach-file:hover { background: var(--fog); }
+  .attach-icon { font-size: 1rem; }
+
+  .reply-box {
+    border-top: 1px solid var(--fog);
+    padding: 18px 28px;
+    background: var(--warm-white);
+  }
+  .reply-header { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+  .reply-label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; font-weight: 500; color: var(--dusk); }
+  .reply-template-btn {
+    margin-left: auto;
+    background: none;
+    border: 1px solid var(--fog);
+    border-radius: var(--radius);
+    padding: 4px 10px;
+    font-size: 0.7rem;
+    color: var(--dusk);
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .reply-template-btn:hover { border-color: var(--clay); color: var(--clay); }
+  .reply-textarea {
+    width: 100%;
+    min-height: 80px;
+    border: 1px solid var(--fog);
+    border-radius: var(--radius);
+    padding: 12px 14px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.82rem;
+    color: var(--bark);
+    background: #fff;
+    outline: none;
+    resize: none;
+    line-height: 1.6;
+  }
+  .reply-textarea:focus { border-color: var(--clay); }
+  .reply-footer { display: flex; align-items: center; gap: 10px; margin-top: 10px; }
+  .reply-send-btn {
+    background: var(--bark);
+    color: var(--sand);
+    border: none;
+    border-radius: var(--radius);
+    padding: 9px 20px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 500;
+    cursor: pointer;
+    letter-spacing: 0.04em;
+    transition: background 0.15s;
+  }
+  .reply-send-btn:hover { background: var(--clay); }
+
+  /* ── RIGHT PANEL (CRM sidebar) ── */
+  .crm-panel {
+    width: 260px;
+    border-left: 1px solid var(--fog);
+    background: var(--warm-white);
+    padding: 20px 18px;
+    overflow-y: auto;
+    flex-shrink: 0;
+  }
+  .crm-title { font-family: 'Cormorant Garamond', serif; font-size: 1rem; font-weight: 600; color: var(--bark); margin-bottom: 16px; }
+  .crm-card { background: #fff; border: 1px solid var(--fog); border-radius: var(--radius); padding: 14px; margin-bottom: 14px; }
+  .crm-card-title { font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--dusk); font-weight: 500; margin-bottom: 8px; }
+  .crm-name { font-size: 0.9rem; font-weight: 500; color: var(--bark); }
+  .crm-detail { font-size: 0.75rem; color: var(--dusk); line-height: 1.8; }
+  .crm-stat { display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--dusk); margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--fog); }
+  .crm-stat-val { font-weight: 600; color: var(--bark); }
+  .priority-flag {
+    display: inline-flex; align-items: center; gap: 4px;
+    font-size: 0.67rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em;
+    padding: 3px 8px; border-radius: 20px;
+    margin-top: 6px;
+  }
+  .flag-vip { background: #f9edd6; color: #9a6715; }
+  .flag-new { background: #e4eee4; color: var(--moss); }
+  .flag-returning { background: #e6ecf5; color: #2d4f8e; }
+
+  .quick-actions { margin-bottom: 18px; }
+  .qa-btn {
+    width: 100%;
+    background: #fff;
+    border: 1px solid var(--fog);
+    border-radius: var(--radius);
+    padding: 9px 12px;
+    margin-bottom: 6px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.76rem;
+    color: var(--bark);
+    text-align: left;
+    cursor: pointer;
+    display: flex; align-items: center; gap: 8px;
+    transition: background 0.12s;
+  }
+  .qa-btn:hover { background: var(--fog); }
+
+  .pipeline-item { display: flex; align-items: center; gap: 8px; margin-bottom: 9px; font-size: 0.76rem; }
+  .pipeline-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+  .dot-confirmed { background: var(--moss); }
+  .dot-pending { background: var(--gold); }
+  .dot-inquiry { background: var(--clay); }
+  .pipeline-name { flex: 1; color: var(--bark); }
+  .pipeline-val { color: var(--dusk); font-weight: 500; }
+
+  /* ── SCROLLBAR ── */
+  ::-webkit-scrollbar { width: 5px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--fog); border-radius: 10px; }
+
+  /* email items hidden by default for JS switching */
+  .reading-content { display: none; }
+  .reading-content.visible { display: block; }
+
+</style>
+
+<!-- SEO & Performance Optimization -->
+<meta name="description" content="Philipina Andrea Chezue is a freelance Executive Virtual Assistant in Dar es Salaam, specializing in remote operations, travel logistics, and project coordination for founders globally.">
+<meta name="keywords" content="Executive Virtual Assistant, Remote VA, Operations Assistant, Project Coordination, Travel Logistics, Tanzania VA, Portfolio">
+<meta name="robots" content="index, follow">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<link rel="canonical" href="https://philipinachezue.com/">
+<link rel="manifest" href="/manifest.json">
+<link rel="icon" type="image/x-icon" href="/assets/favicon.ico">
+
+<!-- Open Graph / Social -->
+<meta property="og:title" content="Philipina Andrea Chezue — Executive Virtual Assistant">
+<meta property="og:description" content="Reclaim your time through expert operations, travel logistics, and project coordination that actually works.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://philipinachezue.com/">
+<meta property="og:image" content="https://philipinachezue.com/assets/images/img_9f2ae763.jpg">
+
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Philipina Andrea Chezue — Executive VA">
+<meta name="twitter:description" content="Reclaim your time through expert operations and project coordination.">
+<meta name="twitter:image" content="https://philipinachezue.com/assets/images/img_9f2ae763.jpg">
+
+<!-- Structured Data -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org/",
+  "@type": "Person",
+  "name": "Philipina Andrea Chezue",
+  "jobTitle": "Executive Virtual Assistant",
+  "url": "https://philipinachezue.com",
+  "email": "philipinachezue@outlook.com",
+  "address": {
+    "@type": "PostalAddress",
+    "addressLocality": "Dar es Salaam",
+    "addressCountry": "Tanzania"
+  },
+  "sameAs": [
+    "https://www.linkedin.com/in/philipinaandreachezue/"
+  ],
+  "knowsAbout": ["Executive Support", "Project Coordination", "Travel Logistics", "Operations"]
+}
+</script>
+<!-- End SEO -->
+
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="topbar">
+  <div class="brand">Kili <span>&</span> Coast</div>
+  <div class="topbar-right">
+    <span><span class="status-dot"></span>Online · EAT 14:32</span>
+    <span>Email Hub</span>
+    <div class="avatar">PC</div>
+  </div>
+</div>
+
+<div class="shell">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <button class="compose-btn">✦ Compose</button>
+
+    <div class="sidebar-section">
+      <div class="sidebar-label">Inbox</div>
+      <div class="nav-item active" onclick="setFolder(this)"><span class="icon">📥</span> All Mail <span class="badge">14</span></div>
+      <div class="nav-item" onclick="setFolder(this)"><span class="icon">⭐</span> VIP Clients <span class="badge gold">5</span></div>
+      <div class="nav-item" onclick="setFolder(this)"><span class="icon">🔔</span> Urgent <span class="badge">3</span></div>
+      <div class="nav-item" onclick="setFolder(this)"><span class="icon">📤</span> Sent</div>
+      <div class="nav-item" onclick="setFolder(this)"><span class="icon">📋</span> Drafts <span class="badge">2</span></div>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-label">By Category</div>
+      <div class="nav-item" onclick="setFolder(this)"><span class="icon">✈️</span> Itineraries <span class="badge moss">6</span></div>
+      <div class="nav-item" onclick="setFolder(this)"><span class="icon">💳</span> Payments</div>
+      <div class="nav-item" onclick="setFolder(this)"><span class="icon">🏨</span> Suppliers</div>
+      <div class="nav-item" onclick="setFolder(this)"><span class="icon">🆕</span> New Inquiries</div>
+      <div class="nav-item" onclick="setFolder(this)"><span class="icon">🔁</span> Follow-ups</div>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-label">Destinations</div>
+      <div class="nav-item" onclick="setFolder(this)"><span class="icon">🦁</span> Serengeti</div>
+      <div class="nav-item" onclick="setFolder(this)"><span class="icon">🏖️</span> Zanzibar</div>
+      <div class="nav-item" onclick="setFolder(this)"><span class="icon">🏔️</span> Kilimanjaro</div>
+      <div class="nav-item" onclick="setFolder(this)"><span class="icon">🌍</span> Cape Town</div>
+    </div>
+  </div>
+
+  <!-- INBOX LIST -->
+  <div class="inbox-panel">
+    <div class="inbox-header">
+      <div class="inbox-title">All Mail</div>
+      <div class="inbox-meta">14 messages · 9 unread · Thursday, 2 April 2026</div>
+    </div>
+    <div class="search-bar">
+      <span class="search-icon">🔍</span>
+      <input type="text" placeholder="Search clients, bookings, destinations…" />
+    </div>
+    <div class="filter-tabs">
+      <div class="filter-tab active">All</div>
+      <div class="filter-tab">Unread</div>
+      <div class="filter-tab">Flagged</div>
+      <div class="filter-tab">Attachments</div>
+    </div>
+    <div class="email-list">
+
+      <div class="email-item unread active" onclick="showEmail(0, this)">
+        <div class="email-row1">
+          <span class="email-sender">Sophie & James Hartwell</span>
+          <span class="email-time">10:47 AM</span>
+        </div>
+        <div class="email-subject">Re: Honeymoon Itinerary – Zanzibar + Serengeti (June)</div>
+        <div class="email-preview">Thank you so much! One question about the dhow cruise — is it private or group? Also James wanted to check…</div>
+        <div class="email-tags">
+          <span class="tag tag-vip">VIP</span>
+          <span class="tag tag-itinerary">Itinerary</span>
+        </div>
+      </div>
+
+      <div class="email-item unread" onclick="showEmail(1, this)">
+        <div class="email-row1">
+          <span class="email-sender">Amara Eco Lodge — Reservations</span>
+          <span class="email-time">9:15 AM</span>
+        </div>
+        <div class="email-subject">URGENT: Date change – Okafor booking (Ref: KC-2904)</div>
+        <div class="email-preview">We regret to inform you that we are unable to accommodate the original check-in of 14 June due to a previously…</div>
+        <div class="email-tags">
+          <span class="tag tag-urgent">Urgent</span>
+          <span class="tag tag-logistics">Logistics</span>
+        </div>
+      </div>
+
+      <div class="email-item" onclick="showEmail(2, this)">
+        <div class="email-row1">
+          <span class="email-sender">Nadia & Pieter van Rooyen</span>
+          <span class="email-time">Yesterday</span>
+        </div>
+        <div class="email-subject">Final payment – Cape Town & Winelands (Invoice #1847)</div>
+        <div class="email-preview">Hi, please find attached the proof of payment for invoice #1847. We're so excited — truly can't wait for May!</div>
+        <div class="email-tags">
+          <span class="tag tag-payment">Payment</span>
+          <span class="tag tag-confirmed">Confirmed</span>
+        </div>
+      </div>
+
+      <div class="email-item unread" onclick="showEmail(3, this)">
+        <div class="email-row1">
+          <span class="email-sender">Marcus Delacroix</span>
+          <span class="email-time">Yesterday</span>
+        </div>
+        <div class="email-subject">Inquiry – Private Kilimanjaro Climb (Solo, August)</div>
+        <div class="email-preview">Good evening. I was referred by a colleague who did the Lemosho route with you last year. I am interested in a fully…</div>
+        <div class="email-tags">
+          <span class="tag tag-inquiry">Inquiry</span>
+          <span class="tag tag-vip">Referred</span>
+        </div>
+      </div>
+
+      <div class="email-item" onclick="showEmail(4, this)">
+        <div class="email-row1">
+          <span class="email-sender">Simba Air Charter – Ops</span>
+          <span class="email-time">Mon</span>
+        </div>
+        <div class="email-subject">Flight confirmation – Arusha → Seronera (Ref: SA-0449)</span>
+        <div class="email-preview">Please find attached the flight manifest and updated weight allowance for the Hartwell party. Departure confirmed 07:15…</div>
+        <div class="email-tags">
+          <span class="tag tag-logistics">Logistics</span>
+          <span class="tag tag-confirmed">Confirmed</span>
+        </div>
+      </div>
+
+      <div class="email-item unread" onclick="showEmail(5, this)">
+        <div class="email-row1">
+          <span class="email-sender">Dr. Keiko Tanaka</span>
+          <span class="email-time">Mon</span>
+        </div>
+        <div class="email-subject">Re: Gorilla Trekking Permit – Rwanda (September Group)</div>
+        <div class="email-preview">Hello, I haven't received confirmation on the permit dates yet. Could you please update me? My team is asking about…</div>
+        <div class="email-tags">
+          <span class="tag tag-followup">Follow-up</span>
+          <span class="tag tag-urgent">Pending</span>
+        </div>
+      </div>
+
+      <div class="email-item" onclick="showEmail(6, this)">
+        <div class="email-row1">
+          <span class="email-sender">Thomas Fairfax-Reid</span>
+          <span class="email-time">Fri</span>
+        </div>
+        <div class="email-subject">Complaint – Safari Vehicle Breakdown (Tarangire, 28 March)</div>
+        <div class="email-preview">I am writing regarding the serious inconvenience we experienced during game drive #3 on 28 March. The vehicle…</div>
+        <div class="email-tags">
+          <span class="tag tag-complaint">Complaint</span>
+          <span class="tag tag-urgent">Urgent</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- READING PANE -->
+  <div class="reading-pane">
+    <div class="reading-toolbar">
+      <button class="tool-btn primary">↩ Reply</button>
+      <button class="tool-btn">↪ Forward</button>
+      <div class="tool-btn-sep"></div>
+      <button class="tool-btn">🏷 Label</button>
+      <button class="tool-btn">📁 Move</button>
+      <button class="tool-btn">✓ Mark Done</button>
+      <div class="tool-btn-sep"></div>
+      <button class="tool-btn">🗓 Add to Calendar</button>
+      <button class="tool-btn ml-auto">🗑 Archive</button>
+    </div>
+
+    <div class="email-body">
+
+      <!-- EMAIL 0: Hartwell Honeymoon -->
+      <div class="reading-content visible" id="email-0">
+        <div class="email-body-header">
+          <div class="email-body-subject">Re: Honeymoon Itinerary – Zanzibar + Serengeti (June 2026)</div>
+          <div class="email-meta-row">
+            <div class="sender-avatar sa-clay">SH</div>
+            <div class="meta-info">
+              <div class="meta-from">Sophie Hartwell &lt;s.hartwell@gmail.com&gt;</div>
+              <div class="meta-details">To: hello@kilicoast.com · Also James Hartwell (james.hartwell@pm.me) · Booking Ref: KC-2834</div>
+            </div>
+            <div class="meta-time">Thu, 2 Apr 2026 · 10:47 AM</div>
+          </div>
+        </div>
+        <div class="email-content">
+          <p class="greeting">Hi Philipina,</p>
+          <p>Thank you so much for sending over the updated itinerary PDF — it looks absolutely stunning. We showed my mum and she actually teared up! 😊</p>
+          <p>We do have a couple of questions before we sign off on the final version:</p>
+          <div class="info-box">
+            <div class="info-box-title">Client Questions</div>
+            1. <strong>Dhow Cruise (25 June):</strong> Is this a private charter or a shared group boat? We'd strongly prefer private if possible, even if there's a supplement. <br/>
+            2. <strong>Spice Farm Tour:</strong> James has a tree nut allergy — can you confirm there's no risk of cross-contamination during any tastings?<br/>
+            3. <strong>Seronera Airstrip transfer:</strong> We land at 11:40 AM — is there a waiting time at the lodge or does someone meet us at the strip?
+          </div>
+          <p>Also, I just want to say — we've worked with two other travel companies before and this is by far the most thoughtful planning we've received. The day-by-day structure with the sunrise and sunset notes was such a lovely touch.</p>
+          <p>Looking forward to hearing from you!</p>
+          <p>Warm regards,<br/><strong>Sophie & James Hartwell</strong></p>
+        </div>
+
+        <div class="email-attachments">
+          <div class="attach-label">Attachments (2)</div>
+          <div class="attach-files">
+            <div class="attach-file"><span class="attach-icon">📄</span> KC-2834_Itinerary_v3.pdf <span style="color:var(--dusk);margin-left:6px;font-size:0.68rem;">2.1 MB</span></div>
+            <div class="attach-file"><span class="attach-icon">🖼</span> ZNZ_Rixos_Room_Upgrade.jpg <span style="color:var(--dusk);margin-left:6px;font-size:0.68rem;">890 KB</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- EMAIL 1: Amara Lodge Urgent -->
+      <div class="reading-content" id="email-1">
+        <div class="email-body-header">
+          <div class="email-body-subject">URGENT: Date change – Okafor booking (Ref: KC-2904)</div>
+          <div class="email-meta-row">
+            <div class="sender-avatar sa-moss">AL</div>
+            <div class="meta-info">
+              <div class="meta-from">Amara Eco Lodge – Reservations &lt;reservations@amaraecolodge.co.tz&gt;</div>
+              <div class="meta-details">To: operations@kilicoast.com · Booking Ref: KC-2904 · Guest: Mr. & Mrs. Okafor</div>
+            </div>
+            <div class="meta-time">Thu, 2 Apr 2026 · 9:15 AM</div>
+          </div>
+        </div>
+        <div class="email-content">
+          <p class="greeting">Dear Philipina,</p>
+          <p>We regret to inform you that we are unable to accommodate the original check-in of <strong>14 June 2026</strong> for Mr. & Mrs. Okafor (Booking Ref: KC-2904) due to a previously undisclosed maintenance closure on the Nile Suite wing.</p>
+          <div class="info-box alert">
+            <div class="info-box-title">⚠ Supplier Alert – Action Required</div>
+            Affected booking: <strong>Mr. & Mrs. Chukwuemeka Okafor</strong> · Check-in: 14–18 June 2026<br/>
+            Alternative availability: <strong>16–20 June</strong> (2-day shift) or <strong>7–11 June</strong> (one week earlier)<br/>
+            Suite category: Nile Suite with private plunge pool — same rate guaranteed<br/>
+            Response required by: <strong>Friday 4 April, 5:00 PM EAT</strong>
+          </div>
+          <p>We sincerely apologise for the disruption and are committed to making this right. We are also prepared to offer a complimentary sundowner boat cruise (value: USD 180/couple) as a goodwill gesture if the clients choose either alternative date.</p>
+          <p>Please do advise at your earliest convenience so we can hold the alternative dates accordingly.</p>
+          <p>Kind regards,<br/><strong>Zawadi Mwangi</strong><br/>Reservations Manager, Amara Eco Lodge</p>
+        </div>
+      </div>
+
+      <!-- EMAIL 2: Van Rooyen Payment -->
+      <div class="reading-content" id="email-2">
+        <div class="email-body-header">
+          <div class="email-body-subject">Final payment – Cape Town & Winelands (Invoice #1847)</div>
+          <div class="email-meta-row">
+            <div class="sender-avatar sa-teal">NV</div>
+            <div class="meta-info">
+              <div class="meta-from">Nadia van Rooyen &lt;nadia.vanrooyen@outlook.com&gt;</div>
+              <div class="meta-details">To: accounts@kilicoast.com · Booking Ref: KC-2711 · Travel: 2–9 May 2026</div>
+            </div>
+            <div class="meta-time">Wed, 1 Apr 2026 · 3:52 PM</div>
+          </div>
+        </div>
+        <div class="email-content">
+          <p class="greeting">Hi Philipina,</p>
+          <p>Hope you're well! Please find attached the proof of payment for the final balance on Invoice #1847 — <strong>ZAR 42,600</strong> transferred from FNB account. The reference used was KC-2711.</p>
+          <div class="info-box confirm">
+            <div class="info-box-title">✓ Payment Details</div>
+            Invoice: #1847 · Amount: ZAR 42,600 (final balance)<br/>
+            Transfer date: 1 April 2026 · Bank: FNB South Africa<br/>
+            Reference: KC-2711<br/>
+            Status: <strong>Awaiting confirmation from Kili & Coast</strong>
+          </div>
+          <p>Pieter has been checking the weather and is very excited about the whale watching day we added last minute. Could you also confirm whether the wine tasting in Franschhoek requires smart casual or if casual wear is fine?</p>
+          <p>Cheers!<br/><strong>Nadia & Pieter</strong></p>
+        </div>
+        <div class="email-attachments">
+          <div class="attach-label">Attachments (1)</div>
+          <div class="attach-files">
+            <div class="attach-file"><span class="attach-icon">📄</span> POP_Invoice1847_VanRooyen.pdf <span style="color:var(--dusk);margin-left:6px;font-size:0.68rem;">340 KB</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- EMAIL 3: Delacroix Inquiry -->
+      <div class="reading-content" id="email-3">
+        <div class="email-body-header">
+          <div class="email-body-subject">Inquiry – Private Kilimanjaro Climb (Solo, August 2026)</div>
+          <div class="email-meta-row">
+            <div class="sender-avatar sa-gold">MD</div>
+            <div class="meta-info">
+              <div class="meta-from">Marcus Delacroix &lt;m.delacroix@deloitte.fr&gt;</div>
+              <div class="meta-details">To: hello@kilicoast.com · New inquiry (unbooked) · Referred by: Laurent Beaumont</div>
+            </div>
+            <div class="meta-time">Wed, 1 Apr 2026 · 8:12 PM</div>
+          </div>
+        </div>
+        <div class="email-content">
+          <p class="greeting">Good evening,</p>
+          <p>My name is Marcus Delacroix. I am a senior partner at Deloitte France and was referred to your agency by my colleague Laurent Beaumont, who completed the Lemosho Route with you in October 2024. He spoke very highly of the operational quality and attention to detail.</p>
+          <p>I am interested in a <strong>fully private, solo climb</strong> of Kilimanjaro via the Lemosho Route, ideally during <strong>August 2026</strong> (I have flexibility around the 10th–25th). I have some specific requirements:</p>
+          <div class="info-box">
+            <div class="info-box-title">Client Requirements</div>
+            • Private expedition — no shared groups at any stage<br/>
+            • High altitude porter-to-climber ratio (minimum 3:1)<br/>
+            • Satellite communication device for daily check-ins with my PA in Paris<br/>
+            • Pre and post-climb stay: <strong>5-star lodge in Arusha</strong> (prefer Elewana or equivalent)<br/>
+            • Dietary: vegetarian, no gluten<br/>
+            • I will require a detailed medical briefing document for my GP before departure
+          </div>
+          <p>Please send me a preliminary quote and availability at your earliest convenience. I am happy to jump on a call next week if helpful.</p>
+          <p>Kind regards,<br/><strong>Marcus Delacroix</strong><br/><em>Senior Partner, Deloitte Consulting – Paris</em></p>
+        </div>
+      </div>
+
+      <!-- EMAIL 4: Simba Air -->
+      <div class="reading-content" id="email-4">
+        <div class="email-body-header">
+          <div class="email-body-subject">Flight confirmation – Arusha → Seronera (Ref: SA-0449)</div>
+          <div class="email-meta-row">
+            <div class="sender-avatar sa-bark">SA</div>
+            <div class="meta-info">
+              <div class="meta-from">Simba Air Charter – Operations &lt;ops@simbaaircharter.co.tz&gt;</div>
+              <div class="meta-details">To: operations@kilicoast.com · Linked booking: KC-2834 (Hartwell)</div>
+            </div>
+            <div class="meta-time">Mon, 30 Mar 2026 · 11:03 AM</div>
+          </div>
+        </div>
+        <div class="email-content">
+          <p class="greeting">Hi Philipina,</p>
+          <p>Please find below and attached the confirmed flight details for the Hartwell party travelling on the Kili & Coast booking reference KC-2834.</p>
+          <table class="itinerary-table">
+            <thead>
+              <tr><th>Leg</th><th>Route</th><th>Date</th><th>Dep.</th><th>Arr.</th><th>Aircraft</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>1</td><td>ARK → SEU</td><td>22 Jun 2026</td><td>07:15</td><td>08:45</td><td>Cessna 208B</td></tr>
+              <tr><td>2</td><td>SEU → ZNZ</td><td>25 Jun 2026</td><td>14:30</td><td>16:00</td><td>Cessna 208B</td></tr>
+            </tbody>
+          </table>
+          <div class="info-box confirm">
+            <div class="info-box-title">Luggage Allowance Note</div>
+            Soft-sided bags only · 15 kg per person checked + 5 kg carry-on<br/>
+            Excess baggage: USD 5/kg · Must be declared 48 hrs before departure<br/>
+            Ground handler at Seronera: Mr. Elias Kimaro (+255 712 443 009)
+          </div>
+          <p>Please confirm passenger names match passports. Manifest attached for your records.</p>
+          <p>Regards,<br/><strong>Fatuma Njoro</strong><br/>Operations, Simba Air Charter</p>
+        </div>
+        <div class="email-attachments">
+          <div class="attach-label">Attachments (2)</div>
+          <div class="attach-files">
+            <div class="attach-file"><span class="attach-icon">📄</span> SA-0449_Flight_Manifest.pdf</div>
+            <div class="attach-file"><span class="attach-icon">📄</span> SA-0449_Confirmation_Letter.pdf</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- EMAIL 5: Tanaka Follow-up -->
+      <div class="reading-content" id="email-5">
+        <div class="email-body-header">
+          <div class="email-body-subject">Re: Gorilla Trekking Permit – Rwanda (September Group)</div>
+          <div class="email-meta-row">
+            <div class="sender-avatar sa-teal">KT</div>
+            <div class="meta-info">
+              <div class="meta-from">Dr. Keiko Tanaka &lt;k.tanaka@icu.ac.jp&gt;</div>
+              <div class="meta-details">To: hello@kilicoast.com · Group booking: KC-2990 · 6 travellers · Departure: 4 Sep 2026</div>
+            </div>
+            <div class="meta-time">Mon, 30 Mar 2026 · 4:18 PM</div>
+          </div>
+        </div>
+        <div class="email-content">
+          <p class="greeting">Hello Philipina,</p>
+          <p>I hope you are well. I am writing to follow up as I have not yet received confirmation on the gorilla trekking permit dates for our September group (Booking KC-2990).</p>
+          <div class="info-box alert">
+            <div class="info-box-title">⚠ Pending — Follow-up Required</div>
+            Group: 6 travellers (Dr. Tanaka + 5 colleagues, ICU Tokyo)<br/>
+            Requested permit date: <strong>7 September 2026</strong> – Volcanoes National Park<br/>
+            Last update from RDB: Permit pending allocation (as of 18 March)<br/>
+            Action needed: Chase Rwanda Development Board for permit status
+          </div>
+          <p>My team is asking about the permit status as they need to finalise their visa applications and travel insurance by mid-April. Could you please provide an update by <strong>Friday 4 April</strong> at the latest?</p>
+          <p>Thank you for your attention to this matter.</p>
+          <p>With regards,<br/><strong>Dr. Keiko Tanaka</strong><br/><em>Professor of Ecology, International Christian University — Tokyo</em></p>
+        </div>
+      </div>
+
+      <!-- EMAIL 6: Complaint -->
+      <div class="reading-content" id="email-6">
+        <div class="email-body-header">
+          <div class="email-body-subject">Complaint – Safari Vehicle Breakdown (Tarangire, 28 March 2026)</div>
+          <div class="email-meta-row">
+            <div class="sender-avatar sa-red">TF</div>
+            <div class="meta-info">
+              <div class="meta-from">Thomas Fairfax-Reid &lt;t.fairfax@barclays.co.uk&gt;</div>
+              <div class="meta-details">To: hello@kilicoast.com · Past booking: KC-2601 · Travel: 25–30 Mar 2026</div>
+            </div>
+            <div class="meta-time">Fri, 28 Mar 2026 · 7:55 PM</div>
+          </div>
+        </div>
+        <div class="email-content">
+          <p class="greeting">Dear Kili & Coast,</p>
+          <p>I am writing to formally express my dissatisfaction regarding an incident that occurred on <strong>28 March 2026</strong> during Game Drive #3 in Tarangire National Park.</p>
+          <div class="info-box alert">
+            <div class="info-box-title">⚠ Complaint Summary</div>
+            Incident: Vehicle breakdown during afternoon game drive — stranded for 2h 40min<br/>
+            Impact: Missed sundowner at Tarangire Treetops (non-refundable experience)<br/>
+            Guide conduct: Guide did not communicate clearly or offer water during wait<br/>
+            Resolution requested: Partial refund or credit toward future booking
+          </div>
+          <p>The breakdown itself, while unfortunate, is understandable. However, the lack of communication and the fact that we waited over two and a half hours in 34°C heat without water or shade — and that our guide made no effort to contact your operations team — is simply not acceptable for a premium product at this price point.</p>
+          <p>I would appreciate a formal response within <strong>48 hours</strong> and a clear outline of what remediation you are prepared to offer.</p>
+          <p>Regards,<br/><strong>Thomas Fairfax-Reid</strong><br/><em>Executive Director, Barclays Investment Bank</em></p>
+        </div>
+      </div>
+
+    </div><!-- /email-body -->
+
+    <!-- REPLY BOX -->
+    <div class="reply-box">
+      <div class="reply-header">
+        <div class="reply-label">Reply</div>
+        <button class="reply-template-btn">📋 Use Template</button>
+      </div>
+      <textarea class="reply-textarea" placeholder="Write your reply here…
+
+Dear Sophie & James,
+
+Thank you for your kind words — it means so much to hear that! I'm happy to answer your questions:
+
+1. Dhow Cruise: This is a fully private charter exclusive to your booking…"></textarea>
+      <div class="reply-footer">
+        <button class="reply-send-btn">Send Reply ↗</button>
+        <button class="tool-btn">📎 Attach</button>
+        <button class="tool-btn">💾 Save Draft</button>
+        <button class="tool-btn" style="margin-left:auto; font-size:0.72rem;">Schedule Send ▾</button>
+      </div>
+    </div>
+
+  </div><!-- /reading-pane -->
+
+  <!-- CRM RIGHT PANEL -->
+  <div class="crm-panel">
+    <div class="crm-title">Client Profile</div>
+
+    <div class="crm-card">
+      <div class="crm-card-title">Contact</div>
+      <div class="crm-name">Sophie & James Hartwell</div>
+      <div class="crm-detail">
+        Manchester, United Kingdom<br/>
+        s.hartwell@gmail.com<br/>
+        james.hartwell@pm.me<br/>
+        +44 7891 223 441
+      </div>
+      <span class="priority-flag flag-vip">⭐ VIP Client</span>
+      <div class="crm-stat">
+        <span>Total bookings</span>
+        <span class="crm-stat-val">2</span>
+      </div>
+      <div class="crm-stat">
+        <span>Lifetime value</span>
+        <span class="crm-stat-val">USD 18,400</span>
+      </div>
+      <div class="crm-stat">
+        <span>Source</span>
+        <span class="crm-stat-val">Instagram</span>
+      </div>
+    </div>
+
+    <div class="crm-card">
+      <div class="crm-card-title">Active Booking — KC-2834</div>
+      <div class="crm-detail">
+        ✈️ Zanzibar + Serengeti<br/>
+        📅 22 June – 5 July 2026<br/>
+        👥 2 travellers (Honeymoon)<br/>
+        💳 <strong>Fully paid · USD 11,200</strong><br/>
+        🏨 Rixos Premium Zanzibar<br/>
+        🦁 Serengeti Safari Camp Asilia<br/>
+        ✈️ Simba Air Charter (confirmed)
+      </div>
+    </div>
+
+    <div class="quick-actions">
+      <div class="crm-card-title">Quick Actions</div>
+      <button class="qa-btn">📄 Open Itinerary PDF</button>
+      <button class="qa-btn">🔗 View Booking KC-2834</button>
+      <button class="qa-btn">📅 Add Follow-up Reminder</button>
+      <button class="qa-btn">📊 Update CRM Record</button>
+    </div>
+
+    <div class="crm-card">
+      <div class="crm-card-title">Notes</div>
+      <div class="crm-detail">
+        Sophie allergic to shellfish — flagged with Rixos kitchen ✓<br/>
+        James: outdoor enthusiast, wildlife photography<br/>
+        Prefers WhatsApp for quick updates<br/>
+        <em style="color:var(--clay)">★ Left 5-star Google review after last trip</em>
+      </div>
+    </div>
+
+    <div class="crm-card">
+      <div class="crm-card-title">Today's Pipeline</div>
+      <div class="pipeline-item"><span class="pipeline-dot dot-confirmed"></span><span class="pipeline-name">Hartwell · Honeymoon</span><span class="pipeline-val">✓ Paid</span></div>
+      <div class="pipeline-item"><span class="pipeline-dot dot-pending"></span><span class="pipeline-name">Okafor · Serengeti</span><span class="pipeline-val">⚠ Date issue</span></div>
+      <div class="pipeline-item"><span class="pipeline-dot dot-confirmed"></span><span class="pipeline-name">Van Rooyen · Cape Town</span><span class="pipeline-val">✓ Paid</span></div>
+      <div class="pipeline-item"><span class="pipeline-dot dot-inquiry"></span><span class="pipeline-name">Delacroix · Kili</span><span class="pipeline-val">New inquiry</span></div>
+      <div class="pipeline-item"><span class="pipeline-dot dot-pending"></span><span class="pipeline-name">Tanaka Group · Rwanda</span><span class="pipeline-val">Permit pending</span></div>
+    </div>
+
+  </div>
+
+</div><!-- /shell -->
+
+<script>
+  function showEmail(index, el) {
+    document.querySelectorAll('.email-item').forEach(e => e.classList.remove('active'));
+    el.classList.add('active');
+    el.classList.remove('unread');
+    document.querySelectorAll('.reading-content').forEach(e => e.classList.remove('visible'));
+    document.getElementById('email-' + index).classList.add('visible');
+  }
+
+  function setFolder(el) {
+    document.querySelectorAll('.nav-item').forEach(e => e.classList.remove('active'));
+    el.classList.add('active');
+  }
+</script>
+</body>
+</html>

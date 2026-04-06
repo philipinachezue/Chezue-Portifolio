@@ -1,0 +1,16 @@
+{
+  "name": "Philipina Andrea Chezue - Executive Virtual Assistant",
+  "short_name": "PhilipinaVA",
+  "description": "Freelance Executive Virtual Assistant based in Dar es Salaam, helping founders reclaim their time through operations, travel logistics, and project coordination.",
+  "start_url": "/index.html",
+  "display": "standalone",
+  "background_color": "#faf7f2",
+  "theme_color": "#9e5a2e",
+  "icons": [
+    {
+      "src": "/assets/favicon.ico",
+      "sizes": "64x64",
+      "type": "image/x-icon"
+    }
+  ]
+}

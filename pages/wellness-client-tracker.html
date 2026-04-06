@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Client Tracker — Solenne Wellness</title>
+<link href="https://fonts.googleapis.com/css2?family=Gilda+Display&family=Nunito:wght@300;400;500;600;700&family=Inconsolata:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#f2f5f0;
+  --white:#ffffff;
+  --ink:#1e2820;
+  --sage:#3d6b50;
+  --sage-lt:#5a9470;
+  --sage-pale:#eaf2ec;
+  --mint:#a8d4b4;
+  --blush:#e8b4b0;
+  --blush-pale:#fdf0ee;
+  --amber:#c08040;
+  --amber-pale:#fdf5e8;
+  --sky:#4a7aaa;
+  --sky-pale:#eaf0f8;
+  --fog:#e4ebe4;
+  --fog2:#ecf2ec;
+  --muted:#7a8c7a;
+  --text:#1e2820;
+  --serif:'Gilda Display',serif;
+  --sans:'Nunito',sans-serif;
+  --mono:'Inconsolata',monospace;
+}
+body{background:var(--bg);font-family:var(--sans);color:var(--text);min-height:100vh;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+.fade{animation:fadeUp .4s ease both;}
+.f1{animation-delay:.05s;}.f2{animation-delay:.1s;}.f3{animation-delay:.15s;}.f4{animation-delay:.2s;}.f5{animation-delay:.25s;}.f6{animation-delay:.3s;}.f7{animation-delay:.35s;}
+
+/* TOPBAR */
+.topbar{background:var(--sage);height:56px;display:flex;align-items:center;padding:0 28px;gap:16px;}
+.brand{font-family:var(--serif);font-size:1.2rem;color:#fff;letter-spacing:.04em;}
+.brand span{color:var(--mint);}
+.tb-sep{flex:1;}
+.tb-label{font-family:var(--mono);font-size:.65rem;color:rgba(255,255,255,.5);letter-spacing:.1em;text-transform:uppercase;}
+.tb-val{font-size:.75rem;color:rgba(255,255,255,.85);font-weight:500;}
+.tb-avatar{width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.15);border:1.5px solid rgba(255,255,255,.3);display:flex;align-items:center;justify-content:center;font-size:.65rem;font-weight:700;color:#fff;}
+
+/* SHELL */
+.shell{display:grid;grid-template-columns:1fr 320px;min-height:calc(100vh - 56px);gap:0;}
+
+/* MAIN */
+.main{padding:28px 28px 40px;overflow-y:auto;}
+
+/* PAGE HEADER */
+.page-header{margin-bottom:28px;}
+.ph-eyebrow{font-family:var(--mono);font-size:.62rem;letter-spacing:.16em;text-transform:uppercase;color:var(--sage);margin-bottom:6px;}
+.ph-title{font-family:var(--serif);font-size:1.8rem;color:var(--ink);margin-bottom:4px;}
+.ph-sub{font-size:.78rem;color:var(--muted);}
+
+/* STAT STRIP */
+.stat-strip{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:28px;}
+.stat-card{background:var(--white);border:1px solid var(--fog);border-radius:8px;padding:16px 18px;animation:fadeUp .4s ease both;}
+.sc-num{font-family:var(--serif);font-size:1.9rem;color:var(--ink);line-height:1;}
+.sc-label{font-size:.7rem;color:var(--muted);margin-top:3px;line-height:1.3;}
+.sc-delta{font-size:.65rem;margin-top:6px;font-family:var(--mono);}
+.delta-up{color:var(--sage);}
+.delta-down{color:#c04040;}
+.delta-neutral{color:var(--muted);}
+
+/* SECTION LABEL */
+.sec-label{font-family:var(--mono);font-size:.62rem;letter-spacing:.15em;text-transform:uppercase;color:var(--sage);margin-bottom:14px;display:flex;align-items:center;gap:10px;}
+.sec-label::after{content:'';flex:1;height:1px;background:var(--fog);}
+
+/* CLIENT TABLE */
+.client-table-wrap{background:var(--white);border:1px solid var(--fog);border-radius:8px;overflow:hidden;margin-bottom:28px;}
+.ct-header{padding:14px 20px;border-bottom:1px solid var(--fog);display:flex;align-items:center;gap:10px;}
+.ct-search{flex:1;display:flex;align-items:center;gap:8px;background:var(--bg);border:1px solid var(--fog);border-radius:5px;padding:6px 12px;}
+.ct-search input{background:none;border:none;outline:none;font-family:var(--sans);font-size:.78rem;color:var(--ink);width:100%;}
+.ct-filter-btn{padding:7px 14px;border:1px solid var(--fog);border-radius:5px;font-size:.72rem;font-family:var(--sans);font-weight:600;cursor:pointer;background:none;color:var(--muted);transition:all .12s;}
+.ct-filter-btn:hover{border-color:var(--sage);color:var(--sage);}
+.ct-filter-btn.on{background:var(--sage);border-color:var(--sage);color:#fff;}
+.ct-add-btn{padding:8px 16px;background:var(--sage);color:#fff;border:none;border-radius:5px;font-family:var(--sans);font-size:.72rem;font-weight:700;cursor:pointer;transition:background .15s;}
+.ct-add-btn:hover{background:var(--sage-lt);}
+
+table{width:100%;border-collapse:collapse;}
+thead th{font-family:var(--mono);font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);padding:10px 16px;text-align:left;border-bottom:1px solid var(--fog);background:var(--bg);}
+tbody tr{border-bottom:1px solid var(--fog);cursor:pointer;transition:background .12s;}
+tbody tr:last-child{border-bottom:none;}
+tbody tr:hover{background:var(--sage-pale);}
+tbody tr.selected{background:#edf6f0;}
+tbody td{padding:12px 16px;font-size:.8rem;vertical-align:middle;}
+.client-name-cell{display:flex;align-items:center;gap:10px;}
+.client-avatar{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:700;color:#fff;flex-shrink:0;}
+.cn-name{font-weight:600;color:var(--ink);}
+.cn-email{font-size:.68rem;color:var(--muted);}
+
+/* STATUS BADGE */
+.status-badge{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:20px;font-size:.64rem;font-weight:700;letter-spacing:.04em;}
+.sb-active{background:var(--sage-pale);color:var(--sage);}
+.sb-paused{background:var(--amber-pale);color:var(--amber);}
+.sb-completed{background:var(--sky-pale);color:var(--sky);}
+.sb-trial{background:var(--blush-pale);color:#c04060;}
+
+/* PROGRESS BAR */
+.prog-bar{height:5px;background:var(--fog);border-radius:5px;overflow:hidden;margin-top:3px;}
+.prog-fill{height:100%;border-radius:5px;}
+.prog-label{font-size:.65rem;color:var(--muted);}
+
+/* SESSION DOT HISTORY */
+.session-dots{display:flex;gap:3px;align-items:center;}
+.s-dot{width:9px;height:9px;border-radius:50%;}
+
+/* GOAL TAG */
+.goal-tag{display:inline-block;font-size:.62rem;padding:2px 8px;border-radius:20px;background:var(--fog2);color:var(--sage);font-weight:600;margin-right:3px;margin-bottom:2px;}
+
+/* RIGHT PANEL */
+.right-panel{background:var(--white);border-left:1px solid var(--fog);overflow-y:auto;padding:0;}
+.rp-hero{background:var(--sage);padding:24px 22px;}
+.rph-label{font-family:var(--mono);font-size:.58rem;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.5);margin-bottom:6px;}
+.rph-name{font-family:var(--serif);font-size:1.4rem;color:#fff;margin-bottom:4px;}
+.rph-meta{font-size:.72rem;color:rgba(255,255,255,.65);}
+.rph-badges{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;}
+.rph-badge{font-size:.6rem;font-family:var(--mono);padding:3px 9px;border-radius:20px;background:rgba(255,255,255,.12);color:rgba(255,255,255,.8);}
+.rph-badge.hi{background:rgba(168,212,180,.25);color:var(--mint);}
+
+.rp-sec{padding:18px 20px;border-bottom:1px solid var(--fog);}
+.rp-lbl{font-family:var(--mono);font-size:.58rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+.rp-lbl::after{content:'';flex:1;height:1px;background:var(--fog);}
+
+/* KV */
+.kv{display:flex;gap:8px;margin-bottom:8px;font-size:.76rem;align-items:baseline;}
+.kv-k{color:var(--muted);min-width:80px;font-size:.63rem;text-transform:uppercase;letter-spacing:.08em;font-family:var(--mono);flex-shrink:0;}
+.kv-v{color:var(--ink);line-height:1.5;}
+
+/* SESSION LIST */
+.session-item{display:flex;gap:10px;padding:9px 0;border-bottom:1px solid var(--fog);align-items:flex-start;}
+.session-item:last-child{border-bottom:none;}
+.si-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;margin-top:4px;}
+.si-body{flex:1;}
+.si-date{font-family:var(--mono);font-size:.65rem;color:var(--muted);margin-bottom:2px;}
+.si-topic{font-size:.78rem;font-weight:600;color:var(--ink);}
+.si-note{font-size:.7rem;color:var(--muted);margin-top:2px;line-height:1.4;}
+.si-mood{font-size:.8rem;}
+
+/* GOALS */
+.goal-item{display:flex;gap:10px;padding:8px 0;border-bottom:1px solid var(--fog);align-items:flex-start;}
+.goal-item:last-child{border-bottom:none;}
+.gi-check{width:16px;height:16px;border-radius:50%;border:2px solid var(--fog);flex-shrink:0;margin-top:2px;display:flex;align-items:center;justify-content:center;font-size:.55rem;color:#fff;cursor:pointer;transition:all .15s;}
+.gi-check.done{background:var(--sage);border-color:var(--sage);}
+.gi-check.progress{background:var(--amber);border-color:var(--amber);}
+.gi-text{font-size:.76rem;color:var(--ink);line-height:1.4;}
+.gi-text.done-text{text-decoration:line-through;color:var(--muted);}
+.gi-sub{font-size:.65rem;color:var(--muted);}
+
+/* NOTE AREA */
+.note-area{width:100%;border:1px solid var(--fog);border-radius:5px;padding:10px 12px;font-family:var(--sans);font-size:.76rem;color:var(--ink);background:var(--bg);outline:none;resize:none;min-height:80px;line-height:1.6;}
+.note-area:focus{border-color:var(--sage);}
+.save-note-btn{margin-top:8px;width:100%;padding:8px;background:var(--sage);color:#fff;border:none;border-radius:5px;font-family:var(--sans);font-size:.74rem;font-weight:700;cursor:pointer;transition:background .15s;}
+.save-note-btn:hover{background:var(--sage-lt);}
+
+/* UPCOMING */
+.upcoming-card{display:flex;gap:10px;padding:9px 0;border-bottom:1px solid var(--fog);}
+.upcoming-card:last-child{border-bottom:none;}
+.uc-date{font-family:var(--mono);font-size:.62rem;color:var(--muted);min-width:48px;flex-shrink:0;padding-top:2px;}
+.uc-body{flex:1;}
+.uc-name{font-size:.78rem;font-weight:600;color:var(--ink);}
+.uc-meta{font-size:.67rem;color:var(--muted);}
+.uc-type{font-size:.58rem;font-family:var(--mono);letter-spacing:.06em;text-transform:uppercase;padding:2px 7px;border-radius:20px;}
+
+::-webkit-scrollbar{width:4px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:var(--fog);border-radius:10px;}
+</style>
+
+<!-- SEO & Performance Optimization -->
+<meta name="description" content="Philipina Andrea Chezue is a freelance Executive Virtual Assistant in Dar es Salaam, specializing in remote operations, travel logistics, and project coordination for founders globally.">
+<meta name="keywords" content="Executive Virtual Assistant, Remote VA, Operations Assistant, Project Coordination, Travel Logistics, Tanzania VA, Portfolio">
+<meta name="robots" content="index, follow">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<link rel="canonical" href="https://philipinachezue.com/">
+<link rel="manifest" href="/manifest.json">
+<link rel="icon" type="image/x-icon" href="/assets/favicon.ico">
+
+<!-- Open Graph / Social -->
+<meta property="og:title" content="Philipina Andrea Chezue — Executive Virtual Assistant">
+<meta property="og:description" content="Reclaim your time through expert operations, travel logistics, and project coordination that actually works.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://philipinachezue.com/">
+<meta property="og:image" content="https://philipinachezue.com/assets/images/img_9f2ae763.jpg">
+
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Philipina Andrea Chezue — Executive VA">
+<meta name="twitter:description" content="Reclaim your time through expert operations and project coordination.">
+<meta name="twitter:image" content="https://philipinachezue.com/assets/images/img_9f2ae763.jpg">
+
+<!-- Structured Data -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org/",
+  "@type": "Person",
+  "name": "Philipina Andrea Chezue",
+  "jobTitle": "Executive Virtual Assistant",
+  "url": "https://philipinachezue.com",
+  "email": "philipinachezue@outlook.com",
+  "address": {
+    "@type": "PostalAddress",
+    "addressLocality": "Dar es Salaam",
+    "addressCountry": "Tanzania"
+  },
+  "sameAs": [
+    "https://www.linkedin.com/in/philipinaandreachezue/"
+  ],
+  "knowsAbout": ["Executive Support", "Project Coordination", "Travel Logistics", "Operations"]
+}
+</script>
+<!-- End SEO -->
+
+</head>
+<body>
+
+<div class="topbar">
+  <div class="brand">Solenne <span>Wellness</span></div>
+  <div class="tb-sep"></div>
+  <div class="tb-label" style="margin-right:4px;">VA:</div><div class="tb-val">Priya Nkosi · Executive Assistant</div>
+  <div class="tb-sep"></div>
+  <div class="tb-label" style="margin-right:4px;">Week:</div><div class="tb-val">14 April 2026</div>
+  <div class="tb-avatar">PN</div>
+</div>
+
+<div class="shell">
+  <div class="main">
+
+    <div class="page-header fade f1">
+      <div class="ph-eyebrow">Client Management Hub</div>
+      <div class="ph-title">Client Tracker</div>
+      <div class="ph-sub">12 active clients · 3 trials · 2 paused · Next session: today 11:00 AM</div>
+    </div>
+
+    <!-- STAT STRIP -->
+    <div class="stat-strip">
+      <div class="stat-card fade f1" style="animation-delay:.06s">
+        <div class="sc-num" style="color:var(--sage)">17</div>
+        <div class="sc-label">Total clients</div>
+        <div class="sc-delta delta-up">↑ 2 new this month</div>
+      </div>
+      <div class="stat-card fade f1" style="animation-delay:.1s">
+        <div class="sc-num">12</div>
+        <div class="sc-label">Active programs</div>
+        <div class="sc-delta delta-neutral">— stable</div>
+      </div>
+      <div class="stat-card fade f1" style="animation-delay:.14s">
+        <div class="sc-num" style="color:var(--sky)">38</div>
+        <div class="sc-label">Sessions this month</div>
+        <div class="sc-delta delta-up">↑ 5 from March</div>
+      </div>
+      <div class="stat-card fade f1" style="animation-delay:.18s">
+        <div class="sc-num" style="color:var(--amber)">4</div>
+        <div class="sc-label">Check-ins pending</div>
+        <div class="sc-delta delta-down delta-down">↑ needs follow-up</div>
+      </div>
+      <div class="stat-card fade f1" style="animation-delay:.22s">
+        <div class="sc-num" style="color:var(--sage)">94%</div>
+        <div class="sc-label">Session attendance</div>
+        <div class="sc-delta delta-up">↑ 3% vs last month</div>
+      </div>
+    </div>
+
+    <!-- CLIENT TABLE -->
+    <div class="sec-label fade f2">Active Clients — April 2026</div>
+    <div class="client-table-wrap fade f3">
+      <div class="ct-header">
+        <div class="ct-search">
+          <span style="color:var(--muted);font-size:.85rem;">🔍</span>
+          <input type="text" placeholder="Search clients, goals, programs…"/>
+        </div>
+        <button class="ct-filter-btn on">All</button>
+        <button class="ct-filter-btn">Active</button>
+        <button class="ct-filter-btn">Trial</button>
+        <button class="ct-filter-btn">Paused</button>
+        <button class="ct-add-btn">+ New client</button>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>Client</th>
+            <th>Program</th>
+            <th>Status</th>
+            <th>Progress</th>
+            <th>Session history</th>
+            <th>Next session</th>
+            <th>Notes flag</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="selected" onclick="selectClient('amara')">
+            <td><div class="client-name-cell"><div class="client-avatar" style="background:linear-gradient(135deg,#4a8c64,#7ab890);">AO</div><div><div class="cn-name">Amara Oduya</div><div class="cn-email">amara.o@gmail.com</div></div></div></td>
+            <td><span class="goal-tag">Hormone balance</span><span class="goal-tag">Stress</span></td>
+            <td><span class="status-badge sb-active">● Active</span></td>
+            <td><div class="prog-label">Session 7 of 12</div><div class="prog-bar"><div class="prog-fill" style="width:58%;background:var(--sage);"></div></div></td>
+            <td><div class="session-dots"><span class="s-dot" style="background:var(--sage)"></span><span class="s-dot" style="background:var(--sage)"></span><span class="s-dot" style="background:var(--sage)"></span><span class="s-dot" style="background:var(--amber)"></span><span class="s-dot" style="background:var(--sage)"></span><span class="s-dot" style="background:var(--sage)"></span><span class="s-dot" style="background:var(--fog)"></span></div></td>
+            <td><span style="font-family:var(--mono);font-size:.7rem;color:var(--sage);font-weight:600;">Today · 11:00</span></td>
+            <td><span style="font-size:.72rem;color:var(--amber);">⚡ Prep note</span></td>
+          </tr>
+          <tr onclick="selectClient('lucia')">
+            <td><div class="client-name-cell"><div class="client-avatar" style="background:linear-gradient(135deg,#7a3a8c,#9b6cbf);">LR</div><div><div class="cn-name">Lucia Reyes</div><div class="cn-email">lucia.r@outlook.com</div></div></div></td>
+            <td><span class="goal-tag">Weight management</span><span class="goal-tag">Energy</span></td>
+            <td><span class="status-badge sb-active">● Active</span></td>
+            <td><div class="prog-label">Session 3 of 8</div><div class="prog-bar"><div class="prog-fill" style="width:37%;background:var(--sage);"></div></div></td>
+            <td><div class="session-dots"><span class="s-dot" style="background:var(--sage)"></span><span class="s-dot" style="background:var(--sage)"></span><span class="s-dot" style="background:var(--sage)"></span><span class="s-dot" style="background:var(--fog)"></span><span class="s-dot" style="background:var(--fog)"></span></div></td>
+            <td><span style="font-family:var(--mono);font-size:.7rem;">Wed 16 · 2:00 PM</span></td>
+            <td>—</td>
+          </tr>
+          <tr onclick="selectClient('james')">
+            <td><div class="client-name-cell"><div class="client-avatar" style="background:linear-gradient(135deg,#3a6a8c,#5a9abf);">JK</div><div><div class="cn-name">James Kimani</div><div class="cn-email">j.kimani@company.co.ke</div></div></div></td>
+            <td><span class="goal-tag">Gut health</span><span class="goal-tag">Sleep</span></td>
+            <td><span class="status-badge sb-active">● Active</span></td>
+            <td><div class="prog-label">Session 10 of 12</div><div class="prog-bar"><div class="prog-fill" style="width:83%;background:var(--sky);"></div></div></td>
+            <td><div class="session-dots"><span class="s-dot" style="background:var(--sage)"></span><span class="s-dot" style="background:var(--sage)"></span><span class="s-dot" style="background:var(--sage)"></span><span class="s-dot" style="background:var(--sage)"></span><span class="s-dot" style="background:var(--sage)"></span><span class="s-dot" style="background:var(--amber)"></span><span class="s-dot" style="background:var(--sage)"></span></div></td>
+            <td><span style="font-family:var(--mono);font-size:.7rem;">Thu 17 · 9:00 AM</span></td>
+            <td><span style="font-size:.72rem;color:var(--sky);">📋 Final review</span></td>
+          </tr>
+          <tr onclick="selectClient('nadia')">
+            <td><div class="client-name-cell"><div class="client-avatar" style="background:linear-gradient(135deg,#c04060,#e070a0);">NB</div><div><div class="cn-name">Nadia Beaumont</div><div class="cn-email">nadia.b@me.com</div></div></div></td>
+            <td><span class="goal-tag">Anxiety</span><span class="goal-tag">Breathwork</span></td>
+            <td><span class="status-badge sb-trial">◐ Trial</span></td>
+            <td><div class="prog-label">Session 2 of 3 (trial)</div><div class="prog-bar"><div class="prog-fill" style="width:66%;background:#c04060;"></div></div></td>
+            <td><div class="session-dots"><span class="s-dot" style="background:var(--sage)"></span><span class="s-dot" style="background:var(--sage)"></span><span class="s-dot" style="background:var(--fog)"></span></div></td>
+            <td><span style="font-family:var(--mono);font-size:.7rem;">Fri 18 · 10:00 AM</span></td>
+            <td><span style="font-size:.72rem;color:#c04060;">💬 Convert?</span></td>
+          </tr>
+          <tr onclick="selectClient('felix')">
+            <td><div class="client-name-cell"><div class="client-avatar" style="background:linear-gradient(135deg,#c08040,#e0b070);">FO</div><div><div class="cn-name">Felix Owusu</div><div class="cn-email">felix@felixowusu.com</div></div></div></td>
+            <td><span class="goal-tag">Performance</span><span class="goal-tag">Nutrition</span></td>
+            <td><span class="status-badge sb-active">● Active</span></td>
+            <td><div class="prog-label">Session 5 of 16</div><div class="prog-bar"><div class="prog-fill" style="width:31%;background:var(--amber);"></div></div></td>
+            <td><div class="session-dots"><span class="s-dot" style="background:var(--sage)"></span><span class="s-dot" style="background:var(--amber)"></span><span class="s-dot" style="background:var(--sage)"></span><span class="s-dot" style="background:var(--sage)"></span><span class="s-dot" style="background:var(--fog)"></span></div></td>
+            <td><span style="font-family:var(--mono);font-size:.7rem;">Mon 21 · 7:00 AM</span></td>
+            <td>—</td>
+          </tr>
+          <tr>
+            <td><div class="client-name-cell"><div class="client-avatar" style="background:linear-gradient(135deg,#6a6870,#9a98a8);">SP</div><div><div class="cn-name">Sofía Pérez</div><div class="cn-email">sofia.p@hotmail.com</div></div></div></td>
+            <td><span class="goal-tag">Menopause</span><span class="goal-tag">Mindfulness</span></td>
+            <td><span class="status-badge sb-paused">◯ Paused</span></td>
+            <td><div class="prog-label">Session 4 of 12 — on hold</div><div class="prog-bar"><div class="prog-fill" style="width:33%;background:var(--muted);"></div></div></td>
+            <td><div class="session-dots"><span class="s-dot" style="background:var(--sage)"></span><span class="s-dot" style="background:var(--sage)"></span><span class="s-dot" style="background:var(--sage)"></span><span class="s-dot" style="background:var(--muted);opacity:.4"></span></div></td>
+            <td><span style="font-family:var(--mono);font-size:.7rem;color:var(--muted);">TBC — travel</span></td>
+            <td><span style="font-size:.72rem;color:var(--muted);">Follow up May</span></td>
+          </tr>
+          <tr onclick="selectClient('kwame')">
+            <td><div class="client-name-cell"><div class="client-avatar" style="background:linear-gradient(135deg,#2d6e50,#5a9870);">KA</div><div><div class="cn-name">Kwame Asante</div><div class="cn-email">k.asante@corporatemail.gh</div></div></div></td>
+            <td><span class="goal-tag">Burnout recovery</span><span class="goal-tag">Sleep</span></td>
+            <td><span class="status-badge sb-active">● Active</span></td>
+            <td><div class="prog-label">Session 6 of 10</div><div class="prog-bar"><div class="prog-fill" style="width:60%;background:var(--sage);"></div></div></td>
+            <td><div class="session-dots"><span class="s-dot" style="background:var(--sage)"></span><span class="s-dot" style="background:var(--sage)"></span><span class="s-dot" style="background:var(--sage)"></span><span class="s-dot" style="background:var(--sage)"></span><span class="s-dot" style="background:var(--sage)"></span><span class="s-dot" style="background:var(--fog)"></span></div></td>
+            <td><span style="font-family:var(--mono);font-size:.7rem;">Tue 15 · 4:00 PM</span></td>
+            <td>—</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- UPCOMING SESSIONS TODAY -->
+    <div class="sec-label fade f5">Today's Sessions — Tuesday 14 April</div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:10px;" class="fade f6">
+      <div style="background:var(--white);border:1px solid var(--fog);border-left:3px solid var(--sage);border-radius:7px;padding:14px 16px;">
+        <div style="font-family:var(--mono);font-size:.6rem;color:var(--muted);margin-bottom:5px;">11:00 AM · 60 MIN</div>
+        <div style="font-family:var(--serif);font-size:1rem;margin-bottom:4px;">Amara Oduya</div>
+        <div style="font-size:.72rem;color:var(--muted);margin-bottom:8px;">Session 7 · Hormone balance check-in</div>
+        <div style="font-size:.7rem;color:var(--amber);font-weight:600;">⚡ Review cortisol results before session</div>
+      </div>
+      <div style="background:var(--white);border:1px solid var(--fog);border-left:3px solid var(--sky);border-radius:7px;padding:14px 16px;">
+        <div style="font-family:var(--mono);font-size:.6rem;color:var(--muted);margin-bottom:5px;">2:30 PM · 45 MIN</div>
+        <div style="font-family:var(--serif);font-size:1rem;margin-bottom:4px;">New enquiry — Rania Malik</div>
+        <div style="font-size:.72rem;color:var(--muted);margin-bottom:8px;">Discovery call · weight & energy goals</div>
+        <div style="font-size:.7rem;color:var(--sky);font-weight:600;">📋 Intake form sent — awaiting return</div>
+      </div>
+      <div style="background:var(--white);border:1px solid var(--fog);border-left:3px solid var(--amber);border-radius:7px;padding:14px 16px;">
+        <div style="font-family:var(--mono);font-size:.6rem;color:var(--muted);margin-bottom:5px;">5:00 PM · 30 MIN</div>
+        <div style="font-family:var(--serif);font-size:1rem;margin-bottom:4px;">Felix Owusu</div>
+        <div style="font-size:.72rem;color:var(--muted);margin-bottom:8px;">Quick check-in · nutrition log review</div>
+        <div style="font-size:.7rem;color:var(--muted);">No prep required</div>
+      </div>
+    </div>
+
+  </div><!-- /main -->
+
+  <!-- RIGHT PANEL -->
+  <div class="right-panel">
+    <div class="rp-hero">
+      <div class="rph-label">Selected Client</div>
+      <div class="rph-name" id="rph-name">Amara Oduya</div>
+      <div class="rph-meta" id="rph-meta">Active · Session 7 of 12 · Since Jan 2026</div>
+      <div class="rph-badges">
+        <span class="rph-badge hi" id="rph-b1">Hormone balance</span>
+        <span class="rph-badge" id="rph-b2">Stress management</span>
+        <span class="rph-badge" id="rph-b3">12-week program</span>
+      </div>
+    </div>
+
+    <div class="rp-sec">
+      <div class="rp-lbl">Client Info</div>
+      <div class="kv"><span class="kv-k">Email</span><span class="kv-v" id="kv-email">amara.o@gmail.com</span></div>
+      <div class="kv"><span class="kv-k">Phone</span><span class="kv-v" id="kv-phone">+234 801 234 5678</span></div>
+      <div class="kv"><span class="kv-k">Location</span><span class="kv-v" id="kv-loc">Lagos, Nigeria</span></div>
+      <div class="kv"><span class="kv-k">Session type</span><span class="kv-v" id="kv-stype">Zoom (link on file)</span></div>
+      <div class="kv"><span class="kv-k">Rate</span><span class="kv-v" id="kv-rate">$180/session · Paid monthly</span></div>
+      <div class="kv"><span class="kv-k">Next invoice</span><span class="kv-v" id="kv-inv" style="color:var(--amber);font-weight:600;">1 May 2026</span></div>
+    </div>
+
+    <div class="rp-sec">
+      <div class="rp-lbl">Goals & Progress</div>
+      <div id="goals-list">
+        <div class="goal-item"><div class="gi-check done">✓</div><div><div class="gi-text done-text">Reduce cortisol through morning routine</div><div class="gi-sub">Completed — tracked for 6 weeks ✓</div></div></div>
+        <div class="goal-item"><div class="gi-check progress">~</div><div><div class="gi-text">Stabilise sleep cycle (7h minimum)</div><div class="gi-sub">In progress — avg 6.3h, improving</div></div></div>
+        <div class="goal-item"><div class="gi-check" onclick="this.classList.add('progress')"></div><div><div class="gi-text">Remove inflammatory foods for 30 days</div><div class="gi-sub">Starting week 3 — compliance 70%</div></div></div>
+        <div class="goal-item"><div class="gi-check" onclick="this.classList.add('progress')"></div><div><div class="gi-text">Daily 10-min breathwork practice</div><div class="gi-sub">Not yet consistent — discuss in session 7</div></div></div>
+      </div>
+    </div>
+
+    <div class="rp-sec">
+      <div class="rp-lbl">Recent Sessions</div>
+      <div id="sessions-list">
+        <div class="session-item">
+          <div class="si-dot" style="background:var(--sage)"></div>
+          <div class="si-body">
+            <div class="si-date">Mon 7 Apr · Session 6</div>
+            <div class="si-topic">Cortisol results review + meal plan update</div>
+            <div class="si-note">Strong progress on morning routine. Sleep still erratic. Adjusted magnesium timing.</div>
+          </div>
+          <div class="si-mood">😊</div>
+        </div>
+        <div class="session-item">
+          <div class="si-dot" style="background:var(--sage)"></div>
+          <div class="si-body">
+            <div class="si-date">Mon 31 Mar · Session 5</div>
+            <div class="si-topic">Gut-hormone connection deep dive</div>
+            <div class="si-note">Introduced elimination protocol. Amara was engaged and motivated.</div>
+          </div>
+          <div class="si-mood">🌱</div>
+        </div>
+        <div class="session-item">
+          <div class="si-dot" style="background:var(--amber)"></div>
+          <div class="si-body">
+            <div class="si-date">Mon 24 Mar · Session 4</div>
+            <div class="si-topic">Stress check-in — work pressures flagged</div>
+            <div class="si-note">Difficult session. Heavy work deadlines impacting progress. Added nervous system reset protocol.</div>
+          </div>
+          <div class="si-mood">😔</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="rp-sec">
+      <div class="rp-lbl">VA Prep Note — Session 7 Today</div>
+      <div style="background:var(--amber-pale);border-left:3px solid var(--amber);border-radius:0 5px 5px 0;padding:12px;font-size:.76rem;color:var(--ink);line-height:1.7;margin-bottom:10px;">
+        📋 <strong>Before 11:00 AM:</strong><br/>
+        • Pull cortisol lab results from shared Drive (folder: Amara/Labs April)<br/>
+        • Check if food diary was submitted — not yet received as of this morning<br/>
+        • Send session reminder via WhatsApp (auto-message template: <em>Session7_Reminder</em>)<br/>
+        • Prepare Zoom link and test connection by 10:50 AM
+      </div>
+    </div>
+
+    <div class="rp-sec">
+      <div class="rp-lbl">Add Session Note</div>
+      <textarea class="note-area" placeholder="Type session notes here… Amara — Session 7, 14 Apr 2026"></textarea>
+      <button class="save-note-btn">Save note ✓</button>
+    </div>
+
+  </div>
+</div>
+
+<script>
+const clients={
+  amara:{name:'Amara Oduya',meta:'Active · Session 7 of 12 · Since Jan 2026',b1:'Hormone balance',b2:'Stress management',b3:'12-week program',email:'amara.o@gmail.com',phone:'+234 801 234 5678',loc:'Lagos, Nigeria',stype:'Zoom (link on file)',rate:'$180/session · Paid monthly',inv:'1 May 2026'},
+  lucia:{name:'Lucia Reyes',meta:'Active · Session 3 of 8 · Since Mar 2026',b1:'Weight management',b2:'Energy',b3:'8-week program',email:'lucia.r@outlook.com',phone:'+52 55 1234 5678',loc:'Mexico City, Mexico',stype:'Zoom (link on file)',rate:'$160/session · Paid monthly',inv:'1 May 2026'},
+  james:{name:'James Kimani',meta:'Active · Session 10 of 12 · Since Oct 2025',b1:'Gut health',b2:'Sleep',b3:'12-week program (final stretch)',email:'j.kimani@company.co.ke',phone:'+254 722 345 678',loc:'Nairobi, Kenya',stype:'Zoom / in-person (alternating)',rate:'$200/session · Paid fortnightly',inv:'21 Apr 2026'},
+  nadia:{name:'Nadia Beaumont',meta:'Trial · Session 2 of 3 · Since Apr 2026',b1:'Anxiety',b2:'Breathwork',b3:'Trial — convert decision Fri',email:'nadia.b@me.com',phone:'+33 6 12 34 56 78',loc:'Paris, France',stype:'Zoom (link on file)',rate:'$120/session trial rate',inv:'After conversion'},
+  felix:{name:'Felix Owusu',meta:'Active · Session 5 of 16 · Since Feb 2026',b1:'Performance',b2:'Nutrition',b3:'16-week elite program',email:'felix@felixowusu.com',phone:'+233 20 123 4567',loc:'Accra, Ghana',stype:'Zoom + bi-weekly in-person',rate:'$220/session · Paid monthly',inv:'1 May 2026'},
+  kwame:{name:'Kwame Asante',meta:'Active · Session 6 of 10 · Since Jan 2026',b1:'Burnout recovery',b2:'Sleep',b3:'10-week program',email:'k.asante@corporatemail.gh',phone:'+233 24 567 8901',loc:'Accra, Ghana',stype:'Zoom (link on file)',rate:'$180/session · Paid monthly',inv:'1 May 2026'}
+};
+
+function selectClient(id){
+  const c=clients[id];
+  if(!c)return;
+  document.getElementById('rph-name').textContent=c.name;
+  document.getElementById('rph-meta').textContent=c.meta;
+  document.getElementById('rph-b1').textContent=c.b1;
+  document.getElementById('rph-b2').textContent=c.b2;
+  document.getElementById('rph-b3').textContent=c.b3;
+  document.getElementById('kv-email').textContent=c.email;
+  document.getElementById('kv-phone').textContent=c.phone;
+  document.getElementById('kv-loc').textContent=c.loc;
+  document.getElementById('kv-stype').textContent=c.stype;
+  document.getElementById('kv-rate').textContent=c.rate;
+  document.getElementById('kv-inv').textContent=c.inv;
+  document.querySelectorAll('tbody tr').forEach(r=>r.classList.remove('selected'));
+  event.currentTarget.classList.add('selected');
+}
+</script>
+</body>
+</html>

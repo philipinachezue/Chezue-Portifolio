@@ -1,0 +1,948 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Kili & Coast — Client Onboarding</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #f7f3ee;
+  --white: #ffffff;
+  --bark: #2b1f14;
+  --clay: #9e5a33;
+  --clay-light: #c47a50;
+  --gold: #b8892a;
+  --sage: #5a6e52;
+  --fog: #e6ddd3;
+  --fog2: #ede5db;
+  --muted: #8a7b6e;
+  --text: #2b1f14;
+  --radius: 6px;
+}
+body {
+  background: var(--bg);
+  font-family: 'Jost', sans-serif;
+  color: var(--text);
+  min-height: 100vh;
+}
+
+/* LAYOUT */
+.shell { display: flex; min-height: 100vh; }
+
+/* LEFT PANEL */
+.left-panel {
+  width: 380px;
+  flex-shrink: 0;
+  background: var(--bark);
+  padding: 48px 40px;
+  display: flex;
+  flex-direction: column;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow: hidden;
+}
+.left-panel::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.015'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  pointer-events: none;
+}
+.brand {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: 0.02em;
+  margin-bottom: 6px;
+  position: relative;
+}
+.brand span { color: #c9973f; }
+.brand-sub {
+  font-size: 0.72rem;
+  font-weight: 400;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #8a7b6e;
+  margin-bottom: 48px;
+  position: relative;
+}
+
+.welcome-block { flex: 1; position: relative; }
+.welcome-label {
+  font-size: 0.65rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #c9973f;
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+.welcome-heading {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.85rem;
+  font-weight: 600;
+  color: #fff;
+  line-height: 1.35;
+  margin-bottom: 20px;
+}
+.welcome-heading em { font-style: italic; color: #c9973f; }
+.welcome-body {
+  font-size: 0.82rem;
+  color: #a09080;
+  line-height: 1.85;
+  margin-bottom: 36px;
+}
+
+/* STEP INDICATOR */
+.steps { display: flex; flex-direction: column; gap: 0; }
+.step-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  cursor: pointer;
+}
+.step-connector {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+  flex-shrink: 0;
+}
+.step-circle {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  border: 1.5px solid #3d3028;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: #5a4a3a;
+  transition: all 0.3s ease;
+  flex-shrink: 0;
+}
+.step-line {
+  width: 1.5px;
+  height: 32px;
+  background: #3d3028;
+  transition: background 0.3s;
+}
+.step-row:last-child .step-line { display: none; }
+.step-label-group { padding-top: 4px; padding-bottom: 32px; }
+.step-name {
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: #5a4a3a;
+  transition: color 0.3s;
+  margin-bottom: 2px;
+}
+.step-desc { font-size: 0.68rem; color: #4a3a2a; line-height: 1.4; }
+
+/* Active step */
+.step-row.active .step-circle {
+  background: var(--clay);
+  border-color: var(--clay);
+  color: #fff;
+}
+.step-row.active .step-name { color: #fff; }
+.step-row.active .step-line { background: #5a3a1a; }
+/* Completed step */
+.step-row.completed .step-circle {
+  background: var(--sage);
+  border-color: var(--sage);
+  color: #fff;
+}
+.step-row.completed .step-line { background: var(--sage); opacity: 0.4; }
+.step-row.completed .step-name { color: #a09080; }
+
+.left-footer {
+  font-size: 0.68rem;
+  color: #4a3a2a;
+  line-height: 1.7;
+  border-top: 1px solid #3d3028;
+  padding-top: 18px;
+  position: relative;
+}
+
+/* RIGHT PANEL */
+.right-panel {
+  flex: 1;
+  padding: 60px 64px;
+  display: flex;
+  flex-direction: column;
+  max-width: 760px;
+}
+
+/* FORM PAGES */
+.form-page { display: none; animation: fadeIn 0.35s ease both; }
+.form-page.active { display: block; }
+@keyframes fadeIn { from { opacity:0; transform:translateX(10px); } to { opacity:1; transform:translateX(0); } }
+
+.page-eyebrow {
+  font-size: 0.65rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--clay);
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+.page-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 2rem;
+  font-weight: 700;
+  line-height: 1.25;
+  margin-bottom: 8px;
+  color: var(--bark);
+}
+.page-title em { font-style: italic; color: var(--clay); }
+.page-subtitle {
+  font-size: 0.83rem;
+  color: var(--muted);
+  line-height: 1.7;
+  margin-bottom: 40px;
+  max-width: 520px;
+}
+
+/* FORM ELEMENTS */
+.form-row { margin-bottom: 24px; }
+.form-row.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.form-row.three-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+
+label {
+  display: block;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 7px;
+}
+label .req { color: var(--clay); margin-left: 2px; }
+
+input[type=text], input[type=email], input[type=tel], input[type=number], select, textarea {
+  width: 100%;
+  padding: 12px 16px;
+  border: 1.5px solid var(--fog);
+  border-radius: var(--radius);
+  font-family: 'Jost', sans-serif;
+  font-size: 0.86rem;
+  color: var(--bark);
+  background: var(--white);
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  appearance: none;
+}
+input:focus, select:focus, textarea:focus {
+  border-color: var(--clay);
+  box-shadow: 0 0 0 3px rgba(158,90,51,0.08);
+}
+textarea { min-height: 100px; resize: vertical; line-height: 1.6; }
+select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%238a7b6e' d='M6 8L0 0h12z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 14px center; padding-right: 36px; cursor: pointer; }
+
+.input-hint { font-size: 0.68rem; color: var(--muted); margin-top: 5px; }
+
+/* CHOICE CARDS */
+.choice-grid { display: grid; gap: 10px; }
+.choice-grid.col2 { grid-template-columns: 1fr 1fr; }
+.choice-grid.col3 { grid-template-columns: 1fr 1fr 1fr; }
+.choice-card {
+  border: 1.5px solid var(--fog);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+  cursor: pointer;
+  background: var(--white);
+  transition: border-color 0.18s, background 0.18s;
+  user-select: none;
+}
+.choice-card:hover { border-color: var(--clay-light); background: #fdf8f3; }
+.choice-card.selected { border-color: var(--clay); background: #fdf3eb; }
+.choice-card .cc-icon { font-size: 1.3rem; margin-bottom: 6px; }
+.choice-card .cc-label { font-size: 0.82rem; font-weight: 600; color: var(--bark); margin-bottom: 2px; }
+.choice-card .cc-sub { font-size: 0.7rem; color: var(--muted); line-height: 1.4; }
+.choice-card.selected .cc-label { color: var(--clay); }
+
+/* RANGE SLIDER */
+.range-wrap { display: flex; flex-direction: column; gap: 8px; }
+.range-labels { display: flex; justify-content: space-between; font-size: 0.68rem; color: var(--muted); }
+input[type=range] {
+  width: 100%;
+  height: 4px;
+  appearance: none;
+  background: var(--fog);
+  border-radius: 4px;
+  border: none;
+  outline: none;
+  padding: 0;
+}
+input[type=range]::-webkit-slider-thumb {
+  appearance: none;
+  width: 18px; height: 18px;
+  border-radius: 50%;
+  background: var(--clay);
+  cursor: pointer;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.15);
+}
+.range-value {
+  text-align: center;
+  font-family: 'Playfair Display', serif;
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: var(--clay);
+}
+
+/* TOGGLE CHIPS */
+.chip-group { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip {
+  padding: 7px 14px;
+  border: 1.5px solid var(--fog);
+  border-radius: 40px;
+  font-size: 0.76rem;
+  font-weight: 500;
+  color: var(--muted);
+  cursor: pointer;
+  background: var(--white);
+  transition: all 0.15s;
+  user-select: none;
+}
+.chip:hover { border-color: var(--clay-light); color: var(--clay-light); }
+.chip.selected { background: var(--clay); border-color: var(--clay); color: #fff; }
+
+/* SECTION DIVIDER */
+.form-section-title {
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--muted);
+  border-bottom: 1px solid var(--fog);
+  padding-bottom: 10px;
+  margin-bottom: 22px;
+  margin-top: 8px;
+}
+
+/* REVIEW CARD */
+.review-section { margin-bottom: 28px; }
+.review-heading {
+  font-size: 0.65rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  font-weight: 600;
+  color: var(--clay);
+  margin-bottom: 12px;
+}
+.review-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.review-item { background: var(--white); border: 1px solid var(--fog); border-radius: var(--radius); padding: 12px 14px; }
+.review-item-label { font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); margin-bottom: 4px; }
+.review-item-val { font-size: 0.84rem; font-weight: 500; color: var(--bark); }
+.review-full { background: var(--white); border: 1px solid var(--fog); border-radius: var(--radius); padding: 14px 16px; margin-bottom: 10px; }
+
+/* CONSENT */
+.consent-row { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 16px; }
+.consent-check {
+  width: 18px; height: 18px; border: 1.5px solid var(--fog2); border-radius: 3px;
+  flex-shrink: 0; margin-top: 2px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--white); transition: all 0.15s; font-size: 0.7rem; color: #fff;
+}
+.consent-check.checked { background: var(--sage); border-color: var(--sage); }
+.consent-text { font-size: 0.78rem; color: var(--muted); line-height: 1.6; }
+.consent-text strong { color: var(--bark); }
+
+/* BUTTONS */
+.btn-row { display: flex; align-items: center; gap: 12px; margin-top: 36px; }
+.btn-primary {
+  background: var(--bark);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius);
+  padding: 14px 32px;
+  font-family: 'Jost', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+  transition: background 0.18s;
+}
+.btn-primary:hover { background: var(--clay); }
+.btn-secondary {
+  background: none;
+  border: 1.5px solid var(--fog);
+  border-radius: var(--radius);
+  padding: 13px 24px;
+  font-family: 'Jost', sans-serif;
+  font-size: 0.84rem;
+  font-weight: 500;
+  color: var(--muted);
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s;
+}
+.btn-secondary:hover { border-color: var(--muted); color: var(--bark); }
+.btn-progress {
+  font-size: 0.7rem;
+  color: var(--muted);
+  margin-left: auto;
+  font-family: 'Jost', sans-serif;
+}
+
+/* PROGRESS BAR */
+.progress-bar-wrap { margin-bottom: 40px; }
+.progress-bar-track { height: 3px; background: var(--fog); border-radius: 3px; overflow: hidden; }
+.progress-bar-fill { height: 100%; background: var(--clay); border-radius: 3px; transition: width 0.4s ease; }
+.progress-label { font-size: 0.66rem; color: var(--muted); text-align: right; margin-top: 6px; letter-spacing: 0.06em; }
+
+/* SUCCESS PAGE */
+.success-page { display: none; text-align: center; padding: 40px 0; }
+.success-page.active { display: block; animation: fadeIn 0.4s ease both; }
+.success-icon { font-size: 3rem; margin-bottom: 20px; }
+.success-title { font-family: 'Playfair Display', serif; font-size: 2.2rem; font-weight: 700; color: var(--bark); margin-bottom: 12px; }
+.success-title em { font-style: italic; color: var(--clay); }
+.success-body { font-size: 0.88rem; color: var(--muted); line-height: 1.8; max-width: 480px; margin: 0 auto 36px; }
+.success-card {
+  background: var(--white);
+  border: 1px solid var(--fog);
+  border-radius: 8px;
+  padding: 24px 28px;
+  max-width: 420px;
+  margin: 0 auto;
+  text-align: left;
+}
+.success-card-title { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.14em; color: var(--clay); font-weight: 600; margin-bottom: 14px; }
+.next-step { display: flex; gap: 12px; margin-bottom: 12px; font-size: 0.8rem; color: var(--bark); line-height: 1.5; }
+.ns-num { width: 22px; height: 22px; border-radius: 50%; background: var(--bark); color: #fff; font-size: 0.65rem; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
+</style>
+
+<!-- SEO & Performance Optimization -->
+<meta name="description" content="Philipina Andrea Chezue is a freelance Executive Virtual Assistant in Dar es Salaam, specializing in remote operations, travel logistics, and project coordination for founders globally.">
+<meta name="keywords" content="Executive Virtual Assistant, Remote VA, Operations Assistant, Project Coordination, Travel Logistics, Tanzania VA, Portfolio">
+<meta name="robots" content="index, follow">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<link rel="canonical" href="https://philipinachezue.com/">
+<link rel="manifest" href="/manifest.json">
+<link rel="icon" type="image/x-icon" href="/assets/favicon.ico">
+
+<!-- Open Graph / Social -->
+<meta property="og:title" content="Philipina Andrea Chezue — Executive Virtual Assistant">
+<meta property="og:description" content="Reclaim your time through expert operations, travel logistics, and project coordination that actually works.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://philipinachezue.com/">
+<meta property="og:image" content="https://philipinachezue.com/assets/images/img_9f2ae763.jpg">
+
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Philipina Andrea Chezue — Executive VA">
+<meta name="twitter:description" content="Reclaim your time through expert operations and project coordination.">
+<meta name="twitter:image" content="https://philipinachezue.com/assets/images/img_9f2ae763.jpg">
+
+<!-- Structured Data -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org/",
+  "@type": "Person",
+  "name": "Philipina Andrea Chezue",
+  "jobTitle": "Executive Virtual Assistant",
+  "url": "https://philipinachezue.com",
+  "email": "philipinachezue@outlook.com",
+  "address": {
+    "@type": "PostalAddress",
+    "addressLocality": "Dar es Salaam",
+    "addressCountry": "Tanzania"
+  },
+  "sameAs": [
+    "https://www.linkedin.com/in/philipinaandreachezue/"
+  ],
+  "knowsAbout": ["Executive Support", "Project Coordination", "Travel Logistics", "Operations"]
+}
+</script>
+<!-- End SEO -->
+
+</head>
+<body>
+<div class="shell">
+
+  <!-- LEFT PANEL -->
+  <div class="left-panel">
+    <div class="brand">Kili <span>&</span> Coast</div>
+    <div class="brand-sub">Luxury Travel & Safari Concierge</div>
+
+    <div class="welcome-block">
+      <div class="welcome-label">Client Onboarding</div>
+      <div class="welcome-heading">Let's plan something <em>extraordinary.</em></div>
+      <div class="welcome-body">This short process helps us understand exactly who you are, how you travel, and what matters most — so we can craft an experience that feels entirely yours.</div>
+
+      <div class="steps" id="step-nav">
+        <div class="step-row active" data-step="1">
+          <div class="step-connector">
+            <div class="step-circle" id="sc1">1</div>
+            <div class="step-line"></div>
+          </div>
+          <div class="step-label-group">
+            <div class="step-name">Your Details</div>
+            <div class="step-desc">Contact & travel party info</div>
+          </div>
+        </div>
+        <div class="step-row" data-step="2">
+          <div class="step-connector">
+            <div class="step-circle" id="sc2">2</div>
+            <div class="step-line"></div>
+          </div>
+          <div class="step-label-group">
+            <div class="step-name">Travel Style</div>
+            <div class="step-desc">Preferences & travel personality</div>
+          </div>
+        </div>
+        <div class="step-row" data-step="3">
+          <div class="step-connector">
+            <div class="step-circle" id="sc3">3</div>
+            <div class="step-line"></div>
+          </div>
+          <div class="step-label-group">
+            <div class="step-name">Your Dream Trip</div>
+            <div class="step-desc">Destinations, dates & budget</div>
+          </div>
+        </div>
+        <div class="step-row" data-step="4">
+          <div class="step-connector">
+            <div class="step-circle" id="sc4">4</div>
+            <div class="step-line"></div>
+          </div>
+          <div class="step-label-group">
+            <div class="step-name">Special Requirements</div>
+            <div class="step-desc">Dietary, medical, logistics</div>
+          </div>
+        </div>
+        <div class="step-row" data-step="5">
+          <div class="step-connector">
+            <div class="step-circle" id="sc5">5</div>
+            <div class="step-line"></div>
+          </div>
+          <div class="step-label-group">
+            <div class="step-name">Review & Submit</div>
+            <div class="step-desc">Confirm and send to your planner</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="left-footer">
+      🔒 Your information is kept strictly private and used only to plan your experience. We never share your data with third parties.
+    </div>
+  </div>
+
+  <!-- RIGHT PANEL -->
+  <div class="right-panel">
+
+    <div class="progress-bar-wrap">
+      <div class="progress-bar-track"><div class="progress-bar-fill" id="progress-fill" style="width:20%"></div></div>
+      <div class="progress-label" id="progress-label">Step 1 of 5</div>
+    </div>
+
+    <!-- STEP 1: YOUR DETAILS -->
+    <div class="form-page active" id="page-1">
+      <div class="page-eyebrow">Step 01 — Welcome</div>
+      <div class="page-title">Tell us about <em>yourself.</em></div>
+      <div class="page-subtitle">We'd love to know who we're planning for. This helps us tailor every communication and ensure your booking is perfectly personalised.</div>
+
+      <div class="form-section-title">Primary traveller</div>
+      <div class="form-row two-col">
+        <div><label>First name <span class="req">*</span></label><input type="text" placeholder="e.g. Sophie"/></div>
+        <div><label>Last name <span class="req">*</span></label><input type="text" placeholder="e.g. Hartwell"/></div>
+      </div>
+      <div class="form-row two-col">
+        <div><label>Email address <span class="req">*</span></label><input type="email" placeholder="sophie@gmail.com"/></div>
+        <div><label>Phone / WhatsApp <span class="req">*</span></label><input type="tel" placeholder="+44 7891 223 441"/></div>
+      </div>
+      <div class="form-row two-col">
+        <div>
+          <label>Country of residence <span class="req">*</span></label>
+          <select><option value="">Select country…</option><option>United Kingdom</option><option>United States</option><option>Australia</option><option>Canada</option><option>New Zealand</option><option>UAE</option><option>Germany</option><option>France</option><option>South Africa</option><option>Other</option></select>
+        </div>
+        <div>
+          <label>Preferred contact method</label>
+          <select><option>WhatsApp</option><option>Email</option><option>Phone call</option><option>Video call</option></select>
+        </div>
+      </div>
+
+      <div class="form-section-title">Travel party</div>
+      <div class="form-row two-col">
+        <div>
+          <label>Number of adults</label>
+          <select><option>1</option><option selected>2</option><option>3</option><option>4</option><option>5+</option></select>
+        </div>
+        <div>
+          <label>Children travelling?</label>
+          <select><option>No children</option><option>1 child</option><option>2 children</option><option>3+ children</option></select>
+        </div>
+      </div>
+      <div class="form-row">
+        <label>Occasion (if any)</label>
+        <div class="chip-group" id="occasion-chips">
+          <div class="chip selected" data-val="Honeymoon">Honeymoon</div>
+          <div class="chip" data-val="Anniversary">Anniversary</div>
+          <div class="chip" data-val="Birthday">Birthday</div>
+          <div class="chip" data-val="Family holiday">Family holiday</div>
+          <div class="chip" data-val="Solo adventure">Solo adventure</div>
+          <div class="chip" data-val="Corporate">Corporate</div>
+          <div class="chip" data-val="No occasion">No occasion</div>
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn-primary" onclick="goTo(2)">Continue →</button>
+        <span class="btn-progress">Step 1 of 5</span>
+      </div>
+    </div>
+
+    <!-- STEP 2: TRAVEL STYLE -->
+    <div class="form-page" id="page-2">
+      <div class="page-eyebrow">Step 02 — Preferences</div>
+      <div class="page-title">How do you <em>travel?</em></div>
+      <div class="page-subtitle">No two travellers are alike. Help us understand your pace, priorities, and what makes a trip feel like you.</div>
+
+      <div class="form-section-title">Accommodation style</div>
+      <div class="choice-grid col2" id="accom-grid">
+        <div class="choice-card selected" data-val="ultra-luxury">
+          <div class="cc-icon">🏰</div>
+          <div class="cc-label">Ultra-luxury</div>
+          <div class="cc-sub">Private plunge pools, butler service, 5-star throughout</div>
+        </div>
+        <div class="choice-card" data-val="boutique">
+          <div class="cc-icon">🌿</div>
+          <div class="cc-label">Boutique & character</div>
+          <div class="cc-sub">Unique, design-led properties — atmosphere over brand</div>
+        </div>
+        <div class="choice-card" data-val="eco-lodge">
+          <div class="cc-icon">🌍</div>
+          <div class="cc-label">Eco & community</div>
+          <div class="cc-sub">Sustainable lodges, locally owned, close to nature</div>
+        </div>
+        <div class="choice-card" data-val="mixed">
+          <div class="cc-icon">✨</div>
+          <div class="cc-label">Flexible / mixed</div>
+          <div class="cc-sub">We'll match the right style for each destination</div>
+        </div>
+      </div>
+
+      <div class="form-section-title" style="margin-top:28px;">Travel pace</div>
+      <div class="choice-grid col3" id="pace-grid">
+        <div class="choice-card" data-val="slow">
+          <div class="cc-icon">☕</div>
+          <div class="cc-label">Slow & deep</div>
+          <div class="cc-sub">Fewer places, longer stays</div>
+        </div>
+        <div class="choice-card selected" data-val="balanced">
+          <div class="cc-icon">⚖️</div>
+          <div class="cc-label">Balanced</div>
+          <div class="cc-sub">Good mix of exploring and resting</div>
+        </div>
+        <div class="choice-card" data-val="active">
+          <div class="cc-icon">🏃</div>
+          <div class="cc-label">Active & packed</div>
+          <div class="cc-sub">See as much as possible</div>
+        </div>
+      </div>
+
+      <div class="form-section-title" style="margin-top:28px;">Experiences you love</div>
+      <div class="chip-group" id="experience-chips">
+        <div class="chip selected">Wildlife & safari</div>
+        <div class="chip selected">Fine dining</div>
+        <div class="chip">Adventure sports</div>
+        <div class="chip">Cultural immersion</div>
+        <div class="chip selected">Photography</div>
+        <div class="chip">Spa & wellness</div>
+        <div class="chip">Hiking & trekking</div>
+        <div class="chip">Beach & ocean</div>
+        <div class="chip">Wine & gastronomy</div>
+        <div class="chip">Marine life</div>
+        <div class="chip">History & heritage</div>
+        <div class="chip">Nightlife</div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn-secondary" onclick="goTo(1)">← Back</button>
+        <button class="btn-primary" onclick="goTo(3)">Continue →</button>
+      </div>
+    </div>
+
+    <!-- STEP 3: DREAM TRIP -->
+    <div class="form-page" id="page-3">
+      <div class="page-eyebrow">Step 03 — Your Trip</div>
+      <div class="page-title">Where do you want to <em>go?</em></div>
+      <div class="page-subtitle">Tell us your dream destination, timing, and what you're comfortable investing. We'll make every dollar count.</div>
+
+      <div class="form-section-title">Destinations</div>
+      <div class="form-row">
+        <label>Destinations of interest <span class="req">*</span></label>
+        <div class="chip-group" id="dest-chips">
+          <div class="chip selected">Zanzibar</div>
+          <div class="chip selected">Serengeti</div>
+          <div class="chip">Kilimanjaro</div>
+          <div class="chip">Rwanda (gorillas)</div>
+          <div class="chip">Cape Town</div>
+          <div class="chip">Maasai Mara</div>
+          <div class="chip">Okavango Delta</div>
+          <div class="chip">Victoria Falls</div>
+          <div class="chip">Mozambique</div>
+          <div class="chip">Not sure — advise me</div>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <label>Anything specific you'd love to include?</label>
+        <textarea placeholder="e.g. We'd love a private dhow cruise, a hot air balloon over the Serengeti at sunrise, and at least 2 nights in a treehouse camp…"></textarea>
+      </div>
+
+      <div class="form-section-title">Dates & duration</div>
+      <div class="form-row three-col">
+        <div>
+          <label>Approximate departure</label>
+          <input type="text" placeholder="e.g. June 2026"/>
+        </div>
+        <div>
+          <label>Trip duration</label>
+          <select>
+            <option>5–7 nights</option>
+            <option selected>8–12 nights</option>
+            <option>13–17 nights</option>
+            <option>18–21 nights</option>
+            <option>22+ nights</option>
+          </select>
+        </div>
+        <div>
+          <label>Flexibility</label>
+          <select>
+            <option>Exact dates fixed</option>
+            <option selected>±1 week flex</option>
+            <option>±2 weeks flex</option>
+            <option>Very flexible</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-section-title">Budget</div>
+      <div class="form-row">
+        <label>Total budget per couple (USD)</label>
+        <div class="range-wrap">
+          <div class="range-value" id="budget-display">$12,000</div>
+          <input type="range" min="3000" max="50000" step="500" value="12000" id="budget-slider" oninput="updateBudget(this.value)"/>
+          <div class="range-labels"><span>$3,000</span><span>$15,000</span><span>$30,000</span><span>$50,000+</span></div>
+        </div>
+        <div class="input-hint">This helps us match the right accommodation and experience level. International flights are typically additional.</div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn-secondary" onclick="goTo(2)">← Back</button>
+        <button class="btn-primary" onclick="goTo(4)">Continue →</button>
+      </div>
+    </div>
+
+    <!-- STEP 4: SPECIAL REQUIREMENTS -->
+    <div class="form-page" id="page-4">
+      <div class="page-eyebrow">Step 04 — The Details</div>
+      <div class="page-title">The details that make it <em>perfect.</em></div>
+      <div class="page-subtitle">This is where we make sure nothing is left to chance. The more you share, the better we can anticipate your needs.</div>
+
+      <div class="form-section-title">Dietary requirements</div>
+      <div class="form-row">
+        <label>Dietary needs (select all that apply)</label>
+        <div class="chip-group" id="dietary-chips">
+          <div class="chip">None</div>
+          <div class="chip">Vegetarian</div>
+          <div class="chip">Vegan</div>
+          <div class="chip selected">Shellfish allergy</div>
+          <div class="chip">Gluten-free</div>
+          <div class="chip">Nut allergy</div>
+          <div class="chip">Halal</div>
+          <div class="chip">Kosher</div>
+          <div class="chip">Dairy-free</div>
+        </div>
+      </div>
+      <div class="form-row">
+        <label>Additional dietary notes</label>
+        <input type="text" placeholder="e.g. James has a severe tree nut allergy — please flag with all lodges and airlines"/>
+      </div>
+
+      <div class="form-section-title">Health & accessibility</div>
+      <div class="form-row">
+        <label>Any mobility or accessibility requirements?</label>
+        <select>
+          <option>No requirements</option>
+          <option>Prefer limited walking / easy terrain</option>
+          <option>Wheelchair accessible accommodation required</option>
+          <option>Limited high-altitude tolerance</option>
+          <option>Other (specify below)</option>
+        </select>
+      </div>
+      <div class="form-row">
+        <label>Medical or health notes for your planner</label>
+        <textarea placeholder="e.g. Sophie has mild motion sickness on small aircraft — window seat preferred. No other medical concerns." style="min-height:80px"></textarea>
+        <div class="input-hint">This information is confidential and used only to plan safe, comfortable travel.</div>
+      </div>
+
+      <div class="form-section-title">Logistics preferences</div>
+      <div class="form-row two-col">
+        <div>
+          <label>International flight class</label>
+          <select>
+            <option>Economy</option>
+            <option selected>Business class</option>
+            <option>First class</option>
+            <option>We'll arrange our own</option>
+          </select>
+        </div>
+        <div>
+          <label>Internal / charter flights</label>
+          <select>
+            <option>Scheduled airlines only</option>
+            <option selected>Private charter preferred</option>
+            <option>No preference</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <label>Anything else we should know?</label>
+        <textarea placeholder="e.g. We celebrate our anniversary on June 22nd — a small surprise gesture at dinner would mean the world. James loves wildlife photography so early morning game drives are a priority…" style="min-height:90px"></textarea>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn-secondary" onclick="goTo(3)">← Back</button>
+        <button class="btn-primary" onclick="goTo(5)">Review & Submit →</button>
+      </div>
+    </div>
+
+    <!-- STEP 5: REVIEW -->
+    <div class="form-page" id="page-5">
+      <div class="page-eyebrow">Step 05 — Almost there</div>
+      <div class="page-title">Review your <em>profile.</em></div>
+      <div class="page-subtitle">Take a moment to review what we've captured. Your planner will use this to begin crafting your personalised itinerary.</div>
+
+      <div class="review-section">
+        <div class="review-heading">Contact & Party</div>
+        <div class="review-grid">
+          <div class="review-item"><div class="review-item-label">Name</div><div class="review-item-val">Sophie & James Hartwell</div></div>
+          <div class="review-item"><div class="review-item-label">Country</div><div class="review-item-val">United Kingdom</div></div>
+          <div class="review-item"><div class="review-item-label">Contact</div><div class="review-item-val">s.hartwell@gmail.com</div></div>
+          <div class="review-item"><div class="review-item-label">Party</div><div class="review-item-val">2 adults · Honeymoon</div></div>
+        </div>
+      </div>
+
+      <div class="review-section">
+        <div class="review-heading">Travel Style</div>
+        <div class="review-grid">
+          <div class="review-item"><div class="review-item-label">Accommodation</div><div class="review-item-val">Ultra-luxury</div></div>
+          <div class="review-item"><div class="review-item-label">Pace</div><div class="review-item-val">Balanced</div></div>
+          <div class="review-item review-full" style="grid-column:span 2"><div class="review-item-label">Experiences</div><div class="review-item-val">Wildlife & safari · Fine dining · Photography</div></div>
+        </div>
+      </div>
+
+      <div class="review-section">
+        <div class="review-heading">Trip Details</div>
+        <div class="review-grid">
+          <div class="review-item"><div class="review-item-label">Destinations</div><div class="review-item-val">Zanzibar · Serengeti</div></div>
+          <div class="review-item"><div class="review-item-label">Timing</div><div class="review-item-val">June 2026 · 8–12 nights</div></div>
+          <div class="review-item"><div class="review-item-label">Budget</div><div class="review-item-val">$12,000 per couple</div></div>
+          <div class="review-item"><div class="review-item-label">Flexibility</div><div class="review-item-val">±1 week</div></div>
+        </div>
+      </div>
+
+      <div class="review-section">
+        <div class="review-heading">Special Requirements</div>
+        <div class="review-full"><div class="review-item-label">Dietary</div><div class="review-item-val">Shellfish allergy (Sophie) — flag with all properties</div></div>
+        <div class="review-full"><div class="review-item-label">Flights</div><div class="review-item-val">Business class international · Private charter preferred</div></div>
+        <div class="review-full"><div class="review-item-label">Notes</div><div class="review-item-val" style="color:var(--muted);font-style:italic;font-size:0.78rem">"Anniversary on June 22nd — a small surprise at dinner would mean the world. James loves photography so early morning game drives are a priority."</div></div>
+      </div>
+
+      <div class="form-section-title">Confirm & consent</div>
+      <div class="consent-row">
+        <div class="consent-check checked" id="consent1" onclick="toggleConsent(this)">✓</div>
+        <div class="consent-text">I confirm that the details provided are accurate and give <strong>Kili & Coast</strong> permission to use this information to plan my trip and contact me regarding my booking.</div>
+      </div>
+      <div class="consent-row">
+        <div class="consent-check checked" id="consent2" onclick="toggleConsent(this)">✓</div>
+        <div class="consent-text">I have read and agree to the <strong>Terms & Conditions</strong> and <strong>Privacy Policy</strong>. I understand that a planning fee may apply for bespoke itineraries.</div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn-secondary" onclick="goTo(4)">← Back</button>
+        <button class="btn-primary" onclick="submitForm()">Submit to My Planner ✦</button>
+      </div>
+    </div>
+
+    <!-- SUCCESS -->
+    <div class="success-page" id="success-page">
+      <div class="success-icon">🌍</div>
+      <div class="success-title">You're all set, <em>Sophie.</em></div>
+      <div class="success-body">Your onboarding profile has been received by your dedicated planner. We'll be in touch within 24 hours with your personalised itinerary proposal.</div>
+      <div class="success-card">
+        <div class="success-card-title">What happens next</div>
+        <div class="next-step"><div class="ns-num">1</div><div>Your planner reviews your profile and begins curating destination options.</div></div>
+        <div class="next-step"><div class="ns-num">2</div><div>You'll receive a personalised itinerary proposal within <strong>24–48 hours</strong> via email.</div></div>
+        <div class="next-step"><div class="ns-num">3</div><div>A 30-minute discovery call is scheduled to refine the details together.</div></div>
+        <div class="next-step"><div class="ns-num">4</div><div>Once you're happy, we handle every booking — flights, lodges, transfers, and more.</div></div>
+      </div>
+    </div>
+
+  </div><!-- /right-panel -->
+</div><!-- /shell -->
+
+<script>
+let currentStep = 1;
+
+function goTo(step) {
+  document.getElementById('page-' + currentStep).classList.remove('active');
+  currentStep = step;
+  document.getElementById('page-' + step).classList.add('active');
+
+  // progress bar
+  const pct = (step / 5) * 100;
+  document.getElementById('progress-fill').style.width = pct + '%';
+  document.getElementById('progress-label').textContent = 'Step ' + step + ' of 5';
+
+  // step nav
+  document.querySelectorAll('.step-row').forEach((row, i) => {
+    row.classList.remove('active', 'completed');
+    if (i + 1 === step) row.classList.add('active');
+    else if (i + 1 < step) row.classList.add('completed');
+    const circle = row.querySelector('.step-circle');
+    if (i + 1 < step) circle.textContent = '✓';
+    else circle.textContent = i + 1;
+  });
+}
+
+function submitForm() {
+  document.getElementById('page-5').classList.remove('active');
+  document.getElementById('success-page').classList.add('active');
+  document.getElementById('progress-fill').style.width = '100%';
+  document.getElementById('progress-label').textContent = 'Complete ✓';
+  document.querySelectorAll('.step-row').forEach(r => { r.classList.remove('active'); r.classList.add('completed'); r.querySelector('.step-circle').textContent = '✓'; });
+}
+
+function updateBudget(val) {
+  const n = parseInt(val);
+  document.getElementById('budget-display').textContent = n >= 50000 ? '$50,000+' : '$' + n.toLocaleString();
+}
+
+// Chip toggles
+document.querySelectorAll('.chip-group').forEach(group => {
+  group.querySelectorAll('.chip').forEach(chip => {
+    chip.addEventListener('click', () => chip.classList.toggle('selected'));
+  });
+});
+
+// Choice card (single select per grid)
+document.querySelectorAll('.choice-grid').forEach(grid => {
+  grid.querySelectorAll('.choice-card').forEach(card => {
+    card.addEventListener('click', () => {
+      grid.querySelectorAll('.choice-card').forEach(c => c.classList.remove('selected'));
+      card.classList.add('selected');
+    });
+  });
+});
+
+function toggleConsent(el) {
+  el.classList.toggle('checked');
+  el.textContent = el.classList.contains('checked') ? '✓' : '';
+}
+</script>
+</body>
+</html>

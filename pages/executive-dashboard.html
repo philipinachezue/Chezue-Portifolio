@@ -1,0 +1,897 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Founder OS — Executive Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@300;400;500&family=Lora:ital@0;1&display=swap" rel="stylesheet"/>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #0b0d0f;
+  --surface: #111418;
+  --surface2: #181c21;
+  --border: #232830;
+  --border2: #2e3540;
+  --text: #e8eaed;
+  --muted: #6b7585;
+  --accent: #4fffb0;
+  --accent2: #ff6b35;
+  --accent3: #5b9cf6;
+  --accent4: #f5c842;
+  --red: #ff4757;
+  --mono: 'IBM Plex Mono', monospace;
+  --sans: 'Syne', sans-serif;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--sans);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ANIMATIONS */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+@keyframes barGrow {
+  from { width: 0; }
+}
+@keyframes tickIn {
+  from { opacity: 0; transform: scale(0.85); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.fade-up { animation: fadeUp 0.45s ease both; }
+.fade-up-1 { animation-delay: 0.05s; }
+.fade-up-2 { animation-delay: 0.12s; }
+.fade-up-3 { animation-delay: 0.19s; }
+.fade-up-4 { animation-delay: 0.26s; }
+.fade-up-5 { animation-delay: 0.33s; }
+.fade-up-6 { animation-delay: 0.40s; }
+
+/* TOPBAR */
+.topbar {
+  display: flex;
+  align-items: center;
+  padding: 0 28px;
+  height: 52px;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface);
+  gap: 20px;
+  flex-shrink: 0;
+}
+.logo {
+  font-family: var(--sans);
+  font-weight: 800;
+  font-size: 0.95rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text);
+  display: flex; align-items: center; gap: 8px;
+}
+.logo-dot { width: 7px; height: 7px; background: var(--accent); border-radius: 50%; }
+.topbar-sep { flex: 1; }
+.topbar-date {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  color: var(--muted);
+  letter-spacing: 0.05em;
+}
+.live-badge {
+  display: flex; align-items: center; gap: 6px;
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  color: var(--accent);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.live-dot {
+  width: 6px; height: 6px; background: var(--accent); border-radius: 50%;
+  animation: pulse 1.6s ease-in-out infinite;
+}
+.topbar-avatar {
+  width: 30px; height: 30px; border-radius: 50%;
+  background: linear-gradient(135deg, #2d6e4e, var(--accent));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.7rem; font-weight: 700; color: var(--bg); letter-spacing: 0.04em;
+}
+.greeting-bar {
+  padding: 18px 28px 0;
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+}
+.greeting-main {
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+.greeting-main span { color: var(--accent); }
+.greeting-sub {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  color: var(--muted);
+  letter-spacing: 0.04em;
+}
+
+/* GRID LAYOUT */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  grid-template-rows: auto;
+  gap: 14px;
+  padding: 18px 28px 28px;
+  flex: 1;
+}
+
+/* CARD BASE */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 18px 20px;
+  position: relative;
+  overflow: hidden;
+  transition: border-color 0.2s;
+}
+.card:hover { border-color: var(--border2); }
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  border-radius: 6px 6px 0 0;
+}
+.card.accent-green::before { background: var(--accent); }
+.card.accent-orange::before { background: var(--accent2); }
+.card.accent-blue::before { background: var(--accent3); }
+.card.accent-yellow::before { background: var(--accent4); }
+.card.accent-red::before { background: var(--red); }
+.card.accent-none::before { display: none; }
+
+.card-label {
+  font-family: var(--mono);
+  font-size: 0.63rem;
+  text-transform: uppercase;
+  letter-spacing: 0.13em;
+  color: var(--muted);
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.card-label-dot {
+  width: 5px; height: 5px; border-radius: 50%;
+}
+
+/* STAT CARDS — row 1 */
+.stat-card { grid-column: span 2; }
+.stat-num {
+  font-size: 2.2rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1;
+  margin-bottom: 4px;
+}
+.stat-num.green { color: var(--accent); }
+.stat-num.orange { color: var(--accent2); }
+.stat-num.blue { color: var(--accent3); }
+.stat-num.yellow { color: var(--accent4); }
+.stat-num.red { color: var(--red); }
+.stat-label { font-size: 0.75rem; color: var(--muted); font-weight: 400; }
+.stat-delta {
+  margin-top: 10px;
+  font-family: var(--mono);
+  font-size: 0.65rem;
+  display: flex; align-items: center; gap: 4px;
+}
+.delta-up { color: var(--accent); }
+.delta-down { color: var(--red); }
+.delta-neutral { color: var(--muted); }
+
+/* TODAY'S SCHEDULE */
+.schedule-card { grid-column: span 4; grid-row: span 2; }
+.schedule-list { display: flex; flex-direction: column; gap: 2px; }
+.sched-item {
+  display: flex;
+  align-items: stretch;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.12s;
+  position: relative;
+}
+.sched-item:hover { background: var(--surface2); }
+.sched-item.now { background: rgba(79,255,176,0.06); border: 1px solid rgba(79,255,176,0.18); }
+.sched-time {
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  color: var(--muted);
+  min-width: 42px;
+  padding-top: 2px;
+  line-height: 1.4;
+  flex-shrink: 0;
+}
+.sched-bar { width: 2px; border-radius: 2px; flex-shrink: 0; }
+.sched-body { flex: 1; }
+.sched-title { font-size: 0.82rem; font-weight: 600; margin-bottom: 2px; }
+.sched-meta { font-size: 0.7rem; color: var(--muted); }
+.sched-tag {
+  font-family: var(--mono);
+  font-size: 0.58rem;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  padding: 2px 7px;
+  border-radius: 20px;
+  flex-shrink: 0;
+  align-self: flex-start;
+  margin-top: 2px;
+}
+.tag-call { background: rgba(91,156,246,0.15); color: var(--accent3); }
+.tag-travel { background: rgba(79,255,176,0.1); color: var(--accent); }
+.tag-review { background: rgba(245,200,66,0.12); color: var(--accent4); }
+.tag-block { background: rgba(107,117,133,0.15); color: var(--muted); }
+.tag-urgent { background: rgba(255,71,87,0.12); color: var(--red); }
+.now-indicator {
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-left: auto;
+  padding-top: 2px;
+}
+
+/* PRIORITY TASKS */
+.tasks-card { grid-column: span 4; grid-row: span 2; }
+.task-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 11px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+}
+.task-item:last-child { border-bottom: none; }
+.task-check {
+  width: 16px; height: 16px;
+  border: 1.5px solid var(--border2);
+  border-radius: 3px;
+  flex-shrink: 0;
+  margin-top: 2px;
+  display: flex; align-items: center; justify-content: center;
+  transition: background 0.15s, border-color 0.15s;
+  font-size: 0.6rem;
+  color: var(--bg);
+}
+.task-item.done .task-check { background: var(--accent); border-color: var(--accent); }
+.task-item.done .task-title { text-decoration: line-through; color: var(--muted); }
+.task-body { flex: 1; }
+.task-title { font-size: 0.82rem; font-weight: 500; margin-bottom: 3px; }
+.task-detail { font-size: 0.7rem; color: var(--muted); line-height: 1.5; }
+.task-right { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; flex-shrink: 0; }
+.task-due {
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  color: var(--muted);
+}
+.task-due.overdue { color: var(--red); }
+.task-due.today { color: var(--accent4); }
+.priority-pip {
+  width: 5px; height: 5px; border-radius: 50%;
+}
+
+/* CLIENT PIPELINE */
+.pipeline-card { grid-column: span 4; }
+.pipeline-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.79rem;
+}
+.pipeline-row:last-child { border-bottom: none; }
+.p-name { font-weight: 600; flex: 1.2; }
+.p-trip { color: var(--muted); font-size: 0.72rem; flex: 1.5; }
+.p-val { font-family: var(--mono); font-size: 0.72rem; color: var(--text); flex: 0.8; text-align: right; }
+.p-stage {
+  font-family: var(--mono); font-size: 0.6rem;
+  text-transform: uppercase; letter-spacing: 0.08em;
+  padding: 3px 8px; border-radius: 20px;
+  flex-shrink: 0; min-width: 72px; text-align: center;
+}
+.stage-confirmed { background: rgba(79,255,176,0.1); color: var(--accent); }
+.stage-pending { background: rgba(245,200,66,0.1); color: var(--accent4); }
+.stage-inquiry { background: rgba(91,156,246,0.1); color: var(--accent3); }
+.stage-overdue { background: rgba(255,71,87,0.1); color: var(--red); }
+
+/* INBOX TRIAGE */
+.inbox-card { grid-column: span 4; }
+.inbox-row {
+  display: flex; align-items: flex-start; gap: 10px;
+  padding: 9px 0;
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+  transition: opacity 0.12s;
+}
+.inbox-row:hover { opacity: 0.82; }
+.inbox-row:last-child { border-bottom: none; }
+.inbox-from { font-size: 0.78rem; font-weight: 600; flex: 1; }
+.inbox-subject { font-size: 0.72rem; color: var(--muted); flex: 2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.inbox-flag {
+  font-family: var(--mono); font-size: 0.58rem;
+  text-transform: uppercase; letter-spacing: 0.07em;
+  padding: 2px 7px; border-radius: 20px; flex-shrink: 0;
+}
+.flag-reply { background: rgba(255,107,53,0.12); color: var(--accent2); }
+.flag-action { background: rgba(255,71,87,0.1); color: var(--red); }
+.flag-fyi { background: rgba(107,117,133,0.15); color: var(--muted); }
+.flag-done { background: rgba(79,255,176,0.08); color: var(--accent); }
+
+/* TRAVEL STATUS */
+.travel-card { grid-column: span 8; }
+.travel-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.trip-tile {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  padding: 13px 14px;
+  transition: border-color 0.15s;
+}
+.trip-tile:hover { border-color: var(--border2); }
+.trip-flag { font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 6px; font-family: var(--mono); }
+.trip-name { font-size: 0.85rem; font-weight: 700; margin-bottom: 3px; }
+.trip-dates { font-family: var(--mono); font-size: 0.65rem; color: var(--muted); margin-bottom: 8px; }
+.trip-progress { height: 3px; background: var(--border); border-radius: 3px; margin-bottom: 8px; overflow: hidden; }
+.trip-bar { height: 100%; border-radius: 3px; animation: barGrow 1s ease both; animation-delay: 0.3s; }
+.bar-green { background: var(--accent); }
+.bar-yellow { background: var(--accent4); }
+.bar-blue { background: var(--accent3); }
+.trip-items { display: flex; flex-direction: column; gap: 4px; }
+.trip-check { font-size: 0.68rem; color: var(--muted); display: flex; align-items: center; gap: 6px; }
+.trip-check.ok { color: #4fffb0aa; }
+.trip-check.warn { color: var(--accent4); }
+.trip-check.bad { color: var(--red); }
+
+/* METRICS ROW */
+.metrics-card { grid-column: span 4; }
+.metric-rows { display: flex; flex-direction: column; gap: 11px; }
+.metric-row { display: flex; flex-direction: column; gap: 4px; }
+.metric-head { display: flex; justify-content: space-between; font-size: 0.74rem; }
+.metric-name { color: var(--muted); }
+.metric-val { font-family: var(--mono); font-weight: 500; }
+.metric-bar-bg { height: 4px; background: var(--border); border-radius: 4px; overflow: hidden; }
+.metric-bar-fill { height: 100%; border-radius: 4px; animation: barGrow 1s ease both; animation-delay: 0.5s; }
+
+/* NOTES / BRIEFING */
+.notes-card { grid-column: span 4; }
+.note-item {
+  display: flex; gap: 10px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.77rem;
+}
+.note-item:last-child { border-bottom: none; }
+.note-icon { font-size: 0.85rem; flex-shrink: 0; margin-top: 1px; }
+.note-text { color: var(--text); line-height: 1.5; }
+.note-text em { color: var(--muted); font-style: normal; font-family: var(--mono); font-size: 0.68rem; }
+
+/* QUICK ACTIONS */
+.actions-card { grid-column: span 4; }
+.actions-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.action-btn {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 12px 14px;
+  color: var(--text);
+  font-family: var(--sans);
+  font-size: 0.75rem;
+  font-weight: 500;
+  cursor: pointer;
+  text-align: left;
+  display: flex; align-items: center; gap: 8px;
+  transition: background 0.12s, border-color 0.12s;
+  letter-spacing: 0.01em;
+}
+.action-btn:hover { background: #1e2530; border-color: var(--border2); }
+.action-icon { font-size: 1rem; }
+
+/* SCROLLBAR */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 10px; }
+</style>
+
+<!-- SEO & Performance Optimization -->
+<meta name="description" content="Philipina Andrea Chezue is a freelance Executive Virtual Assistant in Dar es Salaam, specializing in remote operations, travel logistics, and project coordination for founders globally.">
+<meta name="keywords" content="Executive Virtual Assistant, Remote VA, Operations Assistant, Project Coordination, Travel Logistics, Tanzania VA, Portfolio">
+<meta name="robots" content="index, follow">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<link rel="canonical" href="https://philipinachezue.com/">
+<link rel="manifest" href="/manifest.json">
+<link rel="icon" type="image/x-icon" href="/assets/favicon.ico">
+
+<!-- Open Graph / Social -->
+<meta property="og:title" content="Philipina Andrea Chezue — Executive Virtual Assistant">
+<meta property="og:description" content="Reclaim your time through expert operations, travel logistics, and project coordination that actually works.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://philipinachezue.com/">
+<meta property="og:image" content="https://philipinachezue.com/assets/images/img_9f2ae763.jpg">
+
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Philipina Andrea Chezue — Executive VA">
+<meta name="twitter:description" content="Reclaim your time through expert operations and project coordination.">
+<meta name="twitter:image" content="https://philipinachezue.com/assets/images/img_9f2ae763.jpg">
+
+<!-- Structured Data -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org/",
+  "@type": "Person",
+  "name": "Philipina Andrea Chezue",
+  "jobTitle": "Executive Virtual Assistant",
+  "url": "https://philipinachezue.com",
+  "email": "philipinachezue@outlook.com",
+  "address": {
+    "@type": "PostalAddress",
+    "addressLocality": "Dar es Salaam",
+    "addressCountry": "Tanzania"
+  },
+  "sameAs": [
+    "https://www.linkedin.com/in/philipinaandreachezue/"
+  ],
+  "knowsAbout": ["Executive Support", "Project Coordination", "Travel Logistics", "Operations"]
+}
+</script>
+<!-- End SEO -->
+
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="logo"><span class="logo-dot"></span> Founder OS</div>
+  <div class="topbar-sep"></div>
+  <div class="live-badge"><span class="live-dot"></span> Live</div>
+  <div class="topbar-date" id="topbar-clock">THU · 02 APR 2026 · 14:32 EAT</div>
+  <div class="topbar-avatar">NR</div>
+</div>
+
+<!-- GREETING -->
+<div class="greeting-bar fade-up fade-up-1">
+  <div class="greeting-main">Good afternoon, <span>Nathan.</span></div>
+  <div class="greeting-sub">// 7 tasks active · 3 urgent · 2 trips in 30 days</div>
+</div>
+
+<div class="grid">
+
+  <!-- STAT CARDS -->
+  <div class="card stat-card accent-green fade-up fade-up-2">
+    <div class="card-label"><span class="card-label-dot" style="background:var(--accent)"></span> Open Tasks</div>
+    <div class="stat-num green">12</div>
+    <div class="stat-label">across all projects</div>
+    <div class="stat-delta delta-down">↓ 3 from yesterday</div>
+  </div>
+
+  <div class="card stat-card accent-orange fade-up fade-up-2">
+    <div class="card-label"><span class="card-label-dot" style="background:var(--accent2)"></span> Urgent</div>
+    <div class="stat-num orange">3</div>
+    <div class="stat-label">need action today</div>
+    <div class="stat-delta delta-up">↑ 1 escalated</div>
+  </div>
+
+  <div class="card stat-card accent-blue fade-up fade-up-2">
+    <div class="card-label"><span class="card-label-dot" style="background:var(--accent3)"></span> Meetings Today</div>
+    <div class="stat-num blue">4</div>
+    <div class="stat-label">2h 45min total</div>
+    <div class="stat-delta delta-neutral">— same as yesterday</div>
+  </div>
+
+  <div class="card stat-card accent-yellow fade-up fade-up-2">
+    <div class="card-label"><span class="card-label-dot" style="background:var(--accent4)"></span> Trips in 30d</div>
+    <div class="stat-num yellow">2</div>
+    <div class="stat-label">Cape Town · Nairobi</div>
+    <div class="stat-delta delta-neutral">Next: 14 Apr</div>
+  </div>
+
+  <div class="card stat-card accent-none fade-up fade-up-2">
+    <div class="card-label"><span class="card-label-dot" style="background:var(--muted)"></span> Inbox</div>
+    <div class="stat-num" style="color:var(--text)">18</div>
+    <div class="stat-label">6 need reply</div>
+    <div class="stat-delta delta-down">↓ 4 cleared today</div>
+  </div>
+
+  <div class="card stat-card accent-green fade-up fade-up-2">
+    <div class="card-label"><span class="card-label-dot" style="background:var(--accent)"></span> Expenses MTD</div>
+    <div class="stat-num" style="color:var(--text); font-size:1.5rem;">$8,240</div>
+    <div class="stat-label">budget: $12,000</div>
+    <div class="stat-delta delta-up" style="color:var(--accent)">69% used · on track</div>
+  </div>
+
+  <!-- TODAY'S SCHEDULE -->
+  <div class="card schedule-card accent-blue fade-up fade-up-3">
+    <div class="card-label"><span class="card-label-dot" style="background:var(--accent3)"></span> Today's Schedule — Thursday 2 April</div>
+    <div class="schedule-list">
+      <div class="sched-item">
+        <div class="sched-time">08:00<br/>08:30</div>
+        <div class="sched-bar" style="background:#2e3540"></div>
+        <div class="sched-body">
+          <div class="sched-title">Morning briefing review</div>
+          <div class="sched-meta">VA daily brief · Philipina</div>
+        </div>
+        <span class="sched-tag tag-block">Block</span>
+      </div>
+      <div class="sched-item">
+        <div class="sched-time">09:00<br/>10:00</div>
+        <div class="sched-bar" style="background:var(--accent3)"></div>
+        <div class="sched-body">
+          <div class="sched-title">Investor call — Series A update</div>
+          <div class="sched-meta">Zoom · Adaeze Okonkwo (Tlaloc Capital)</div>
+        </div>
+        <span class="sched-tag tag-call">Call</span>
+      </div>
+      <div class="sched-item">
+        <div class="sched-time">10:30<br/>11:15</div>
+        <div class="sched-bar" style="background:var(--accent4)"></div>
+        <div class="sched-body">
+          <div class="sched-title">Q2 roadmap review</div>
+          <div class="sched-meta">Internal · Product + Ops leads</div>
+        </div>
+        <span class="sched-tag tag-review">Review</span>
+      </div>
+      <div class="sched-item now">
+        <div class="sched-time">14:00<br/>14:45</div>
+        <div class="sched-bar" style="background:var(--accent)"></div>
+        <div class="sched-body">
+          <div class="sched-title">Partnership call — Safaricom</div>
+          <div class="sched-meta">Teams · Wanjiku Mwangi, BD Director</div>
+        </div>
+        <span class="sched-tag tag-call">Now ●</span>
+      </div>
+      <div class="sched-item">
+        <div class="sched-time">16:00<br/>16:30</div>
+        <div class="sched-bar" style="background:var(--accent2)"></div>
+        <div class="sched-body">
+          <div class="sched-title">Cape Town pre-trip briefing</div>
+          <div class="sched-meta">With Philipina · itinerary sign-off</div>
+        </div>
+        <span class="sched-tag tag-travel">Travel</span>
+      </div>
+      <div class="sched-item">
+        <div class="sched-time">18:00<br/>18:30</div>
+        <div class="sched-bar" style="background:#2e3540"></div>
+        <div class="sched-body">
+          <div class="sched-title">EOD wrap + next-day prep</div>
+          <div class="sched-meta">VA task handoff</div>
+        </div>
+        <span class="sched-tag tag-block">Block</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- PRIORITY TASKS -->
+  <div class="card tasks-card accent-orange fade-up fade-up-3">
+    <div class="card-label"><span class="card-label-dot" style="background:var(--accent2)"></span> Priority Tasks</div>
+    <div>
+      <div class="task-item">
+        <div class="task-check">✓</div>
+        <div class="task-body">
+          <div class="task-title">Send revised investor deck to Adaeze</div>
+          <div class="task-detail">Update slide 9 with Q1 ARR figures before 8:45 AM call</div>
+        </div>
+        <div class="task-right">
+          <div class="task-due today">Today</div>
+          <div class="priority-pip" style="background:var(--red)"></div>
+        </div>
+      </div>
+      <div class="task-item">
+        <div class="task-check"></div>
+        <div class="task-body">
+          <div class="task-title">Approve Okafor booking date change</div>
+          <div class="task-detail">Amara Lodge needs response by Fri 4 Apr · see email</div>
+        </div>
+        <div class="task-right">
+          <div class="task-due today">Today</div>
+          <div class="priority-pip" style="background:var(--red)"></div>
+        </div>
+      </div>
+      <div class="task-item">
+        <div class="task-check"></div>
+        <div class="task-body">
+          <div class="task-title">Review Cape Town itinerary v4</div>
+          <div class="task-detail">Sign off before 16:00 briefing with Philipina</div>
+        </div>
+        <div class="task-right">
+          <div class="task-due today">Today</div>
+          <div class="priority-pip" style="background:var(--accent2)"></div>
+        </div>
+      </div>
+      <div class="task-item">
+        <div class="task-check"></div>
+        <div class="task-body">
+          <div class="task-title">Sign Safaricom NDA before call</div>
+          <div class="task-detail">DocuSign link sent by Philipina — check inbox</div>
+        </div>
+        <div class="task-right">
+          <div class="task-due today">Today</div>
+          <div class="priority-pip" style="background:var(--accent2)"></div>
+        </div>
+      </div>
+      <div class="task-item">
+        <div class="task-check"></div>
+        <div class="task-body">
+          <div class="task-title">Respond to Fairfax-Reid complaint</div>
+          <div class="task-detail">Draft ready — needs your sign-off before sending</div>
+        </div>
+        <div class="task-right">
+          <div class="task-due overdue">Overdue</div>
+          <div class="priority-pip" style="background:var(--red)"></div>
+        </div>
+      </div>
+      <div class="task-item done">
+        <div class="task-check">✓</div>
+        <div class="task-body">
+          <div class="task-title">Confirm Simba Air manifest — Hartwell</div>
+          <div class="task-detail">Passenger names verified ✓</div>
+        </div>
+        <div class="task-right">
+          <div class="task-due" style="color:var(--accent)">Done</div>
+          <div class="priority-pip" style="background:var(--accent)"></div>
+        </div>
+      </div>
+      <div class="task-item done">
+        <div class="task-check">✓</div>
+        <div class="task-body">
+          <div class="task-title">Log Van Rooyen payment · Invoice #1847</div>
+          <div class="task-detail">ZAR 42,600 confirmed · CRM updated</div>
+        </div>
+        <div class="task-right">
+          <div class="task-due" style="color:var(--accent)">Done</div>
+          <div class="priority-pip" style="background:var(--accent)"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CLIENT PIPELINE -->
+  <div class="card pipeline-card accent-green fade-up fade-up-4">
+    <div class="card-label"><span class="card-label-dot" style="background:var(--accent)"></span> Active Client Pipeline</div>
+    <div class="pipeline-row">
+      <span class="p-name">Hartwell ×2</span>
+      <span class="p-trip">Zanzibar + Serengeti · Jun</span>
+      <span class="p-val">$11,200</span>
+      <span class="p-stage stage-confirmed">Confirmed</span>
+    </div>
+    <div class="pipeline-row">
+      <span class="p-name">Okafor ×2</span>
+      <span class="p-trip">Serengeti · Jun</span>
+      <span class="p-val">$7,800</span>
+      <span class="p-stage stage-overdue">Date issue</span>
+    </div>
+    <div class="pipeline-row">
+      <span class="p-name">Van Rooyen ×2</span>
+      <span class="p-trip">Cape Town · May</span>
+      <span class="p-val">$9,100</span>
+      <span class="p-stage stage-confirmed">Paid ✓</span>
+    </div>
+    <div class="pipeline-row">
+      <span class="p-name">Delacroix ×1</span>
+      <span class="p-trip">Kilimanjaro · Aug</span>
+      <span class="p-val">$14,500*</span>
+      <span class="p-stage stage-inquiry">New inquiry</span>
+    </div>
+    <div class="pipeline-row">
+      <span class="p-name">Tanaka ×6</span>
+      <span class="p-trip">Rwanda gorillas · Sep</span>
+      <span class="p-val">$22,400</span>
+      <span class="p-stage stage-pending">Permit pend.</span>
+    </div>
+    <div class="pipeline-row">
+      <span class="p-name">Fairfax-Reid ×2</span>
+      <span class="p-trip">Past · complaint open</span>
+      <span class="p-val">—</span>
+      <span class="p-stage stage-overdue">Escalated</span>
+    </div>
+  </div>
+
+  <!-- INBOX TRIAGE -->
+  <div class="card inbox-card accent-none fade-up fade-up-4">
+    <div class="card-label"><span class="card-label-dot" style="background:var(--muted)"></span> Inbox Triage — Action Items</div>
+    <div class="inbox-row">
+      <span class="inbox-from">Amara Eco Lodge</span>
+      <span class="inbox-subject">URGENT: Okafor date change KC-2904</span>
+      <span class="inbox-flag flag-action">Action</span>
+    </div>
+    <div class="inbox-row">
+      <span class="inbox-from">S. Hartwell</span>
+      <span class="inbox-subject">Questions on dhow cruise + allergy check</span>
+      <span class="inbox-flag flag-reply">Reply</span>
+    </div>
+    <div class="inbox-row">
+      <span class="inbox-from">Dr. K. Tanaka</span>
+      <span class="inbox-subject">Rwanda permit status — needs update by Fri</span>
+      <span class="inbox-flag flag-action">Action</span>
+    </div>
+    <div class="inbox-row">
+      <span class="inbox-from">Simba Air Charter</span>
+      <span class="inbox-subject">Flight manifest SA-0449 — confirm names</span>
+      <span class="inbox-flag flag-done">Done ✓</span>
+    </div>
+    <div class="inbox-row">
+      <span class="inbox-from">M. Delacroix</span>
+      <span class="inbox-subject">Kili solo inquiry — quote requested</span>
+      <span class="inbox-flag flag-reply">Reply</span>
+    </div>
+    <div class="inbox-row">
+      <span class="inbox-from">N. van Rooyen</span>
+      <span class="inbox-subject">POP sent · dress code Q for Franschhoek</span>
+      <span class="inbox-flag flag-done">Done ✓</span>
+    </div>
+  </div>
+
+  <!-- TRAVEL STATUS -->
+  <div class="card travel-card accent-yellow fade-up fade-up-5">
+    <div class="card-label"><span class="card-label-dot" style="background:var(--accent4)"></span> Upcoming Travel — Founder</div>
+    <div class="travel-grid">
+      <div class="trip-tile">
+        <div class="trip-flag" style="color:var(--accent4)">In 12 days</div>
+        <div class="trip-name">Cape Town</div>
+        <div class="trip-dates">14–18 APR 2026 · Business + leisure</div>
+        <div class="trip-progress"><div class="trip-bar bar-yellow" style="width:78%"></div></div>
+        <div class="trip-items">
+          <div class="trip-check ok">✓ Flights confirmed (KQ 104)</div>
+          <div class="trip-check ok">✓ Hotel: One&Only V&A</div>
+          <div class="trip-check ok">✓ Safaricom meeting scheduled</div>
+          <div class="trip-check warn">⚡ Transfer 14 Apr — awaiting</div>
+          <div class="trip-check warn">⚡ Itinerary sign-off today</div>
+        </div>
+      </div>
+      <div class="trip-tile">
+        <div class="trip-flag" style="color:var(--accent3)">In 29 days</div>
+        <div class="trip-name">Nairobi</div>
+        <div class="trip-dates">01–04 MAY 2026 · Board meeting</div>
+        <div class="trip-progress"><div class="trip-bar bar-blue" style="width:40%"></div></div>
+        <div class="trip-items">
+          <div class="trip-check ok">✓ Flights booked (ET 312)</div>
+          <div class="trip-check warn">⚡ Hotel options — 2 sent for review</div>
+          <div class="trip-check bad">✗ Visa check — Kenya ETA needed?</div>
+          <div class="trip-check bad">✗ Board pack not yet circulated</div>
+          <div class="trip-check warn">⚡ Driver — to be arranged</div>
+        </div>
+      </div>
+      <div class="trip-tile">
+        <div class="trip-flag" style="color:var(--muted)">Future</div>
+        <div class="trip-name">Singapore</div>
+        <div class="trip-dates">18–22 JUN 2026 · Tech summit</div>
+        <div class="trip-progress"><div class="trip-bar bar-green" style="width:15%"></div></div>
+        <div class="trip-items">
+          <div class="trip-check ok">✓ Conference registration</div>
+          <div class="trip-check bad">✗ Flights — not booked</div>
+          <div class="trip-check bad">✗ Hotel — not booked</div>
+          <div class="trip-check bad">✗ Visa — not started</div>
+          <div class="trip-check warn">⚡ Deadline: book by 1 May</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PERFORMANCE METRICS -->
+  <div class="card metrics-card accent-none fade-up fade-up-5">
+    <div class="card-label"><span class="card-label-dot" style="background:var(--muted)"></span> Business Metrics — April</div>
+    <div class="metric-rows">
+      <div class="metric-row">
+        <div class="metric-head"><span class="metric-name">Revenue booked</span><span class="metric-val" style="color:var(--accent)">$64,700 / $90K</span></div>
+        <div class="metric-bar-bg"><div class="metric-bar-fill bar-green" style="width:72%"></div></div>
+      </div>
+      <div class="metric-row">
+        <div class="metric-head"><span class="metric-name">Proposals sent</span><span class="metric-val">7 / 10 target</span></div>
+        <div class="metric-bar-bg"><div class="metric-bar-fill" style="width:70%;background:var(--accent3)"></div></div>
+      </div>
+      <div class="metric-row">
+        <div class="metric-head"><span class="metric-name">Client response rate</span><span class="metric-val" style="color:var(--accent4)">94%</span></div>
+        <div class="metric-bar-bg"><div class="metric-bar-fill" style="width:94%;background:var(--accent4)"></div></div>
+      </div>
+      <div class="metric-row">
+        <div class="metric-head"><span class="metric-name">Travel budget used</span><span class="metric-val">$8,240 / $12K</span></div>
+        <div class="metric-bar-bg"><div class="metric-bar-fill" style="width:69%;background:var(--accent2)"></div></div>
+      </div>
+      <div class="metric-row">
+        <div class="metric-head"><span class="metric-name">Tasks completed (week)</span><span class="metric-val" style="color:var(--accent)">31 / 38</span></div>
+        <div class="metric-bar-bg"><div class="metric-bar-fill bar-green" style="width:82%"></div></div>
+      </div>
+      <div class="metric-row">
+        <div class="metric-head"><span class="metric-name">Inbox zero streak</span><span class="metric-val" style="color:var(--accent4)">3 days</span></div>
+        <div class="metric-bar-bg"><div class="metric-bar-fill" style="width:60%;background:var(--accent4)"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- VA BRIEFING NOTES -->
+  <div class="card notes-card accent-green fade-up fade-up-6">
+    <div class="card-label"><span class="card-label-dot" style="background:var(--accent)"></span> VA Briefing Notes — from Philipina</div>
+    <div>
+      <div class="note-item">
+        <span class="note-icon">🔴</span>
+        <span class="note-text">Amara Lodge need a response on the Okafor date change by <strong>Friday 5 PM EAT</strong> — I've drafted 2 options for your review. <em>Awaiting your decision</em></span>
+      </div>
+      <div class="note-item">
+        <span class="note-icon">🟡</span>
+        <span class="note-text">Safaricom NDA was sent to your inbox at 11 AM — please sign before the 14:00 call. DocuSign should take 2 minutes. <em>Action: sign by 13:50</em></span>
+      </div>
+      <div class="note-item">
+        <span class="note-icon">🟡</span>
+        <span class="note-text">Rwanda permits still pending with RDB. I'll chase again today. Tanaka group visa deadline is mid-April — we have 10 days. <em>Monitoring</em></span>
+      </div>
+      <div class="note-item">
+        <span class="note-icon">🟢</span>
+        <span class="note-text">Van Rooyen payment received and logged. Invoice #1847 is fully settled. Booking status updated to confirmed. <em>Complete</em></span>
+      </div>
+      <div class="note-item">
+        <span class="note-icon">🟢</span>
+        <span class="note-text">Hartwell flight manifest confirmed with Simba Air. All passenger names match passports. <em>Complete</em></span>
+      </div>
+      <div class="note-item">
+        <span class="note-icon">📌</span>
+        <span class="note-text">Singapore Jun trip — recommend booking flights by 1 May to avoid price surge. Shall I start hotel shortlist? <em>Awaiting go-ahead</em></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- QUICK ACTIONS -->
+  <div class="card actions-card accent-none fade-up fade-up-6">
+    <div class="card-label"><span class="card-label-dot" style="background:var(--muted)"></span> Quick Actions</div>
+    <div class="actions-grid">
+      <button class="action-btn"><span class="action-icon">✈️</span> Book Singapore flights</button>
+      <button class="action-btn"><span class="action-icon">📄</span> Sign Safaricom NDA</button>
+      <button class="action-btn"><span class="action-icon">✉️</span> Reply to Hartwell</button>
+      <button class="action-btn"><span class="action-icon">📋</span> Review Cape Town v4</button>
+      <button class="action-btn"><span class="action-icon">⚠️</span> Okafor: choose date</button>
+      <button class="action-btn"><span class="action-icon">📊</span> Open Q2 roadmap</button>
+      <button class="action-btn"><span class="action-icon">💬</span> Complaint draft review</button>
+      <button class="action-btn"><span class="action-icon">📞</span> Call log — Safaricom</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  function tick() {
+    const now = new Date();
+    const days = ['SUN','MON','TUE','WED','THU','FRI','SAT'];
+    const months = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+    const d = days[now.getDay()];
+    const dd = String(now.getDate()).padStart(2,'0');
+    const m = months[now.getMonth()];
+    const y = now.getFullYear();
+    const hh = String(now.getHours()).padStart(2,'0');
+    const mm = String(now.getMinutes()).padStart(2,'0');
+    document.getElementById('topbar-clock').textContent = `${d} · ${dd} ${m} ${y} · ${hh}:${mm} EAT`;
+  }
+  tick();
+  setInterval(tick, 30000);
+
+  // Task toggle
+  document.querySelectorAll('.task-item:not(.done)').forEach(item => {
+    item.querySelector('.task-check').addEventListener('click', function(e) {
+      e.stopPropagation();
+      item.classList.toggle('done');
+      this.textContent = item.classList.contains('done') ? '✓' : '';
+    });
+  });
+</script>
+</body>
+</html>

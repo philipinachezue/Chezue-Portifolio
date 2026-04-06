@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Cape Town Trip Briefing — Nathan Reid</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;1,9..144,300;1,9..144,400&family=Epilogue:wght@300;400;500;600&family=IBM+Plex+Mono:wght@300;400&display=swap" rel="stylesheet"/>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #f4f0eb;
+  --white: #fff;
+  --ink: #1a1510;
+  --clay: #8c4a24;
+  --clay-lt: #b5663a;
+  --gold: #a07820;
+  --sage: #3d5c44;
+  --slate: #3a4a5c;
+  --fog: #e2d8ce;
+  --fog2: #ece5dc;
+  --muted: #7a6e64;
+  --red: #8c2424;
+  --mono: 'IBM Plex Mono', monospace;
+  --serif: 'Fraunces', serif;
+  --sans: 'Epilogue', sans-serif;
+}
+body {
+  background: var(--bg);
+  font-family: var(--sans);
+  color: var(--ink);
+  font-size: 14px;
+  line-height: 1.6;
+}
+@keyframes fadeUp { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
+.page { max-width: 860px; margin: 0 auto; padding: 48px 32px 80px; }
+
+/* ── HERO ── */
+.hero {
+  background: var(--ink);
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 32px;
+  position: relative;
+  animation: fadeUp 0.5s ease both;
+}
+.hero-inner { padding: 44px 48px; position: relative; z-index: 1; }
+.hero::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: repeating-linear-gradient(
+    -45deg,
+    transparent, transparent 30px,
+    rgba(255,255,255,0.012) 30px, rgba(255,255,255,0.012) 31px
+  );
+}
+.hero-eyebrow {
+  font-family: var(--mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #c9973f;
+  margin-bottom: 18px;
+  display: flex; align-items: center; gap: 10px;
+}
+.hero-eyebrow::before { content:''; display:block; width:24px; height:1px; background:#c9973f; }
+.hero-title {
+  font-family: var(--serif);
+  font-size: 3.2rem;
+  font-weight: 300;
+  color: #fff;
+  line-height: 1.1;
+  margin-bottom: 6px;
+  letter-spacing: -0.01em;
+}
+.hero-title em { font-style: italic; color: #c9973f; }
+.hero-subtitle {
+  font-family: var(--serif);
+  font-size: 1rem;
+  font-weight: 300;
+  font-style: italic;
+  color: #9a8a78;
+  margin-bottom: 32px;
+}
+.hero-pills { display: flex; flex-wrap: wrap; gap: 8px; }
+.hero-pill {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 40px;
+  padding: 5px 14px;
+  font-size: 0.72rem;
+  color: #c4b4a4;
+  font-family: var(--mono);
+  letter-spacing: 0.04em;
+}
+.hero-pill.hi { background: rgba(201,151,63,0.15); border-color: rgba(201,151,63,0.3); color: #c9973f; }
+.hero-ref {
+  position: absolute;
+  top: 32px; right: 40px;
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  color: #4a3a2a;
+  letter-spacing: 0.1em;
+  text-align: right;
+  line-height: 1.8;
+}
+
+/* ── GRID ── */
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+.three-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+.full-col { margin-bottom: 16px; }
+
+/* ── SECTION LABEL ── */
+.section-label {
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--clay);
+  margin-bottom: 12px;
+  display: flex; align-items: center; gap: 8px;
+  animation: fadeUp 0.4s ease both;
+}
+.section-label::after { content: ''; flex: 1; height: 1px; background: var(--fog); }
+
+/* ── CARD ── */
+.card {
+  background: var(--white);
+  border: 1px solid var(--fog);
+  border-radius: 8px;
+  padding: 22px 24px;
+  animation: fadeUp 0.45s ease both;
+}
+.card-title {
+  font-family: var(--serif);
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--ink);
+  margin-bottom: 14px;
+  display: flex; align-items: center; gap: 8px;
+}
+.card-title .ct-icon { font-size: 1.1rem; }
+
+/* ── ALERT CARDS ── */
+.card.alert-red { border-left: 3px solid var(--red); background: #fdf8f8; }
+.card.alert-gold { border-left: 3px solid var(--gold); background: #fdf9f2; }
+.card.alert-sage { border-left: 3px solid var(--sage); background: #f4f8f4; }
+.card.alert-slate { border-left: 3px solid var(--slate); background: #f3f5f8; }
+
+/* ── TABLE ── */
+table { width: 100%; border-collapse: collapse; }
+thead th {
+  font-family: var(--mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+  padding: 0 10px 8px;
+  text-align: left;
+  border-bottom: 1px solid var(--fog);
+}
+tbody td {
+  padding: 10px;
+  font-size: 0.8rem;
+  border-bottom: 1px solid var(--fog2);
+  vertical-align: top;
+}
+tbody tr:last-child td { border-bottom: none; }
+tbody tr:hover td { background: #fdf9f5; }
+.td-bold { font-weight: 600; color: var(--ink); }
+.td-muted { color: var(--muted); font-size: 0.73rem; }
+.td-mono { font-family: var(--mono); font-size: 0.72rem; color: var(--slate); }
+
+/* STATUS BADGE */
+.badge {
+  display: inline-flex; align-items: center; gap: 4px;
+  font-family: var(--mono);
+  font-size: 0.58rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 2px 8px;
+  border-radius: 20px;
+  white-space: nowrap;
+}
+.b-confirmed { background: rgba(61,92,68,0.1); color: var(--sage); }
+.b-pending { background: rgba(160,120,32,0.1); color: var(--gold); }
+.b-action { background: rgba(140,36,36,0.08); color: var(--red); }
+.b-info { background: rgba(58,74,92,0.1); color: var(--slate); }
+
+/* KV PAIRS */
+.kv-list { display: flex; flex-direction: column; gap: 9px; }
+.kv-row { display: flex; gap: 12px; align-items: baseline; }
+.kv-key {
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  min-width: 110px;
+  flex-shrink: 0;
+}
+.kv-val { font-size: 0.82rem; color: var(--ink); line-height: 1.5; }
+.kv-val strong { font-weight: 600; }
+
+/* ITINERARY DAYS */
+.day-block { margin-bottom: 14px; }
+.day-header {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  padding: 12px 16px;
+  background: var(--ink);
+  border-radius: 6px 6px 0 0;
+  margin-bottom: 0;
+}
+.day-num {
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: #c9973f;
+}
+.day-title {
+  font-family: var(--serif);
+  font-size: 1rem;
+  font-weight: 400;
+  color: #fff;
+  font-style: italic;
+}
+.day-date { font-family: var(--mono); font-size: 0.62rem; color: #6a5a4a; margin-left: auto; }
+.day-body { background: var(--white); border: 1px solid var(--fog); border-top: none; border-radius: 0 0 6px 6px; padding: 16px 18px; }
+.day-events { display: flex; flex-direction: column; gap: 12px; }
+.day-event { display: flex; gap: 14px; }
+.event-time { font-family: var(--mono); font-size: 0.62rem; color: var(--muted); min-width: 52px; flex-shrink: 0; padding-top: 2px; line-height: 1.4; }
+.event-dot-wrap { display: flex; flex-direction: column; align-items: center; gap: 0; flex-shrink: 0; padding-top: 5px; }
+.event-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.event-line { flex: 1; width: 1px; background: var(--fog); margin-top: 4px; }
+.event-body { flex: 1; }
+.event-title { font-size: 0.84rem; font-weight: 600; color: var(--ink); margin-bottom: 2px; }
+.event-detail { font-size: 0.74rem; color: var(--muted); line-height: 1.5; }
+.event-note { font-size: 0.7rem; font-style: italic; color: var(--clay); margin-top: 3px; }
+
+/* WEATHER ROW */
+.weather-row { display: flex; gap: 0; }
+.weather-day { flex: 1; text-align: center; padding: 14px 8px; border-right: 1px solid var(--fog2); }
+.weather-day:last-child { border-right: none; }
+.wd-name { font-family: var(--mono); font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); margin-bottom: 6px; }
+.wd-icon { font-size: 1.4rem; margin-bottom: 6px; }
+.wd-temp { font-family: var(--serif); font-size: 1.1rem; font-weight: 600; color: var(--ink); }
+.wd-desc { font-size: 0.68rem; color: var(--muted); margin-top: 3px; }
+
+/* CONTACTS GRID */
+.contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.contact-card {
+  border: 1px solid var(--fog);
+  border-radius: 6px;
+  padding: 13px 14px;
+  background: var(--fog2);
+}
+.cc-role { font-family: var(--mono); font-size: 0.58rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--clay); margin-bottom: 5px; }
+.cc-name { font-size: 0.84rem; font-weight: 600; color: var(--ink); margin-bottom: 3px; }
+.cc-detail { font-size: 0.72rem; color: var(--muted); line-height: 1.7; }
+
+/* CHECKLIST */
+.checklist { display: flex; flex-direction: column; gap: 8px; }
+.check-item { display: flex; align-items: flex-start; gap: 10px; font-size: 0.8rem; }
+.check-box {
+  width: 16px; height: 16px; border-radius: 3px; flex-shrink: 0; margin-top: 1px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.65rem; color: #fff; cursor: pointer; transition: all 0.15s;
+}
+.check-box.done { background: var(--sage); }
+.check-box.warn { background: var(--gold); }
+.check-box.todo { background: var(--fog); border: 1.5px solid var(--fog); color: transparent; }
+.check-label { line-height: 1.4; }
+.check-label.warn-text { color: var(--clay); font-weight: 500; }
+.check-label .sub { font-size: 0.68rem; color: var(--muted); display: block; }
+
+/* TIPS */
+.tip-list { display: flex; flex-direction: column; gap: 10px; }
+.tip-row { display: flex; gap: 10px; font-size: 0.78rem; line-height: 1.55; }
+.tip-icon { font-size: 0.9rem; flex-shrink: 0; margin-top: 1px; }
+
+/* FOOTER */
+.doc-footer {
+  border-top: 1px solid var(--fog);
+  padding-top: 20px;
+  margin-top: 32px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  color: var(--muted);
+  letter-spacing: 0.06em;
+}
+.footer-brand { font-family: var(--serif); font-size: 0.9rem; font-weight: 600; color: var(--ink); }
+.footer-brand span { color: var(--clay); }
+
+/* PRINT */
+@media print {
+  body { background: #fff; }
+  .page { padding: 20px; }
+  .card { break-inside: avoid; }
+}
+</style>
+
+<!-- SEO & Performance Optimization -->
+<meta name="description" content="Philipina Andrea Chezue is a freelance Executive Virtual Assistant in Dar es Salaam, specializing in remote operations, travel logistics, and project coordination for founders globally.">
+<meta name="keywords" content="Executive Virtual Assistant, Remote VA, Operations Assistant, Project Coordination, Travel Logistics, Tanzania VA, Portfolio">
+<meta name="robots" content="index, follow">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<link rel="canonical" href="https://philipinachezue.com/">
+<link rel="manifest" href="/manifest.json">
+<link rel="icon" type="image/x-icon" href="/assets/favicon.ico">
+
+<!-- Open Graph / Social -->
+<meta property="og:title" content="Philipina Andrea Chezue — Executive Virtual Assistant">
+<meta property="og:description" content="Reclaim your time through expert operations, travel logistics, and project coordination that actually works.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://philipinachezue.com/">
+<meta property="og:image" content="https://philipinachezue.com/assets/images/img_9f2ae763.jpg">
+
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Philipina Andrea Chezue — Executive VA">
+<meta name="twitter:description" content="Reclaim your time through expert operations and project coordination.">
+<meta name="twitter:image" content="https://philipinachezue.com/assets/images/img_9f2ae763.jpg">
+
+<!-- Structured Data -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org/",
+  "@type": "Person",
+  "name": "Philipina Andrea Chezue",
+  "jobTitle": "Executive Virtual Assistant",
+  "url": "https://philipinachezue.com",
+  "email": "philipinachezue@outlook.com",
+  "address": {
+    "@type": "PostalAddress",
+    "addressLocality": "Dar es Salaam",
+    "addressCountry": "Tanzania"
+  },
+  "sameAs": [
+    "https://www.linkedin.com/in/philipinaandreachezue/"
+  ],
+  "knowsAbout": ["Executive Support", "Project Coordination", "Travel Logistics", "Operations"]
+}
+</script>
+<!-- End SEO -->
+
+</head>
+<body>
+<div class="page">
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-ref">
+      Prepared by: Philipina Chezue<br/>
+      Executive VA · Kili & Coast<br/>
+      Issued: 2 April 2026
+    </div>
+    <div class="hero-inner">
+      <div class="hero-eyebrow">Pre-Departure Briefing Pack</div>
+      <div class="hero-title">Cape <em>Town</em></div>
+      <div class="hero-subtitle">Business & Leisure · 14–18 April 2026</div>
+      <div class="hero-pills">
+        <div class="hero-pill hi">Nathan Reid</div>
+        <div class="hero-pill">4 nights · 5 days</div>
+        <div class="hero-pill">Business + leisure</div>
+        <div class="hero-pill">Ref: NR-CPT-0414</div>
+        <div class="hero-pill">KQ 104 · One&Only V&A</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ALERT -->
+  <div class="full-col">
+    <div class="card alert-gold" style="animation-delay:0.1s">
+      <div class="card-title"><span class="ct-icon">⚡</span> VA Notes — Action Required Before Departure</div>
+      <div style="display:flex;flex-direction:column;gap:7px">
+        <div style="font-size:0.8rem; display:flex; gap:10px; align-items:flex-start;"><span style="color:var(--red);font-weight:600;min-width:60px;font-family:var(--mono);font-size:0.68rem;">TODAY</span> <span>Confirm airport transfer with <strong>Cape Riders (Sipho Dlamini)</strong> — see contact sheet. Flight lands 20:15, transfer must be pre-booked by 5 PM today.</span></div>
+        <div style="font-size:0.8rem; display:flex; gap:10px; align-items:flex-start;"><span style="color:var(--gold);font-weight:600;min-width:60px;font-family:var(--mono);font-size:0.68rem;">APR 8</span> <span>Review and sign the <strong>Safaricom NDA</strong> before the Cape Town meeting on 15 Apr — DocuSign link resent to your inbox.</span></div>
+        <div style="font-size:0.8rem; display:flex; gap:10px; align-items:flex-start;"><span style="color:var(--sage);font-weight:600;min-width:60px;font-family:var(--mono);font-size:0.68rem;">APR 12</span> <span>Check in online for <strong>KQ 104</strong> (available 24 hrs before) — aisle seat 12C held; confirm or change via Kenya Airways app.</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FLIGHTS + HOTEL -->
+  <div class="section-label" style="animation-delay:0.15s">Flight & Accommodation</div>
+  <div class="two-col">
+    <div class="card" style="animation-delay:0.18s">
+      <div class="card-title"><span class="ct-icon">✈️</span> Outbound Flight</div>
+      <div class="kv-list">
+        <div class="kv-row"><span class="kv-key">Flight</span><span class="kv-val"><strong>Kenya Airways KQ 104</strong></span></div>
+        <div class="kv-row"><span class="kv-key">Route</span><span class="kv-val">NBO → CPT · Direct</span></div>
+        <div class="kv-row"><span class="kv-key">Departure</span><span class="kv-val"><strong>14 Apr · 15:45 EAT</strong><br/><span style="font-size:0.72rem;color:var(--muted)">Check in by 13:15 · Terminal 1C</span></span></div>
+        <div class="kv-row"><span class="kv-key">Arrival</span><span class="kv-val"><strong>14 Apr · 20:15 SAST</strong></span></div>
+        <div class="kv-row"><span class="kv-key">Seat</span><span class="kv-val">12C · Business class</span></div>
+        <div class="kv-row"><span class="kv-key">Booking ref</span><span class="kv-val"><span style="font-family:var(--mono);font-size:0.8rem;">KQXR44J</span></span></div>
+        <div class="kv-row"><span class="kv-key">Status</span><span class="kv-val"><span class="badge b-confirmed">✓ Confirmed</span></span></div>
+      </div>
+    </div>
+    <div class="card" style="animation-delay:0.21s">
+      <div class="card-title"><span class="ct-icon">✈️</span> Return Flight</div>
+      <div class="kv-list">
+        <div class="kv-row"><span class="kv-key">Flight</span><span class="kv-val"><strong>Kenya Airways KQ 105</strong></span></div>
+        <div class="kv-row"><span class="kv-key">Route</span><span class="kv-val">CPT → NBO · Direct</span></div>
+        <div class="kv-row"><span class="kv-key">Departure</span><span class="kv-val"><strong>18 Apr · 21:30 SAST</strong><br/><span style="font-size:0.72rem;color:var(--muted)">Check in by 19:00 · Terminal A</span></span></div>
+        <div class="kv-row"><span class="kv-key">Arrival</span><span class="kv-val"><strong>19 Apr · 06:10 EAT</strong></span></div>
+        <div class="kv-row"><span class="kv-key">Seat</span><span class="kv-val">11A · Business class</span></div>
+        <div class="kv-row"><span class="kv-key">Booking ref</span><span class="kv-val"><span style="font-family:var(--mono);font-size:0.8rem;">KQXR44K</span></span></div>
+        <div class="kv-row"><span class="kv-key">Status</span><span class="kv-val"><span class="badge b-confirmed">✓ Confirmed</span></span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="full-col">
+    <div class="card" style="animation-delay:0.24s">
+      <div class="card-title"><span class="ct-icon">🏨</span> One&Only Cape Town — V&A Waterfront</div>
+      <div class="two-col" style="margin-bottom:0;gap:24px">
+        <div class="kv-list">
+          <div class="kv-row"><span class="kv-key">Room</span><span class="kv-val"><strong>Marina Suite · Harbour view</strong></span></div>
+          <div class="kv-row"><span class="kv-key">Check-in</span><span class="kv-val">14 Apr · from 15:00 SAST<br/><span style="font-size:0.72rem;color:var(--muted)">Early check-in requested (18:00 arr.) — awaiting confirmation</span></span></div>
+          <div class="kv-row"><span class="kv-key">Check-out</span><span class="kv-val">18 Apr · 12:00 SAST</span></div>
+          <div class="kv-row"><span class="kv-key">Status</span><span class="kv-val"><span class="badge b-confirmed">✓ Confirmed</span></span></div>
+        </div>
+        <div class="kv-list">
+          <div class="kv-row"><span class="kv-key">Confirmation</span><span class="kv-val"><span style="font-family:var(--mono);">OO-CT-8847</span></span></div>
+          <div class="kv-row"><span class="kv-key">Inclusions</span><span class="kv-val">Daily breakfast · Airport transfer in · Complimentary minibar</span></div>
+          <div class="kv-row"><span class="kv-key">Hotel direct</span><span class="kv-val">+27 21 431 5888</span></div>
+          <div class="kv-row"><span class="kv-key">Notes</span><span class="kv-val" style="color:var(--clay);font-style:italic">⭐ Upgrade request submitted — response pending</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ITINERARY -->
+  <div class="section-label" style="animation-delay:0.25s">Day-by-Day Itinerary</div>
+
+  <div class="day-block">
+    <div class="day-header">
+      <span class="day-num">Day 01</span>
+      <span class="day-title">Arrival & Harbour Evening</span>
+      <span class="day-date">Monday 14 April</span>
+    </div>
+    <div class="day-body">
+      <div class="day-events">
+        <div class="day-event">
+          <div class="event-time">13:15</div>
+          <div class="event-dot-wrap"><div class="event-dot" style="background:var(--slate)"></div><div class="event-line"></div></div>
+          <div class="event-body"><div class="event-title">Check-in at JKIA — Terminal 1C</div><div class="event-detail">Kenya Airways KQ 104 · Business class lounge access: Simba Lounge T1C</div></div>
+        </div>
+        <div class="day-event">
+          <div class="event-time">15:45</div>
+          <div class="event-dot-wrap"><div class="event-dot" style="background:var(--clay)"></div><div class="event-line"></div></div>
+          <div class="event-body"><div class="event-title">Depart Nairobi → Cape Town</div><div class="event-detail">Flight time: approx. 4h 30min · Meal: dinner service</div></div>
+        </div>
+        <div class="day-event">
+          <div class="event-time">20:15</div>
+          <div class="event-dot-wrap"><div class="event-dot" style="background:var(--clay)"></div><div class="event-line"></div></div>
+          <div class="event-body"><div class="event-title">Arrive Cape Town International (CPT)</div><div class="event-detail">Sipho Dlamini (Cape Riders) meeting at Arrivals — silver Mercedes Viano, NR sign</div><div class="event-note">📱 Sipho: +27 82 445 7812 — save in phone before travel</div></div>
+        </div>
+        <div class="day-event">
+          <div class="event-time">21:15</div>
+          <div class="event-dot-wrap"><div class="event-dot" style="background:var(--sage)"></div></div>
+          <div class="event-body"><div class="event-title">Check-in — One&Only Cape Town</div><div class="event-detail">Marina Suite · Harbour view · Welcome amenity arranged by hotel</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="day-block">
+    <div class="day-header">
+      <span class="day-num">Day 02</span>
+      <span class="day-title">Safaricom Partnership Meeting + Table Mountain</span>
+      <span class="day-date">Tuesday 15 April</span>
+    </div>
+    <div class="day-body">
+      <div class="day-events">
+        <div class="day-event">
+          <div class="event-time">08:00</div>
+          <div class="event-dot-wrap"><div class="event-dot" style="background:var(--fog)"></div><div class="event-line"></div></div>
+          <div class="event-body"><div class="event-title">Breakfast at hotel — Nobu at One&Only</div><div class="event-detail">Complimentary · Dress: smart casual</div></div>
+        </div>
+        <div class="day-event">
+          <div class="event-time">10:00</div>
+          <div class="event-dot-wrap"><div class="event-dot" style="background:var(--slate)"></div><div class="event-line"></div></div>
+          <div class="event-body"><div class="event-title">Safaricom Partnership Meeting</div><div class="event-detail">Venue: Wex Office Park, Century City · Room: Boardroom A, 3rd floor<br/>Attendee: Wanjiku Mwangi (BD Director) + 2 team members<br/>Agenda: Partnership scope, data licensing terms, Q3 go-live</div><div class="event-note">📎 NDA must be signed before this meeting — see action item above</div></div>
+        </div>
+        <div class="day-event">
+          <div class="event-time">13:00</div>
+          <div class="event-dot-wrap"><div class="event-dot" style="background:var(--fog)"></div><div class="event-line"></div></div>
+          <div class="event-body"><div class="event-title">Working lunch — Post-meeting debrief</div><div class="event-detail">The Test Kitchen · V&A Waterfront · Reservation under Nathan Reid (12:45)</div></div>
+        </div>
+        <div class="day-event">
+          <div class="event-time">15:30</div>
+          <div class="event-dot-wrap"><div class="event-dot" style="background:var(--clay)"></div><div class="event-line"></div></div>
+          <div class="event-body"><div class="event-title">Table Mountain — Cable Car</div><div class="event-detail">Depart hotel at 15:30 (25 min drive) · Cable car last up: 18:00 in April<br/>Wear layers — summit can be 8°C colder than city</div><div class="event-note">🌤 Forecast: partly cloudy, 22°C — cable car likely running</div></div>
+        </div>
+        <div class="day-event">
+          <div class="event-time">19:30</div>
+          <div class="event-dot-wrap"><div class="event-dot" style="background:var(--sage)"></div></div>
+          <div class="event-body"><div class="event-title">Dinner — La Colombe</div><div class="event-detail">Silvermist Wine Estate · Constantia Nek · Driver booked (Sipho, 19:00 departure)</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="day-block">
+    <div class="day-header">
+      <span class="day-num">Day 03</span>
+      <span class="day-title">Cape Peninsula & Winelands</span>
+      <span class="day-date">Wednesday 16 April</span>
+    </div>
+    <div class="day-body">
+      <div class="day-events">
+        <div class="day-event">
+          <div class="event-time">09:00</div>
+          <div class="event-dot-wrap"><div class="event-dot" style="background:var(--clay)"></div><div class="event-line"></div></div>
+          <div class="event-body"><div class="event-title">Cape Peninsula Drive — Private half-day</div><div class="event-detail">Route: City Bowl → Hout Bay → Chapman's Peak → Boulders Beach (penguins) → Cape Point<br/>Guide: Marcus Jonker (Peninsula Private Tours) · +27 74 912 3345</div></div>
+        </div>
+        <div class="day-event">
+          <div class="event-time">14:00</div>
+          <div class="event-dot-wrap"><div class="event-dot" style="background:var(--sage)"></div><div class="event-line"></div></div>
+          <div class="event-body"><div class="event-title">Franschhoek Wine Tasting — Haute Cabrière</div><div class="event-detail">Caveau tasting menu · Smart casual attire · 90 minutes<br/>Cellar tour included · Booked under Nathan Reid</div><div class="event-note">🍷 Includes MCC, Pinot Noir and reserve red flight</div></div>
+        </div>
+        <div class="day-event">
+          <div class="event-time">17:00</div>
+          <div class="event-dot-wrap"><div class="event-dot" style="background:var(--fog)"></div></div>
+          <div class="event-body"><div class="event-title">Return to One&Only · Free evening</div><div class="event-detail">Suggested: Sunset cocktails at the Reuben's bar on-site</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="day-block">
+    <div class="day-header">
+      <span class="day-num">Day 04</span>
+      <span class="day-title">Whale Watching & Waterfront Morning</span>
+      <span class="day-date">Thursday 17 April</span>
+    </div>
+    <div class="day-body">
+      <div class="day-events">
+        <div class="day-event">
+          <div class="event-time">08:00</div>
+          <div class="event-dot-wrap"><div class="event-dot" style="background:var(--clay)"></div><div class="event-line"></div></div>
+          <div class="event-body"><div class="event-title">Whale Watching — Hermanus (day trip)</div><div class="event-detail">Departure: 07:45 from hotel · Southern Right Charters · Booking ref: SRC-2204<br/>Duration: 2-hour boat tour · Light jacket essential · Binoculars provided</div><div class="event-note">🐋 April is peak southern right whale season in Walker Bay</div></div>
+        </div>
+        <div class="day-event">
+          <div class="event-time">13:30</div>
+          <div class="event-dot-wrap"><div class="event-dot" style="background:var(--fog)"></div><div class="event-line"></div></div>
+          <div class="event-body"><div class="event-title">Lunch at Bientang's Cave, Hermanus</div><div class="event-detail">Clifftop setting · Seafood-forward menu · Walk-in (no reservation needed in April)</div></div>
+        </div>
+        <div class="day-event">
+          <div class="event-time">16:00</div>
+          <div class="event-dot-wrap"><div class="event-dot" style="background:var(--fog)"></div><div class="event-line"></div></div>
+          <div class="event-body"><div class="event-title">Free afternoon — V&A Waterfront</div><div class="event-detail">Shopping, gallery browsing or spa at hotel (request booking via concierge)</div></div>
+        </div>
+        <div class="day-event">
+          <div class="event-time">19:30</div>
+          <div class="event-dot-wrap"><div class="event-dot" style="background:var(--sage)"></div></div>
+          <div class="event-body"><div class="event-title">Farewell dinner — The Pot Luck Club</div><div class="event-detail">Silo District · 6th floor · Reservation: 19:30 · Jacket recommended</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="day-block" style="margin-bottom:0">
+    <div class="day-header">
+      <span class="day-num">Day 05</span>
+      <span class="day-title">Departure Day</span>
+      <span class="day-date">Friday 18 April</span>
+    </div>
+    <div class="day-body">
+      <div class="day-events">
+        <div class="day-event">
+          <div class="event-time">08:00</div>
+          <div class="event-dot-wrap"><div class="event-dot" style="background:var(--fog)"></div><div class="event-line"></div></div>
+          <div class="event-body"><div class="event-title">Breakfast & leisure</div><div class="event-detail">Nobu restaurant or in-room option</div></div>
+        </div>
+        <div class="day-event">
+          <div class="event-time">12:00</div>
+          <div class="event-dot-wrap"><div class="event-dot" style="background:var(--clay)"></div><div class="event-line"></div></div>
+          <div class="event-body"><div class="event-title">Check-out — One&Only</div><div class="event-detail">Late check-out (14:00) requested and confirmed ✓</div></div>
+        </div>
+        <div class="day-event">
+          <div class="event-time">19:00</div>
+          <div class="event-dot-wrap"><div class="event-dot" style="background:var(--slate)"></div><div class="event-line"></div></div>
+          <div class="event-body"><div class="event-title">Hotel transfer to CPT Airport</div><div class="event-detail">Sipho (Cape Riders) · Allow 45 min · Check-in desk opens 19:00</div></div>
+        </div>
+        <div class="day-event">
+          <div class="event-time">21:30</div>
+          <div class="event-dot-wrap"><div class="event-dot" style="background:var(--clay)"></div></div>
+          <div class="event-body"><div class="event-title">Depart Cape Town — KQ 105</div><div class="event-detail">Arrives Nairobi 06:10 EAT · Business class · Breakfast served on board</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- WEATHER -->
+  <div class="section-label" style="margin-top:32px;">Cape Town Weather Forecast — Mid April</div>
+  <div class="full-col">
+    <div class="card" style="padding:0;overflow:hidden;">
+      <div class="weather-row">
+        <div class="weather-day"><div class="wd-name">Mon 14</div><div class="wd-icon">🌤</div><div class="wd-temp">22°C</div><div class="wd-desc">Partly cloudy</div></div>
+        <div class="weather-day"><div class="wd-name">Tue 15</div><div class="wd-icon">☀️</div><div class="wd-temp">24°C</div><div class="wd-desc">Clear & warm</div></div>
+        <div class="weather-day"><div class="wd-name">Wed 16</div><div class="wd-icon">🌥</div><div class="wd-temp">20°C</div><div class="wd-desc">High cloud</div></div>
+        <div class="weather-day"><div class="wd-name">Thu 17</div><div class="wd-icon">🌬</div><div class="wd-temp">18°C</div><div class="wd-desc">Windy — whale tour good</div></div>
+        <div class="weather-day"><div class="wd-name">Fri 18</div><div class="wd-icon">☀️</div><div class="wd-temp">21°C</div><div class="wd-desc">Clear departure</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONTACTS + CHECKLIST -->
+  <div class="section-label">Key Contacts</div>
+  <div class="full-col">
+    <div class="card">
+      <div class="contact-grid">
+        <div class="contact-card"><div class="cc-role">Airport Transfer</div><div class="cc-name">Sipho Dlamini</div><div class="cc-detail">Cape Riders Premium<br/>+27 82 445 7812 (WhatsApp)<br/>Available 24/7 during your stay</div></div>
+        <div class="contact-card"><div class="cc-role">Hotel Concierge</div><div class="cc-name">One&Only Cape Town</div><div class="cc-detail">Direct: +27 21 431 5888<br/>Concierge: ext. 5 after check-in<br/>Your butler: Andile Khumalo</div></div>
+        <div class="contact-card"><div class="cc-role">Safaricom Meeting</div><div class="cc-name">Wanjiku Mwangi</div><div class="cc-detail">BD Director, Safaricom<br/>w.mwangi@safaricom.co.ke<br/>+254 722 100 441</div></div>
+        <div class="contact-card"><div class="cc-role">Peninsula Guide</div><div class="cc-name">Marcus Jonker</div><div class="cc-detail">Peninsula Private Tours<br/>+27 74 912 3345<br/>Day 03 — departs 09:00</div></div>
+        <div class="contact-card"><div class="cc-role">Your VA (24/7)</div><div class="cc-name">Philipina Chezue</div><div class="cc-detail">WhatsApp: +255 7XX XXX XXX<br/>Email: philipina@kilicoast.com<br/>Available during your travel</div></div>
+        <div class="contact-card"><div class="cc-role">Emergency</div><div class="cc-name">South Africa Emergency</div><div class="cc-detail">Police: 10111<br/>Medical: 10177 / 082 911<br/>Kenya Airways 24hr: +254 20 327 4747</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PRE-DEPARTURE CHECKLIST -->
+  <div class="section-label">Pre-Departure Checklist</div>
+  <div class="two-col">
+    <div class="card">
+      <div class="card-title"><span class="ct-icon">📋</span> Documents & Logistics</div>
+      <div class="checklist">
+        <div class="check-item"><div class="check-box done">✓</div><div class="check-label">Passport valid (6+ months from 18 Apr)</div></div>
+        <div class="check-item"><div class="check-box done">✓</div><div class="check-label">KQ flights confirmed (KQXR44J / KQXR44K)</div></div>
+        <div class="check-item"><div class="check-box done">✓</div><div class="check-label">One&Only reservation confirmed</div></div>
+        <div class="check-item"><div class="check-box done">✓</div><div class="check-label">Travel insurance active — WorldNomads</div></div>
+        <div class="check-item"><div class="check-box warn">!</div><div class="check-label warn-text">Sign Safaricom NDA <span class="sub">DocuSign — inbox — before 15 Apr meeting</span></div></div>
+        <div class="check-item"><div class="check-box warn">!</div><div class="check-label warn-text">Confirm airport transfer (Sipho) — TODAY <span class="sub">+27 82 445 7812</span></div></div>
+        <div class="check-item"><div class="check-box todo"></div><div class="check-label">Online check-in KQ 104 <span class="sub">Opens 13 April at 15:45</span></div></div>
+        <div class="check-item"><div class="check-box todo"></div><div class="check-label">Download KQ app & save boarding pass</div></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title"><span class="ct-icon">🎒</span> Packing Notes</div>
+      <div class="checklist">
+        <div class="check-item"><div class="check-box done">✓</div><div class="check-label">Business attire for Tue meeting <span class="sub">Smart business · no tie needed</span></div></div>
+        <div class="check-item"><div class="check-box done">✓</div><div class="check-label">Smart casual for La Colombe dinner</div></div>
+        <div class="check-item"><div class="check-box todo"></div><div class="check-label">Light jacket / fleece (Table Mountain, whale boat)</div></div>
+        <div class="check-item"><div class="check-box todo"></div><div class="check-label">Comfortable walking shoes (Peninsula day)</div></div>
+        <div class="check-item"><div class="check-box todo"></div><div class="check-label">Sunscreen SPF50+ (October UV index: high)</div></div>
+        <div class="check-item"><div class="check-box todo"></div><div class="check-label">South African Rand (ZAR) for tips/cash</div></div>
+        <div class="check-item"><div class="check-box todo"></div><div class="check-label">Universal adapter (SA uses Type M plugs)</div></div>
+        <div class="check-item"><div class="check-box todo"></div><div class="check-label">Camera or quality phone for Cape Point</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TIPS -->
+  <div class="section-label">Planner's Tips</div>
+  <div class="full-col">
+    <div class="card alert-sage">
+      <div class="card-title"><span class="ct-icon">💡</span> Philipina's Notes for You</div>
+      <div class="tip-list">
+        <div class="tip-row"><span class="tip-icon">🍷</span><span>Franschhoek dress code is <strong>smart casual</strong> — no need for a jacket but avoid beachwear. The cellar ambience is relaxed and excellent.</span></div>
+        <div class="tip-row"><span class="tip-icon">🐧</span><span>Boulders Beach penguins are best photographed in the morning before 11 AM when light is soft and crowds thin. You'll drive past on the peninsula day.</span></div>
+        <div class="tip-row"><span class="tip-icon">🌬</span><span>The Cape Doctor (SE wind) often kicks up in April afternoons — the whale watching tour departs at 08:00 intentionally to catch calmer morning seas.</span></div>
+        <div class="tip-row"><span class="tip-icon">💵</span><span>Tipping: 10–15% at restaurants is standard. At the hotel, ZAR 20–50 per service is appreciated. Sipho will appreciate ZAR 100–150 per transfer.</span></div>
+        <div class="tip-row"><span class="tip-icon">📱</span><span>I'm on WhatsApp throughout your trip. Text me for anything — restaurant changes, extra bookings, or if any logistics need adjusting on the ground.</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="doc-footer">
+    <div>
+      <div class="footer-brand">Kili <span>&</span> Coast</div>
+      <div style="margin-top:4px">Luxury Travel & Safari Concierge · Dar es Salaam, Tanzania</div>
+    </div>
+    <div style="text-align:right">
+      Doc ref: NR-CPT-0414 · Issued: 2 April 2026<br/>
+      Prepared by Philipina Chezue · Executive VA<br/>
+      philipina@kilicoast.com · Version 4 (final)
+    </div>
+  </div>
+
+</div>
+
+<script>
+  document.querySelectorAll('.check-box.todo').forEach(box => {
+    box.addEventListener('click', () => {
+      if (box.classList.contains('done')) return;
+      box.classList.toggle('todo');
+      box.classList.toggle('done');
+      box.textContent = box.classList.contains('done') ? '✓' : '';
+    });
+  });
+</script>
+</body>
+</html>
