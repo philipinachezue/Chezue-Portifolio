@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Testimonials & Reviews — Philipina Chezue, Executive VA</title>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Overpass:wght@300;400;500;600;700&family=Overpass+Mono:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#0a0a10; --surface:#111118; --border:#1e1e2a; --text:#e8e6f2; --muted:#8a88a0;
+  --gold:#e8b84b; --gold-lt:#f0cc78; --serif:'Instrument Serif',serif; --sans:'Overpass',sans-serif;
+}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:15px;line-height:1.6;overflow-x:hidden;}
+.reveal{opacity:1;transform:translateY(0);transition:opacity .7s ease,transform .7s ease;}.animate{opacity:0;transform:translateY(24px);}.visible{opacity:1;transform:translateY(0);}
+
+nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:0 40px;height:64px;display:flex;align-items:center;background:rgba(10,10,16,.85);backdrop-filter:blur(12px);border-bottom:1px solid rgba(255,255,255,.05);}
+.back-to-portfolio{display:inline-flex;align-items:center;gap:8px;padding:8px 14px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.2);border-radius:4px;color:#fff!important;text-decoration:none;font-size:.74rem;font-weight:700;transition:.2s;margin-right:15px;white-space:nowrap;}
+.back-to-portfolio:hover{background:var(--gold);color:#000!important;border-color:transparent;}
+.nav-brand{font-family:var(--serif);font-size:1.1rem;color:var(--text);}
+.nav-brand em{font-style:italic;color:var(--gold);}
+
+.hero{padding:140px 5% 80px;max-width:1100px;margin:0 auto;text-align:center;}
+.hero-eyebrow{font-family:var(--serif);font-size:clamp(1.2rem,2.8vw,1.8rem);font-style:italic;color:var(--gold);margin-bottom:16px;}
+.hero-h1{font-family:var(--serif);font-size:clamp(2.8rem,6vw,5rem);line-height:1.05;margin-bottom:24px;}
+.hero-p{font-size:1rem;color:var(--muted);max-width:600px;margin:0 auto 48px;font-weight:300;}
+
+.testi-grid{max-width:1100px;margin:0 auto;padding:0 5% 100px;display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:24px;}
+.testi-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:32px;display:flex;flex-direction:column;justify-content:space-between;}
+.stars{color:var(--gold);font-size:.9rem;margin-bottom:12px;}
+.testi-text{font-family:var(--serif);font-size:1.2rem;font-style:italic;line-height:1.7;color:var(--text);margin-bottom:24px;}
+.testi-author{display:flex;align-items:center;gap:14px;padding-top:20px;border-top:1px solid var(--border);}
+.ta-avatar{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.78rem;font-weight:700;color:#fff;flex-shrink:0;}
+.ta-name{font-size:.85rem;font-weight:700;color:var(--text);}
+.ta-role{font-size:.68rem;color:var(--muted);margin-top:2px;}
+
+.platform-badge{display:inline-flex;align-items:center;gap:6px;font-size:.58rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:5px 12px;border-radius:4px;margin-bottom:14px;}
+.pb-upwork{background:rgba(20,150,20,.15);color:#5bc55b;}
+.pb-freelancer{background:rgba(0,100,200,.15);color:#5aa1e7;}
+.pb-crdb{background:rgba(255,255,255,.08);color:var(--text);}
+
+.review-img-wrap{margin-top:20px;border-radius:8px;overflow:hidden;border:1px solid var(--border);}
+.review-img{width:100%;display:block;height:auto;}
+
+.cta{max-width:800px;margin:0 auto 120px;text-align:center;padding:80px 5%;background:var(--surface);border:1px solid var(--border);border-radius:24px;}
+.cta-h2{font-family:var(--serif);font-size:3rem;font-style:italic;margin-bottom:16px;}
+.cta-btn{display:inline-block;background:var(--gold);color:#000;padding:16px 40px;border-radius:4px;text-decoration:none;font-weight:700;font-size:1rem;transition:.2s;}
+.cta-btn:hover{background:var(--gold-lt);transform:translateY(-2px);}
+
+@media(max-width:768px){
+  nav{padding:0 20px;}
+  .hero{padding-top:100px;}
+  .testi-grid{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="../index.html#results" class="back-to-portfolio">← Back to Portfolio</a>
+  <div class="nav-brand">Philipina <em>Chezue</em></div>
+</nav>
+
+<div class="hero">
+  <div class="hero-eyebrow">Social Proof</div>
+  <h1 class="hero-h1">Real Outcomes,<br/>Real Testimonials.</h1>
+  <p class="hero-p">Verifiable reviews from my clients across Upwork, Freelancer.com, CRDB Bank PLC, and independent engagements globally.</p>
+</div>
+
+<div class="testi-grid">
+  <!-- UPWORK -->
+  <div class="testi-card reveal">
+    <div class="platform-badge pb-upwork">Upwork · Expert Rated · 5.0 ★</div>
+    <div class="testi-text">"Philipina was an excellent asset to our team and provided top notch research and results. Highly recommend and will use her in the coming months again."</div>
+    <div class="testi-author">
+      <div class="ta-avatar" style="background:#14a800">S</div>
+      <div>
+        <div class="ta-name">Suzanne</div>
+        <div class="ta-role">Social Media Marketing · Upwork · USA</div>
+      </div>
+    </div>
+    <div class="review-img-wrap"><img class="review-img" src="../assets/images/img_ddb05738.png" alt="Upwork review screenshot"/></div>
+  </div>
+
+  <!-- FREELANCER -->
+  <div class="testi-card reveal">
+    <div class="platform-badge pb-freelancer">Freelancer.com · Top Talent · 5.0 ★</div>
+    <div class="testi-text">"Philipina did a great job on this project. Well done!"</div>
+    <div class="testi-author">
+      <div class="ta-avatar" style="background:#0a69c7">VN</div>
+      <div>
+        <div class="ta-name">Van N. — Confirmis</div>
+        <div class="ta-role">Site Verification · Freelancer.com · Singapore</div>
+      </div>
+    </div>
+    <div class="review-img-wrap"><img class="review-img" src="../assets/images/img_f522e544.png" alt="Freelancer review screenshot"/></div>
+  </div>
+
+  <!-- CRDB BANK -->
+  <div class="testi-card reveal">
+    <div class="platform-badge pb-crdb">CRDB Bank PLC · Institutional Recommendation</div>
+    <div class="testi-text">"Ms. Philipina Andrea Chezue demonstrated outstanding personal and professional attributes. She is highly hardworking, committed and dedicated, is visionary and eager to learn."</div>
+    <div class="testi-author">
+      <div class="ta-avatar" style="background:#2c1f10">DS</div>
+      <div>
+        <div class="ta-name">Mr. Donath Shirima</div>
+        <div class="ta-role">Branch Manager · CRDB Bank PLC · Dar es Salaam</div>
+      </div>
+    </div>
+    <div class="review-img-wrap"><img class="review-img" src="../assets/images/img_5beca966.png" alt="CRDB Bank recommendation screenshot"/></div>
+  </div>
+
+  <!-- MARIA -->
+  <div class="testi-card reveal">
+    <div class="stars">★★★★★</div>
+    <div class="testi-text">"Philipina coordinated our entire trip — Zanzibar, Materuni Waterfalls, and Arusha — every detail was handled perfectly. She anticipated things we didn't even think to ask."</div>
+    <div class="testi-author">
+      <div class="ta-avatar" style="background:#9e5a2e">MF</div>
+      <div>
+        <div class="ta-name">Maria Fountoulaki</div>
+        <div class="ta-role">Safari & Travel Client · Greece</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DAMIAN -->
+  <div class="testi-card reveal">
+    <div class="stars">★★★★★</div>
+    <div class="testi-text">"Philipina built our project Gantt chart and coordinated stakeholder tasks with a clarity I hadn't seen before. Complex projects finally felt simple."</div>
+    <div class="testi-author">
+      <div class="ta-avatar" style="background:#3d5c42">DJ</div>
+      <div>
+        <div class="ta-name">Damian Job</div>
+        <div class="ta-role">Project Planning Client · USA</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- APOSTLE -->
+  <div class="testi-card reveal">
+    <div class="stars">★★★★★</div>
+    <div class="testi-text">"Philipina stands out for her initiative, precision, and the way she represents both herself and her clients professionally at all times."</div>
+    <div class="testi-author">
+      <div class="ta-avatar" style="background:#3a5c8a">AC</div>
+      <div>
+        <div class="ta-name">Apostle Christopher Mwasota</div>
+        <div class="ta-role">Secretary General · Education for Disabled Tanzania</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="cta">
+  <div class="cta-h2">See your business<br/>on this page.</div>
+  <a href="mailto:philipinachezue@outlook.com" target="_top" class="cta-btn">Work With Me</a>
+</div>
+
+<script>
+const obs = new IntersectionObserver((es) => {
+  es.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.1 });
+document.querySelectorAll('.reveal').forEach(el => {
+  el.classList.add('animate');
+  obs.observe(el);
+});
+</script>
+</body>
+</html>

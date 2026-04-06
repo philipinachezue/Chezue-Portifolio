@@ -197,24 +197,26 @@ footer{border-top:1px solid var(--border);padding:28px 48px;display:flex;align-i
   .ba-panel.before{border-right:none;border-bottom:1px solid var(--border);}
   .metrics-row.cols3,.metrics-row.cols4{grid-template-columns:1fr 1fr;}
   .metric-cell:nth-child(odd){border-right:1px solid var(--border);}
+  .metric-cell:nth-child(even){border-right:none;}
   .ca-grid{grid-template-columns:1fr;}
   .results-strip{grid-template-columns:1fr 1fr;}
   .cs-header{grid-template-columns:1fr;}
-  nav{padding:0 24px;}
-  .hero,.section,.cta-section{padding-left:24px;padding-right:24px;}
+  nav{padding:0 15px; gap: 8px;}
+  .nav-links { display: none; } /* Simplify on mobile */
+  .hero,.section,.cta-section{padding: 80px 20px 40px;}
+  .hero-headline { font-size: 2.2rem; }
+  .rs-card { padding: 20px; }
+  .rs-num { font-size: 2.4rem; }
 }
 
-/* Responsive Shell Fix */
-@media (max-width: 1100px) {
-  .shell { grid-template-columns: 200px 1fr; height: auto; }
-  .right, .right-panel { grid-column: span 2; border-left: none; border-top: 1px solid var(--fog); height: auto; }
-}
-@media (max-width: 768px) {
-  .shell { display: flex; flex-direction: column; height: auto; }
-  .left, .ls-sidebar { width: 100%; border-right: none; border-bottom: 1px solid var(--fog); height: auto; max-height: 300px; }
-  .main { height: auto; overflow: visible; }
-  .header { height: auto; padding: 10px 20px; flex-wrap: wrap; }
-  .back-to-portfolio { margin-bottom: 8px; }
+@media(max-width:480px){
+  .results-strip, .metrics-row.cols3, .metrics-row.cols4 { grid-template-columns: 1fr; }
+  .metric-cell { border-right: none; border-bottom: 1px solid var(--border); padding: 20px; text-align: center; }
+  .rs-card { border-bottom: 1px solid var(--border); }
+  .nav-cta { padding: 6px 12px; font-size: 0.65rem; }
+  .back-to-portfolio { margin-right: 5px; padding: 6px 10px; font-size: 0.65rem; }
+  .cs-header { padding: 25px 20px; }
+  .ba-panel, .cs-quote, .cs-actions { padding: 25px 20px; }
 }
 </style>
 
@@ -268,18 +270,19 @@ footer{border-top:1px solid var(--border);padding:28px 48px;display:flex;align-i
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  padding: 6px 12px;
+  padding: 8px 14px;
   background: rgba(255,255,255,0.1);
-  border: 1px solid rgba(255,255,255,0.2);
+  border: 1px solid rgba(255,255,255,0.3);
   border-radius: 4px;
-  color: inherit;
+  color: #ffffff !important;
   text-decoration: none;
-  font-size: 0.7rem;
-  font-weight: 600;
+  font-size: 0.75rem;
+  font-weight: 700;
   transition: all 0.2s;
   margin-right: 15px;
   z-index: 1001;
   position: relative;
+  white-space: nowrap;
 }
 [data-theme="dark"] .back-to-portfolio, 
 body[style*="background:#0b0d0f"] .back-to-portfolio,
@@ -289,7 +292,7 @@ body[style*="background:var(--bg)"] .back-to-portfolio {
 }
 .back-to-portfolio:hover {
   background: var(--clay, var(--gold, var(--accent, #9e5a2e)));
-  color: #fff !important;
+  color: #ffffff !important;
   border-color: transparent;
 }
 </style>
@@ -297,13 +300,13 @@ body[style*="background:var(--bg)"] .back-to-portfolio {
 <body>
 
 <nav>
-  <a href="../index.html" class="back-to-portfolio">← Back to Portfolio</a>
+  <a href="../index.html#results" class="back-to-portfolio">← Back to Portfolio</a>
   <div class="nav-brand">Philipina <em>Chezue</em></div>
   <div class="nav-sep"></div>
   <div class="nav-links">
     <a href="#results">Results</a>
     <a href="#case-studies">Case Studies</a>
-    <a href="../index.html">Full Portfolio</a>
+    <a href="../index.html#results">Full Portfolio</a>
   </div>
   <a  href="mailto:philipinachezue@outlook.com" target="_top"  class="nav-cta" style="text-decoration:none;">Work With Me →</a>
 </nav>
@@ -667,7 +670,7 @@ body[style*="background:var(--bg)"] .back-to-portfolio {
   <p class="cta-sub">If you're spending your best hours on things that shouldn't need you — inbox, suppliers, project admin, travel logistics — let's talk about what that's actually costing you.</p>
   <div class="cta-buttons">
     <a  href="mailto:philipinachezue@outlook.com" target="_top"  class="cta-btn-primary" style="text-decoration:none;display:inline-block;">Book a discovery call →</a>
-    <a href="../index.html" class="cta-btn-secondary" style="text-decoration:none;display:inline-block;">View full portfolio</a>
+    <a href="../index.html#results" class="cta-btn-secondary" style="text-decoration:none;display:inline-block;">View full portfolio</a>
   </div>
   <div style="margin-top:40px;display:flex;justify-content:center;gap:40px;flex-wrap:wrap;">
     <div style="text-align:center;">
@@ -709,4 +712,36 @@ document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 // Animate numbers on scroll
 function animateNumber(el, target, suffix='', prefix='') {
   const duration = 1800;
-  const start 
+  const start = 0;
+  const startTime = performance.now();
+  
+  function update(currentTime) {
+    const elapsed = currentTime - startTime;
+    const progress = Math.min(elapsed / duration, 1);
+    const ease = 1 - Math.pow(1 - progress, 3);
+    const current = Math.floor(ease * target);
+    el.innerText = prefix + current + suffix;
+    if (progress < 1) {
+      requestAnimationFrame(update);
+    }
+  }
+  requestAnimationFrame(update);
+}
+
+// Simple IntersectionObserver for Numbers
+const numObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      const el = entry.target;
+      const val = parseInt(el.innerText.replace(/[^0-9]/g, ''));
+      const suffix = el.innerText.replace(/[0-9]/g, '');
+      if (!isNaN(val)) animateNumber(el, val, suffix);
+      numObserver.unobserve(el);
+    }
+  });
+}, { threshold: 0.5 });
+
+document.querySelectorAll('.rs-num, .mc-to').forEach(el => numObserver.observe(el));
+</script>
+</body>
+</html>
