@@ -69,9 +69,12 @@ if(t==='dark') document.documentElement.setAttribute('data-theme', 'dark');
     <a href="#work">Work Samples</a><a href="#packages">Packages</a>
     <a href="#results">Results</a><a href="#contact">Contact</a>
   </div>
-  <a href="pages/va-proof-case-studies.html" target="_blank" rel="noopener noreferrer" style="font-size:.74rem;font-weight:600;color:var(--clay);text-decoration:none;letter-spacing:.03em;margin-left:4px;border:1.5px solid var(--clay);border-radius:4px;padding:8px 14px;transition:all .15s;" onmouseover="this.style.background='var(--clay)';this.style.color='#fff'" onmouseout="this.style.background='';this.style.color='var(--clay)'">Case Studies ↗</a>
-  <a  href="mailto:philipinachezue@outlook.com" target="_top"  class="nav-cta">Hire Me</a>
+  <a href="pages/va-proof-case-studies.html" target="_blank" rel="noopener noreferrer" class="case-studies-nav">Case Studies ↗</a>
+  <a href="mailto:philipinachezue@outlook.com" target="_top" class="nav-cta">Hire Me</a>
   <button id="theme-toggle" aria-label="Toggle Dark Mode"></button>
+  <button id="menu-toggle" aria-label="Open Navigation Menu">
+    <span></span><span></span><span></span>
+  </button>
 </nav>
 
 <section>
@@ -94,7 +97,7 @@ if(t==='dark') document.documentElement.setAttribute('data-theme', 'dark');
   </div>
   <div class="hero-img-wrap reveal" style="transition-delay:.15s">
     <div class="hero-img-bg"></div>
-    <img class="hero-img" src="assets/images/img_9f2ae763.jpg" alt="Philipina Andrea Chezue — Executive VA"/>
+    <img class="hero-img" src="assets/images/img_9f2ae763.jpg" alt="Philipina Andrea Chezue — Executive VA" fetchpriority="high" decoding="async"/>
     <div class="hero-badge"><div class="hb-num">14h</div><div class="hb-label">returned to founders / week</div></div>
     <div class="hero-badge2"><div class="hb2-text"><strong>100%</strong>Client retention rate</div></div>
   </div>

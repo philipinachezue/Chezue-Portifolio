@@ -14,14 +14,27 @@
   // Set initially
   setTheme(getTheme());
 
-  // Attach event listener once DOM is ready
+  // Attach event listeners once DOM is ready
   window.addEventListener('DOMContentLoaded', () => {
     const btn = document.getElementById('theme-toggle');
     if (btn) {
-      // Initialize button icon
       btn.addEventListener('click', () => {
         const current = document.documentElement.getAttribute('data-theme');
         setTheme(current === 'dark' ? 'light' : 'dark');
+      });
+    }
+
+    // Mobile Menu Toggle
+    const menuBtn = document.getElementById('menu-toggle');
+    const navLinks = document.querySelector('.nav-links');
+    if (menuBtn && navLinks) {
+      menuBtn.addEventListener('click', () => {
+        const isOpen = document.body.getAttribute('data-menu') === 'open';
+        document.body.setAttribute('data-menu', isOpen ? '' : 'open');
+      });
+      // Close menu when link is clicked
+      navLinks.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', () => document.body.setAttribute('data-menu', ''));
       });
     }
   });
